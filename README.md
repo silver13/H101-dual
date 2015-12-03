@@ -5,6 +5,7 @@ This is an acro firmware for the Floureon H101 quadcopter.
 ###!!!This firmware does not work with the original H101 TX!!!
 The H101 tx uses high channel numbers and the xn297 rx init code does not work for them.
 
+For programming the ground pad is marked (B-) on the pcb(near the edge) .It is also close to some other components. Note there is also a (B+) pad,do not connect this. 
 
 It works with Devo or H8 mini tx.You could also use the diy [nrf24_multipro](https://github.com/goebish/nrf24_multipro) module by Goebish.
 
