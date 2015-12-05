@@ -24,4 +24,8 @@ The firmware flash procedure is the same as the H8.
 
 Firmware thread featuring flashing info : [rcgroups.com](http://www.rcgroups.com/forums/showthread.php?t=2512604)
 
+###update 1: 6.12.15
+*added stock tx support
+
+
 
