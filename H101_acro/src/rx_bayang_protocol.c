@@ -35,6 +35,7 @@ THE SOFTWARE.
 
 #include "rx_bayang.h"
 
+#include "util.h"
 
 
 void rx_init()
@@ -59,8 +60,8 @@ void rx_init()
 	spi_cson();
   spi_sendbyte(0x3e); 
 	spi_sendbyte(0xca);//ca
-	spi_sendbyte(0x9a);
-	spi_sendbyte(0x80);//b0
+	spi_sendbyte(224);
+	spi_sendbyte(127);//b0
 	spi_sendbyte(0x61);
 	spi_sendbyte(0x83);//
 	spi_sendbyte(0x2b);//

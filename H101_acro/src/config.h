@@ -83,7 +83,7 @@
 // 3 - headingreturn
 // 4 - on always
 // 5 - off always
-#define RATES 4
+#define RATES 1
 
 // channel for inverted mode
 // 0 - flip
@@ -111,7 +111,7 @@
 // time to change motor direction (uS)
 #define BRIDGE_TIMEOUT 100000
 
-#define DEBUG
+//#define DEBUG
 //#define RXDEBUG
 
 #pragma diag_warning 1035 , 177 , 4017
