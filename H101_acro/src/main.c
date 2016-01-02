@@ -23,10 +23,8 @@ THE SOFTWARE.
 */
 
 
-// Eachine H8mini acro firmware
+// Floureon H101 acro firmware 
 // files of this project are assumed MIT licence unless otherwise noted
-
-// licence of files binary.h and macros.h LGPL 2.1
 
 
 #include "gd32f1x0.h"
@@ -186,6 +184,7 @@ if ( liberror )
 		
 // battery low logic
 		static int lowbatt = 0;
+		float hyst;
 		float battadc = adc_read(1);
 
 		// average of all 4 motor thrusts
@@ -197,7 +196,11 @@ if ( liberror )
 		
 		lpf ( &vbattfilt , battadc , 0.9968f);		
 
-		if ( vbattfilt + (float) VDROP_FACTOR * thrfilt <(float) VBATTLOW + (lowbatt==1)?HYST:0 ) lowbatt = 1;
+		if ( lowbatt ) hyst = HYST;
+		else hyst = 0.0f;
+
+		if ( vbattfilt + (float) VDROP_FACTOR * thrfilt <(float) VBATTLOW + hyst ) lowbatt = 1;
+		else lowbatt = 0;
 		
 // led flash logic		
 		if ( rxmode == 0)

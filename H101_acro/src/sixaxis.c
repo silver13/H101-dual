@@ -155,13 +155,13 @@ while ( time - timestart < 2e6  &&  time - timemax < 15e6 )
 		
 if ( (time - timestart)%200000 > 100000) 
 {
-	ledon(B0101);
-	ledoff(B1010);
+	ledon(B00000101);
+	ledoff(B00001010);
 }
 else 
 {
-	ledon(B1010);
-	ledoff(B0101);
+	ledon(B00001010);
+	ledoff(B00000101);
 }
 		 for ( int i = 0 ; i < 3 ; i++)
 			{

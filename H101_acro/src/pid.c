@@ -27,7 +27,6 @@ THE SOFTWARE.
 #include "pid.h"
 #include "util.h"
 #include "config.h"
-
 #include "defines.h"
 
 

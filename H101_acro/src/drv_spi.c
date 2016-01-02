@@ -2,7 +2,6 @@
 
 #include "gd32f1x0.h"
 #include "drv_spi.h"
-#include "macros.h"
 #include "binary.h"
 
 void spi_init(void)
@@ -59,7 +58,7 @@ void spi_sendbyte ( int data)
 {
 for ( int i =7 ; i >=0 ; i--)
 	{
-		if ( bitRead( data , i)  ) 
+		if (  (data>>i)&1  ) 
 		{
 			MOSIHIGH;
 		}
@@ -99,9 +98,6 @@ int spi_sendrecvbyte2( int data)
 
  int spi_sendrecvbyte( int data)
 { int recv = 0;
-//	MOSILOW;
-//	int temp = ((uint16_t)GPIOB->DOR);
-//	temp = temp & B11100111;
 
 	for ( int i = 7 ; i >=0 ; i--)
 	{
@@ -121,15 +117,10 @@ int spi_sendrecvbyte2( int data)
 		
 		if ( READMISO ) recv= recv|1;
 
-	//	gpioreset( GPIOB, 4);
-	//	gpioreset( GPIOB, 3);
-		//GPIOB->BCR = B00011000;
-	//	GPIOB->BCR = B00001000;
-		//GPIOB->DOR = PortVal;
 		SCKLOW;
 		
 	}	
-	 // recv = recv>>1;
+
     return recv;
 }
 
@@ -149,7 +140,6 @@ int spi_sendrecvbyte2( int data)
 		SCKLOW;
 		
 	}	
-	 // recv = recv>>1;
     return recv;
 }
 
