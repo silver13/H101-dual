@@ -366,7 +366,7 @@
             <v6Lang>0</v6Lang>
             <v6LangP>0</v6LangP>
             <VariousControls>
-              <MiscControls></MiscControls>
+              <MiscControls>--fpmode=fast</MiscControls>
               <Define>USE_STDPERIPH_DRIVER</Define>
               <Undefine></Undefine>
               <IncludePath>..\; ..\Peripherals\inc; ..\CMSIS; .\src</IncludePath>

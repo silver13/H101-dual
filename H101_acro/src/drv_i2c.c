@@ -30,6 +30,8 @@ THE SOFTWARE.
 
 #include "drv_i2c.h"
 
+#include "drv_time.h"
+
 #define I2CADDRESS 0x68  
 
 #define WAITFORSTOP

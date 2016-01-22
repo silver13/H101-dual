@@ -50,7 +50,7 @@
 // increase if battery low comes on at max throttle
 // decrease if battery low warning goes away at high throttle
 // in volts
-#define VDROP_FACTOR 0.50
+#define VDROP_FACTOR 0.60
 
 // voltage hysteresys
 // in volts
@@ -119,7 +119,7 @@
 ////////////////
 // do not change things below this line
 
-#define LOOPTIME 2000
+#define LOOPTIME 1000
 
 // disable motors for testing
 //#define NOMOTORS
@@ -134,7 +134,7 @@
 
 #pragma diag_error 260
 
-// --fpmode=fast OFF
+// --fpmode=fast ON
 
 
 

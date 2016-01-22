@@ -44,9 +44,9 @@ void rx_init()
 	
 	spi_cson();
 	spi_sendbyte(0x3f); 
-	spi_sendbyte(0x7F);//
+	spi_sendbyte(0x4c);
 	spi_sendbyte(0x84);
-	spi_sendbyte(0x67);//
+	spi_sendbyte(0x6F);
 	spi_sendbyte(0x9c);
 	spi_sendbyte(0x20);
 	spi_csoff();
@@ -59,13 +59,13 @@ void rx_init()
 	delay(1000);
 	spi_cson();
   spi_sendbyte(0x3e); 
-	spi_sendbyte(0xca);//ca
-	spi_sendbyte(224);
-	spi_sendbyte(127);//b0
+	spi_sendbyte(0xc9);
+	spi_sendbyte(220);
+	spi_sendbyte(0x80);
 	spi_sendbyte(0x61);
-	spi_sendbyte(0x83);//
-	spi_sendbyte(0x2b);//
-	spi_sendbyte(0x95);//95
+	spi_sendbyte(0xbb);
+	spi_sendbyte(0xab);
+	spi_sendbyte(0x9c);
 	spi_csoff();
 	
 
@@ -75,7 +75,7 @@ void rx_init()
   spi_sendbyte(0x39); 
 	spi_sendbyte(0x0b);
 	spi_sendbyte(0xdf);
-	spi_sendbyte(0x0);//
+	spi_sendbyte(0xc4);
 	spi_sendbyte(0xa7);
 	spi_sendbyte(0x03);
 	spi_csoff();
@@ -87,7 +87,7 @@ xn_writerxaddress( rxaddress);
 
 	xn_writereg( EN_AA , 0 );	// aa disabled
 	xn_writereg( EN_RXADDR , 1 ); // pipe 0 only
-	xn_writereg( RF_SETUP , B00000001);
+	xn_writereg( RF_SETUP , B00000001);  // lna high current on ( better performance )
 	xn_writereg( RX_PW_P0 , 15 ); // payload size
 	xn_writereg( SETUP_RETR , 0 ); // no retransmissions ( redundant?)
 	xn_writereg( SETUP_AW , 3 ); // address size (5 bits)
@@ -165,7 +165,7 @@ static int decodepacket( void)
 //			rx[0] = rx[0] + 0.03225 * 0.5 * (float)(((rxdata[4])>>2) - 31);
 //			rx[1] = rx[1] + 0.03225 * 0.5 * (float)(((rxdata[6])>>2) - 31);
 //			rx[2] = rx[2] + 0.03225 * 0.5 * (float)(((rxdata[10])>>2) - 31);
-//	aux2 = 0;			
+	
 		//	rx[4] = (rxdata[2] &  0x08)?1:0; // flip channel
 			aux[0] = (rxdata[2] &  0x08)?1:0;
 	
@@ -212,6 +212,8 @@ unsigned long secondtimer;
 int failsafe = 0;
 
 
+//#define RXDEBUG
+
 #ifdef RXDEBUG	
 unsigned long packettime;
 int channelcount[4];
@@ -257,6 +259,7 @@ void checkrx( void)
 				packettime = gettime() - lastrxtime;
 				#endif
 
+				// for longer loop times than 3ms it was skipping 2 channels
 			//	chan++;
 			//	if (chan > 3 ) chan = 0;
 				nextchannel();
@@ -287,7 +290,7 @@ void checkrx( void)
 		unsigned long time = gettime();
 		
     // sequence period 12000
-		if( time - lastrxtime > 13000 && rxmode != 0)
+		if( time - lastrxtime > 9000 && rxmode != 0)
 		{//  channel with no reception	 
 		 lastrxtime = time;
 		 nextchannel();	

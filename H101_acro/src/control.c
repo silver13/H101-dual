@@ -112,35 +112,8 @@ void control( void)
 
 // pwmdir controls hardware directly so we make a copy here
 	currentdir = pwmdir;
-	
-/*	
-int change = (rx[5] > 0.5);
 
-if ( change != lastchange )
-{
-	pulse = 1;
-}
-lastchange = change;
-
-float motorchange = 0;
-
-if ( pulse )
-{
-	if ( !timestart) timestart = gettime();
 	
-	
-	if ( gettime() - timestart < 200000 )
-	{
-		motorchange = 0.2;	
-	}
-	else
-	{
-		motorchange = 0.0;
-		pulse = 0;
-		timestart = 0;
-	}
-}
-*/
 float rxtemp[3];
 
 for (int i = 0 ; i < 3 ; i++)
@@ -229,7 +202,8 @@ if ( throttle < 0   ) throttle = 0;
 		#endif
 		}	
 		
-		pwmsum = 0;
+		
+		thrsum = 0;
 		for ( int i = 0 ; i <= 3 ; i++)
 		{
 			if ( mix[i] < 0 ) mix[i] = 0;
@@ -243,27 +217,6 @@ if ( throttle < 0   ) throttle = 0;
 }
 
 
-/*
-float motormap_old( float input)
-{ 
-	// this is a thrust to pwm function
-	//  float 0 to 1 input and output
-	// reverse of a power to thrust graph for 8.5 mm coreless motors + hubsan prop
-	// should be ok for other motors without reduction gears.
-	// a*x^2 + b*x + c
-	// a = 0.75 , b = 0.061 , c = 0.185
-
-if (input > 1.0) input = 1.0;
-if (input < 0) input = 0;
-	
-if ( input < 0.25 ) return input;
-
-input = input*input*0.75  + input*(0.0637);
-input += 0.185;
-
-return input;   
-}
-*/
 
 float motormap_H8( float input)
 { 

@@ -12,7 +12,7 @@ while( !RCC_GetBitState(RCC_FLAG_HSISTB) );
 // this should be enabled already 
 RCC_CK_SYSConfig(RCC_SYSCLKSOURCE_HSI);
 
-RCC_PLLConfig(RCC_PLLSOURCE_HSI_DIV2 , 18);
+RCC_PLLConfig(RCC_PLLSOURCE_HSI_DIV2 , RCC_PLLMUL_12);
 RCC_PLL_Enable(ENABLE);
 
 // wait for pll to stablilize

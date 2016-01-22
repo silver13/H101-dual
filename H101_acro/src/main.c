@@ -69,7 +69,6 @@ int main(void)
 	#error "SET CORRECT TARGET IN THE RELEVANT MENU"
 #endif
 	
-	//System_Init();
 	clk_init();
 	
   gpio_init();
@@ -150,7 +149,8 @@ if ( liberror )
 // 		MAIN LOOP
 //
 //
-
+	
+	checkrx();
 
 	while(1)
 	{
@@ -175,8 +175,7 @@ if ( liberror )
 			failloop(8);
 			// endless loop
 		}
-		
-		checkrx();
+	
 		
 		gyro_read();
 		
@@ -224,8 +223,10 @@ if ( liberror )
 			} 		
 		}
 	
-
-	while ( gettime() - time < LOOPTIME ); 
+		
+	checkrx();
+		
+	while ( gettime() - time < LOOPTIME ) delay(10);; 
 		
 	}// end loop
 	
@@ -244,7 +245,6 @@ void failloop( int val)
 	for ( int i = 0 ; i <= 3 ; i++)
 	{
 		pwm_dir(FREE);	
-		//pwm_set( i ,0 );
 	}	
 
 	while(1)
@@ -252,9 +252,9 @@ void failloop( int val)
 		for ( int i = 0 ; i < val; i++)
 		{
 		 ledon( 255);		
-		 delay(400000);
+		 delay(200000);
 		 ledoff( 255);	
-		 delay(400000);			
+		 delay(200000);			
 		}
 		delay(1600000);
 	}	

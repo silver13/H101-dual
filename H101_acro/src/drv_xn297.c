@@ -5,10 +5,6 @@
 #include "gd32f1x0.h"
 #include "xn297.h"
 
-#define gpioset( port , pin) port->BOR = (0x0001 << pin)
-#define gpioreset( port , pin) port->BCR = (0x0001 << pin)
-
-#define SPIOFF gpioset( GPIOB, 5)
 
 void xn_writereg( int reg , int val)
 {

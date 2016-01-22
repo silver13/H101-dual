@@ -41,7 +41,7 @@ void pwm_init(void)
     RCC_APB1PeriphClock_Enable(RCC_APB1PERIPH_TIMER2|RCC_APB1PERIPH_TIMER14,ENABLE);
 
 // timer 2
-    TIM_TimeBaseStructure.TIMER_Prescaler = 0;  //
+    TIM_TimeBaseStructure.TIMER_Prescaler = 5;  //
     TIM_TimeBaseStructure.TIMER_CounterMode = TIMER_COUNTER_UP;
     TIM_TimeBaseStructure.TIMER_Period = PWMTOP;
     TIM_TimeBaseStructure.TIMER_ClockDivision = TIMER_CDIV_DIV1;
@@ -82,10 +82,7 @@ void pwm_init(void)
 // timer 1 ch3 , ch1 
 // pins A10 , A8	 
     GPIO_InitStructure.GPIO_Pin = GPIO_PIN_10|GPIO_PIN_8;
-    GPIO_InitStructure.GPIO_Mode = GPIO_MODE_AF;
-    GPIO_InitStructure.GPIO_Speed = GPIO_SPEED_50MHZ;
-    GPIO_InitStructure.GPIO_OType = GPIO_OTYPE_PP;
-    GPIO_InitStructure.GPIO_PuPd = GPIO_PUPD_PULLDOWN;
+  
     GPIO_Init(GPIOA,&GPIO_InitStructure);
 		
     GPIO_PinAFConfig(GPIOA,GPIO_PINSOURCE10,GPIO_AF_2);
@@ -94,17 +91,9 @@ void pwm_init(void)
     RCC_APB2PeriphClock_Enable(RCC_APB2PERIPH_TIMER1,ENABLE);
    
 // timer 1
-    TIM_TimeBaseStructure.TIMER_Prescaler = 0;  //
-    TIM_TimeBaseStructure.TIMER_CounterMode = TIMER_COUNTER_UP;
-    TIM_TimeBaseStructure.TIMER_Period = PWMTOP;
-    TIM_TimeBaseStructure.TIMER_ClockDivision = TIMER_CDIV_DIV1;
+ 
 // init timer 1
     TIMER_BaseInit(TIMER1,&TIM_TimeBaseStructure);
-
-    TIM_OCInitStructure.TIMER_OCMode = TIMER_OC_MODE_PWM1;
-    TIM_OCInitStructure.TIMER_OCPolarity = TIMER_OC_POLARITY_HIGH;
-    TIM_OCInitStructure.TIMER_OutputState = TIMER_OUTPUT_STATE_ENABLE;
-    TIM_OCInitStructure.TIMER_OCIdleState = TIMER_OC_IDLE_STATE_RESET;
 		
     TIM_OCInitStructure.TIMER_Pulse = 0;
 		
@@ -127,26 +116,15 @@ void pwm_init(void)
 
 	//pin A9 TM1_ch2
     GPIO_InitStructure.GPIO_Pin = GPIO_PIN_9;
-    GPIO_InitStructure.GPIO_Mode = GPIO_MODE_AF;
-    GPIO_InitStructure.GPIO_Speed = GPIO_SPEED_50MHZ;
-    GPIO_InitStructure.GPIO_OType = GPIO_OTYPE_PP;
-    GPIO_InitStructure.GPIO_PuPd = GPIO_PUPD_PULLDOWN;
+
     GPIO_Init(GPIOA,&GPIO_InitStructure);
 		
     GPIO_PinAFConfig(GPIOA,GPIO_PINSOURCE9,GPIO_AF_2);
 
 // timer 1
-    TIM_TimeBaseStructure.TIMER_Prescaler = 0;  //
-    TIM_TimeBaseStructure.TIMER_CounterMode = TIMER_COUNTER_UP;
-    TIM_TimeBaseStructure.TIMER_Period = PWMTOP;
-    TIM_TimeBaseStructure.TIMER_ClockDivision = TIMER_CDIV_DIV1;
+
 // init timer 1
     TIMER_BaseInit(TIMER1,&TIM_TimeBaseStructure);
-
-    TIM_OCInitStructure.TIMER_OCMode = TIMER_OC_MODE_PWM1;
-    TIM_OCInitStructure.TIMER_OCPolarity = TIMER_OC_POLARITY_HIGH;
-    TIM_OCInitStructure.TIMER_OutputState = TIMER_OUTPUT_STATE_ENABLE;
-    TIM_OCInitStructure.TIMER_OCIdleState = TIMER_OC_IDLE_STATE_RESET;
 		
     TIM_OCInitStructure.TIMER_Pulse = 0;
 		
@@ -164,10 +142,7 @@ void pwm_init(void)
 // timer 3 PB1 af1 ch4
 
     GPIO_InitStructure.GPIO_Pin = GPIO_PIN_1;
-    GPIO_InitStructure.GPIO_Mode = GPIO_MODE_AF;
-    GPIO_InitStructure.GPIO_Speed = GPIO_SPEED_50MHZ;
-    GPIO_InitStructure.GPIO_OType = GPIO_OTYPE_PP;
-    GPIO_InitStructure.GPIO_PuPd = GPIO_PUPD_PULLDOWN;
+ 
     GPIO_Init(GPIOB,&GPIO_InitStructure);
 		
     GPIO_PinAFConfig(GPIOB,GPIO_PINSOURCE1,GPIO_AF_1);
@@ -175,17 +150,9 @@ void pwm_init(void)
     RCC_APB1PeriphClock_Enable(RCC_APB1PERIPH_TIMER3,ENABLE);
 
 // timer 3
-    TIM_TimeBaseStructure.TIMER_Prescaler = 0;  //
-    TIM_TimeBaseStructure.TIMER_CounterMode = TIMER_COUNTER_UP;
-    TIM_TimeBaseStructure.TIMER_Period = PWMTOP;
-    TIM_TimeBaseStructure.TIMER_ClockDivision = TIMER_CDIV_DIV1;
+
 // init timer 3
     TIMER_BaseInit(TIMER3,&TIM_TimeBaseStructure);
-
-    TIM_OCInitStructure.TIMER_OCMode = TIMER_OC_MODE_PWM1;
-    TIM_OCInitStructure.TIMER_OCPolarity = TIMER_OC_POLARITY_HIGH;
-    TIM_OCInitStructure.TIMER_OutputState = TIMER_OUTPUT_STATE_ENABLE;
-    TIM_OCInitStructure.TIMER_OCIdleState = TIMER_OC_IDLE_STATE_RESET;
 		
     TIM_OCInitStructure.TIMER_Pulse = 0;
 		
@@ -202,27 +169,16 @@ void pwm_init(void)
 // Timer2 ch1
 
     GPIO_InitStructure.GPIO_Pin = GPIO_PIN_0;
-    GPIO_InitStructure.GPIO_Mode = GPIO_MODE_AF;
-    GPIO_InitStructure.GPIO_Speed = GPIO_SPEED_50MHZ;
-    GPIO_InitStructure.GPIO_OType = GPIO_OTYPE_PP;
-    GPIO_InitStructure.GPIO_PuPd = GPIO_PUPD_PULLDOWN;
+
     GPIO_Init(GPIOA,&GPIO_InitStructure);
 		
     GPIO_PinAFConfig(GPIOA,GPIO_PINSOURCE0,GPIO_AF_2);
 
 
 // timer 2
-    TIM_TimeBaseStructure.TIMER_Prescaler = 0;  //
-    TIM_TimeBaseStructure.TIMER_CounterMode = TIMER_COUNTER_UP;
-    TIM_TimeBaseStructure.TIMER_Period = PWMTOP;
-    TIM_TimeBaseStructure.TIMER_ClockDivision = TIMER_CDIV_DIV1;
+ 
 // init timer 2
     TIMER_BaseInit(TIMER2,&TIM_TimeBaseStructure);
-
-    TIM_OCInitStructure.TIMER_OCMode = TIMER_OC_MODE_PWM1;
-    TIM_OCInitStructure.TIMER_OCPolarity = TIMER_OC_POLARITY_HIGH;
-    TIM_OCInitStructure.TIMER_OutputState = TIMER_OUTPUT_STATE_ENABLE;
-    TIM_OCInitStructure.TIMER_OCIdleState = TIMER_OC_IDLE_STATE_RESET;
 		
     TIM_OCInitStructure.TIMER_Pulse = 0;
 		
@@ -238,10 +194,7 @@ void pwm_init(void)
 // PA2 tm2 ch3
 
     GPIO_InitStructure.GPIO_Pin = GPIO_PIN_2;
-    GPIO_InitStructure.GPIO_Mode = GPIO_MODE_AF;
-    GPIO_InitStructure.GPIO_Speed = GPIO_SPEED_50MHZ;
-    GPIO_InitStructure.GPIO_OType = GPIO_OTYPE_PP;
-    GPIO_InitStructure.GPIO_PuPd = GPIO_PUPD_PULLDOWN;
+  
     GPIO_Init(GPIOA,&GPIO_InitStructure);
 		
     GPIO_PinAFConfig(GPIOA,GPIO_PINSOURCE2,GPIO_AF_2);

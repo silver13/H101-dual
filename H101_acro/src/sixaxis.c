@@ -27,7 +27,7 @@ THE SOFTWARE.
 #include "binary.h"
 #include "sixaxis.h"
 #include "drv_time.h"
-#include "drv_softi2c.h"
+//#include "drv_softi2c.h"
 #include "util.h"
 #include "config.h"
 #include "led.h"
@@ -37,13 +37,9 @@ THE SOFTWARE.
 
 #include <math.h>
 
-#define UNK_INVENSENSE_ADDRESS 0x68
 
-
-#if (GYRO_LOW_PASS_FILTER<=6)
-#define UNK_INVENSENSE_DLPF_CFG GYRO_LOW_PASS_FILTER
-#else
-#define UNK_INVENSENSE_DLPF_CFG   6
+#ifdef DEBUG
+int gyroid;
 #endif
 
 
@@ -51,7 +47,6 @@ THE SOFTWARE.
 void sixaxis_init( void)
 {
 // gyro soft reset
-// softi2c_write(UNK_INVENSENSE_ADDRESS, 107, 128 );
 	
  i2c_writereg( 107 , 128);	
 	 
@@ -63,8 +58,8 @@ i2c_writereg( 107 , 0);
 // gyro scale 2000 deg (FS =3)
 i2c_writereg( 27 , 24);	
 	
-// Gyro and acc DLPF low pass filter
-i2c_writereg( 26 , UNK_INVENSENSE_DLPF_CFG);	
+// Gyro DLPF low pass filter
+i2c_writereg( 26 , GYRO_LOW_PASS_FILTER);	
 	
 }
 
@@ -73,9 +68,16 @@ int sixaxis_check( void)
 {
 	// read "who am I" register
 	int id = i2c_readreg( 117 );
-	// new board returns 78h (unknown gyro maybe mpu-6500 compatible) 
+	// new board returns 78h (unknown gyro maybe mpu-6500 compatible) marked m681
 	// old board returns 68h (mpu - 6050)
-	return (0x78==id||0x68==id );
+	// a new (rare) gyro marked m540 returns 7Dh
+	#ifdef DEBUG
+	gyroid = id;
+	#endif
+	#ifdef DISABLE_GYRO_CHECK
+	return 1;
+	#endif
+	return (0x78==id||0x68==id||0x7d==id );
 }
 
 
@@ -125,6 +127,9 @@ for ( int i = 0 ; i < 3; i++)
 
 
 int count = 0;
+void loadcal(void);
+
+#define CAL_TIME 2e6
 
 void gyro_cal(void)
 {
@@ -135,9 +140,16 @@ unsigned long timestart = time;
 unsigned long timemax = time;
 unsigned long lastlooptime;
 
+float gyro[3];	
+float limit[3];
+	
+ for ( int i = 0 ; i < 3 ; i++)
+			{
+			limit[i] = gyrocal[i];
+			}
 	
 // 2 and 15 seconds
-while ( time - timestart < 2e6  &&  time - timemax < 15e6 )
+while ( time - timestart < CAL_TIME  &&  time - timemax < 15e6 )
 	{	
 		
 		unsigned long looptime; 
@@ -145,13 +157,12 @@ while ( time - timestart < 2e6  &&  time - timemax < 15e6 )
 		lastlooptime = time;
 		if ( looptime == 0 ) looptime = 1;
 		
-		//softi2c_readdata( 0x68 , 67 , data, 6 );
-
  i2c_readdata( 67 , data, 6 );
 		
 		gyro[0] = (int16_t) ((data[2]<<8) + data[3]);
 		gyro[1] = (int16_t) ((data[0]<<8) + data[1]);
 		gyro[2] = (int16_t) ((data[4]<<8) + data[5]);	
+		
 		
 if ( (time - timestart)%200000 > 100000) 
 {
@@ -163,25 +174,34 @@ else
 	ledon(B00001010);
 	ledoff(B00000101);
 }
+		
 		 for ( int i = 0 ; i < 3 ; i++)
 			{
-				if ( fabs(gyro[i]) > 100 ) 
+
+					if ( gyro[i] > limit[i] )  limit[i] += 0.1f; // 100 gyro bias / second change
+					if ( gyro[i] < limit[i] )  limit[i] -= 0.1f;
+				
+					limitf( &limit[i] , 800);
+				
+					if ( fabs(gyro[i]) > 100+ fabs(limit[i]) ) 
 				{
-					count = 0;
 					timestart = gettime();
 				}
 				else
 				{
 					lpf( &gyrocal[i] , gyro[i], lpfcalc( (float) looptime , 0.5 * 1e6) );
-					count++;
+				
 				}
 				
 			}
 					
+while ( (gettime() - time) < 1000 ) delay(10); 				
 		time = gettime();
 	}
 
-if ( count < 100 )
+	
+
+if ( time - timestart < CAL_TIME )
 {
 	for ( int i = 0 ; i < 3; i++)
 	{
