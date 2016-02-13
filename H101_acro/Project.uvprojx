@@ -588,6 +588,11 @@
               <FilePath>.\src\pid.c</FilePath>
             </File>
             <File>
+              <FileName>filter.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>.\src\filter.cpp</FilePath>
+            </File>
+            <File>
               <FileName>config.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\src\config.h</FilePath>

@@ -65,6 +65,7 @@ int lastdir;
 
 int currentdir;
 
+float motorfilter( float motorin ,int number);
 
 void control( void)
 {
@@ -164,8 +165,14 @@ if ( throttle < 0   ) throttle = 0;
 			pwm_set( i , 0 );	
 		}	
 		onground = 1;
-		pwmsum = 0;
 		thrsum = 0;
+		#ifdef MOTOR_FILTER		
+		// reset the motor filter
+		for ( int i = 0 ; i <= 3 ; i++)
+					{		
+					motorfilter( 0 , i);
+					}	
+		#endif
 	}
 	else
 	{
@@ -188,12 +195,29 @@ if ( throttle < 0   ) throttle = 0;
 		}
 
 
+//		pidoutput[2] += motorchange;
+#ifdef INVERT_YAW_PID
+pidoutput[2] = -pidoutput[2];			
+#endif
 		
 		mix[MOTOR_FR] = throttle - pidoutput[ROLL] - pidoutput[PITCH] + pidoutput[YAW];		// FR
 		mix[MOTOR_FL] = throttle + pidoutput[ROLL] - pidoutput[PITCH] - pidoutput[YAW];		// FL	
 		mix[MOTOR_BR] = throttle - pidoutput[ROLL] + pidoutput[PITCH] - pidoutput[YAW];		// BR
 		mix[MOTOR_BL] = throttle + pidoutput[ROLL] + pidoutput[PITCH] + pidoutput[YAW];		// BL	
 			
+#ifdef INVERT_YAW_PID
+// we invert again cause it's used by the pid internally (for limit)
+pidoutput[2] = -pidoutput[2];			
+#endif
+			
+		
+		
+#ifdef MOTOR_FILTER		
+for ( int i = 0 ; i <= 3 ; i++)
+			{
+			mix[i] = motorfilter(  mix[i] , i);
+			}	
+#endif
 		
 		for ( int i = 0 ; i <= 3 ; i++)
 		{
@@ -315,6 +339,20 @@ void bridge_sequencer(int dir)
 
 
 
+
+float hann_lastsample[4];
+float hann_lastsample2[4];
+
+// hanning 3 sample filter
+float motorfilter( float motorin ,int number)
+{
+ 	float ans = motorin*0.25f + hann_lastsample[number] * 0.5f +   hann_lastsample2[number] * 0.25f ;
+	
+	hann_lastsample2[number] = hann_lastsample[number];
+	hann_lastsample[number] = motorin;
+	
+	return ans;
+}
 
 
 

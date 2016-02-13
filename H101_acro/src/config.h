@@ -65,6 +65,18 @@
 // 4 , 5, 6
 #define GYRO_LOW_PASS_FILTER 3
 
+// software gyro lpf ( iir )
+// set only one below
+//#define SOFT_LPF_1ST_023HZ
+//#define SOFT_LPF_1ST_043HZ
+//#define SOFT_LPF_1ST_100HZ
+//#define SOFT_LPF_2ND_043HZ
+#define SOFT_LPF_2ND_088HZ
+//#define SOFT_LPF_4TH_088HZ
+//#define SOFT_LPF_4TH_160HZ
+//#define SOFT_LPF_4TH_250HZ
+//#define SOFT_LPF_NONE
+
 
 
 // channel for headless mode switch
@@ -102,10 +114,9 @@
 
 
 
-
-
-
-
+// enable motor filter
+// hanning 3 sample fir filter
+#define MOTOR_FILTER
 
 
 
