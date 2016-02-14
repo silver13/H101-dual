@@ -38,11 +38,11 @@ Note, the acc calibration also saves gyro biases which are used in some cases. T
 
 
 ###15.02.16
-*added dual mode
-*fixed calibration bug introduced yesterday
+* added dual mode
+* fixed calibration bug introduced yesterday
 
 ###update 1: 6.12.15
-*added stock tx support
+* added stock tx support
 
 
 
