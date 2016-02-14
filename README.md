@@ -27,8 +27,8 @@ The firmware flash procedure is the same as the H8.
 Firmware thread featuring flashing info : [rcgroups.com](http://www.rcgroups.com/forums/showthread.php?t=2512604)
 
 
-#####Accelerometer calibration
-***level mode only***
+#####Accelerometer calibration ***level mode only***
+
 For accelerometer calibration move the pitch stick down 3 times within about 1- 2 seconds. Wait a couple of seconds after a failed attempt. Throttle has to be low, and roll centered. Flashing lights indicate the calibration process. This is saved so it has to be done only once.
 
 Note, the acc calibration also saves gyro biases which are used in some cases. The flash pattern is similar to the gyro calibration pattern.
