@@ -4,7 +4,10 @@
 
 Note, dual mode firmware has no inverted flight for now.
 
-This is an acro firmware for the Floureon H101 quadcopter.
+Select folder for the correct firmware:
+* H101_Acro: Acro only, inverted flight possible (manual on a switch)
+* H101_dual: either/both modes, non inverted ( upright only )
+
 
 For programming the ground pad is marked (B-) on the pcb(near the edge) .It is also close to some other components. Note there is also a (B+) pad,do not connect this. 
 
