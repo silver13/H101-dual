@@ -2,7 +2,7 @@
 
 *now with dual mode as well*
 
-Note, dual mode firmware has no inverted for now.
+Note, dual mode firmware has no inverted flight for now.
 
 This is an acro firmware for the Floureon H101 quadcopter.
 
