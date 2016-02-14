@@ -79,11 +79,11 @@
 //#define SOFT_LPF_1ST_043HZ
 //#define SOFT_LPF_1ST_100HZ
 //#define SOFT_LPF_2ND_043HZ
-//#define SOFT_LPF_2ND_088HZ
+#define SOFT_LPF_2ND_088HZ
 //#define SOFT_LPF_4TH_088HZ
 //#define SOFT_LPF_4TH_160HZ
 //#define SOFT_LPF_4TH_250HZ
-#define SOFT_LPF_NONE
+//#define SOFT_LPF_NONE
 
 // this works only on newer boards (non mpu-6050)
 // on older boards the hw gyro setting controls the acc as well
@@ -138,7 +138,7 @@
 
 
 // aux1 channel starts on if this is defined, otherwise off.
-//#define AUX1_START_ON
+#define AUX1_START_ON
 
 // use yaw/pitch instead of roll/pitch for gestures
 //#define GESTURES_USE_YAW
