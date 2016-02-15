@@ -2,11 +2,10 @@
 
 *now with dual mode as well*
 
-Note, dual mode firmware has no inverted flight for now.
 
 Select folder for the correct firmware:
 * H101_Acro: Acro only, inverted flight possible (manual on a switch)
-* H101_dual: either/both modes, non inverted ( upright only )
+* H101_dual: either/both modes, inverted flight possible (manual on a switch)
 
 
 For programming the ground pad is marked (B-) on the pcb(near the edge) .It is also close to some other components. Note there is also a (B+) pad,do not connect this. 
@@ -41,6 +40,8 @@ Note, the acc calibration also saves gyro biases which are used in some cases. T
 *Calibration has to be done on a horizontal surface*
 
 
+###15.02.16
+* added inverted flight
 
 ###15.02.16
 * added dual mode
