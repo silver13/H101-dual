@@ -136,6 +136,17 @@
 #define LEVELMODE CH_AUX1
 
 
+// channel for inverted mode
+// 0 - flip
+// 1 - expert
+// 2 - headfree
+// 3 - headingreturn
+// 4 - on always
+// 5 - off always
+// CH_ON , CH_OFF , CH_FLIP , CH_EXPERT
+// CH_HEADFREE , CH_RTH , CH_AUX1 , CH_AUX2 , CH_AUX3 , CH_AUX4
+#define INVERTEDMODE CH_OFF
+
 
 // aux1 channel starts on if this is defined, otherwise off.
 #define AUX1_START_ON

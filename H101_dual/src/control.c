@@ -106,8 +106,20 @@ void control(void)
 	float maxangle;
 	float anglerate;
 
-	bridge_sequencer(FORWARD);	// forward
 
+	if ( aux[INVERTEDMODE] ) 
+	{
+		bridge_sequencer(REVERSE);	// reverse
+	}
+	else
+	{
+		bridge_sequencer(FORWARD);	// forward
+	}
+
+	// pwmdir controls hardware directly so we make a copy here
+	currentdir = pwmdir;
+
+	
 	if (aux[RATES])
 	  {
 		  ratemulti = HIRATEMULTI;
@@ -130,6 +142,23 @@ void control(void)
 	  }
 
 
+if (currentdir == REVERSE)
+		{	
+			// invert pitch in reverse mode 
+		//rxtemp[ROLL] = - rx[ROLL];
+		rxcopy[PITCH] = - rx[PITCH];
+		rxcopy[YAW]	= - rx[YAW];	
+				
+		}
+		else
+		{
+			// normal thrust mode
+			//rxtemp[ROLL] = - rx[ROLL];
+			//rxtemp[PITCH] = - rx[PITCH];
+			//rxtemp[YAW]	= - rx[YAW];	 	
+			
+		}
+		
 	if (auxchange[HEADLESSMODE])
 	  {
 		  yawangle = 0;
@@ -183,11 +212,30 @@ void control(void)
 
 	pid_precalc();
 
+float attitudecopy[2];
+		
+if (currentdir == REVERSE)
+		{	
+		// account for 180 deg wrap since inverted attitude is near 180
+		if ( attitude[0] > 0) attitudecopy[0] = attitude[0] - 180;
+		else attitudecopy[0] = attitude[0] + 180;		
+			
+		if ( attitude[1] > 0) attitudecopy[1] = attitude[1] - 180;
+		else attitudecopy[1] = attitude[1] + 180;		
+		}
+		else
+		{
+			// normal thrust mode
+			attitudecopy[0] = attitude[0];
+			attitudecopy[1] = attitude[1];
+		}
+		
+
 	if (aux[LEVELMODE])
 	  {			// level mode
 
-		  angleerror[0] = rxcopy[0] * maxangle - attitude[0];
-		  angleerror[1] = rxcopy[1] * maxangle - attitude[1];
+		  angleerror[0] = rxcopy[0] * maxangle - attitudecopy[0];
+		  angleerror[1] = rxcopy[1] * maxangle - attitudecopy[1];
 
 		  error[0] = apid(0) * anglerate * DEGTORAD - gyro[0];
 		  error[1] = apid(1) * anglerate * DEGTORAD - gyro[1];
@@ -202,8 +250,9 @@ void control(void)
 
 		  // reduce angle Iterm towards zero
 		  extern float aierror[3];
-		  for (int i = 0; i <= 2; i++)
-			  aierror[i] *= 0.8f;
+			
+		  aierror[0] *= 0.8f;
+			aierror[1] *= 0.8f;
 
 
 	  }
@@ -289,6 +338,21 @@ void control(void)
 		  onground = 0;
 		  float mix[4];
 
+	if (currentdir == REVERSE)
+		{
+			// inverted flight
+			//pidoutput[ROLL] = -pidoutput[ROLL];
+			pidoutput[PITCH] = -pidoutput[PITCH];
+			//pidoutput[YAW] = -pidoutput[YAW];	
+		}
+		else
+		{
+			//pidoutput[ROLL] = -pidoutput[ROLL];
+			//pidoutput[PITCH] = -pidoutput[PITCH];
+			//pidoutput[YAW] = -pidoutput[YAW];	
+		}
+
+				
 #ifdef INVERT_YAW_PID
 		  pidoutput[2] = -pidoutput[2];
 #endif

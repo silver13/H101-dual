@@ -2,6 +2,7 @@ output/
 
 *.dep
 *.bak
+*.c~
 
 *.map
 
