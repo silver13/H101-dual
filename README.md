@@ -41,7 +41,7 @@ Note, the acc calibration also saves gyro biases which are used in some cases. T
 
 
 ###15.02.16
-* added inverted flight
+* added inverted flight to dual mode
 
 ###15.02.16
 * added dual mode
