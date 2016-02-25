@@ -337,6 +337,7 @@ if (currentdir == REVERSE)
 #endif
 		  onground = 0;
 		  float mix[4];
+  if ( stage == BRIDGE_WAIT ) onground = 1;
 
 	if (currentdir == REVERSE)
 		{
@@ -496,6 +497,24 @@ float motormap(float input)
 	input += -0.0258f;
 
 	return input;
+}
+#endif
+
+
+#ifdef MOTOR_CURVE_6MM_H101_490HZ
+float motormap( float input)
+{ 
+
+	// H101 thrust curve for normal thrust direction
+	// a*x^2 + b*x + c
+
+if (input > 1.0f) input = 1.0f;
+if (input < 0) input = 0;
+
+input = input*input*0.277f  + input*(0.715f);
+input += 0.0102f;
+
+return input;   
 }
 #endif
 

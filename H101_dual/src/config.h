@@ -220,7 +220,8 @@
 
 // motor curve to use
 // the pwm frequency has to be set independently
-#define MOTOR_CURVE_NONE
+//#define MOTOR_CURVE_NONE
+#define MOTOR_CURVE_6MM_H101_490HZ
 //#define MOTOR_CURVE_6MM_490HZ
 //#define MOTOR_CURVE_85MM_8KHZ
 //#define MOTOR_CURVE_85MM_32KHZ
@@ -228,8 +229,8 @@
 // pwm frequency for motor control
 // a higher frequency makes the motors more linear
 //#define PWM_490HZ
-//#define PWM_8KHZ
-#define PWM_16KHZ
+#define PWM_8KHZ
+//#define PWM_16KHZ
 //#define PWM_24KHZ
 //#define PWM_32KHZ
 
