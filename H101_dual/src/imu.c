@@ -28,6 +28,7 @@
 
 #include "util.h"
 #include "sixaxis.h"
+#include "config.h"
 
 #include <stdlib.h>
 
@@ -82,9 +83,8 @@
 
 void limit180(float *);
 
-void lpf(float *out, float in, float coeff);
 
-static float GEstG[3] = { 0, 0, ACC_1G };
+float GEstG[3] = { 0, 0, ACC_1G };
 
 float attitude[3];
 
@@ -92,7 +92,6 @@ extern float gyro[3];
 extern float accel[3];
 extern float accelcal[3];
 
-#define RADTODEG 57.29577951
 
 void imu_init(void)
 {
@@ -161,7 +160,7 @@ void imu_calc(void)
 		deltatime = 1;
 	if (deltatime > 20000)
 		deltatime = 20000;
-	deltatime = deltatime * 1e-6;	// uS to seconds
+	deltatime = deltatime * 1e-6f;	// uS to seconds
 
 
 
@@ -253,7 +252,7 @@ void imu_calc(void)
 
 	static unsigned int count = 0;
 
-	if ((accmag > ACC_MIN * ACC_1G) && (accmag < ACC_MAX * ACC_1G) && !DISABLE_ACC)
+	if ((accmag > (float) ACC_MIN * (float) ACC_1G) && (accmag < (float) ACC_MAX * (float) ACC_1G) && !DISABLE_ACC)
 	  {
 		  if (count >= 3 || 1)	//
 		    {
@@ -309,7 +308,7 @@ float atan2approx(float y, float x)
 {
 
 	if (x == 0)
-		x = 123e-15;
+		x = 123e-15f;
 	float phi = 0;
 	float dphi;
 	float t;
@@ -318,13 +317,15 @@ float atan2approx(float y, float x)
 
 	t = (y / x);
 	// atan function for 0 - 1 interval
-	dphi = M_PI / 4 * t - t * ((t) - 1) * (0.2447 + 0.0663 * (t));
+	//dphi = M_PI / 4 * t - t * ((t) - 1) * (0.2447f + 0.0663f * (t));
 
+//	dphi = t*(M_PI / 4  -  ((t) - 1) * (0.2447f + 0.0663f * (t)));
+	dphi = t*( ( M_PI/4 + 0.2447f ) + t *( ( -0.2447f + 0.0663f ) + t*( - 0.0663f)) );
 	phi *= M_PI / 4;
 	dphi = phi + dphi;
-	if (dphi > M_PI)
+	if (dphi > (float) M_PI)
 		dphi -= 2 * M_PI;
-	return 57.29577951 * dphi;
+	return RADTODEG * dphi;
 }
 
 void limit180(float *x)

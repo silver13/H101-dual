@@ -39,11 +39,11 @@ THE SOFTWARE.
 
 float rx[4];
 
-char aux[AUXNUMBER] = { 0, 0, 0, 0, 0, 0, 0, 0 };
-
+char aux[AUXNUMBER];
 char lastaux[AUXNUMBER];
 char auxchange[AUXNUMBER];
 int rxdata[15];
+char lasttrim[4];
 
 void rx_init()
 {
@@ -58,11 +58,12 @@ void rx_init()
 	spi_csoff();
 
 	delay(1000);
+	
 	// RF_CAL registers
 	spi_cson();
-	spi_sendbyte(0x3e);
+  spi_sendbyte(0x3e); 
 	spi_sendbyte(0xc9);
-	spi_sendbyte(0x9a);
+	spi_sendbyte(220);
 	spi_sendbyte(0x80);
 	spi_sendbyte(0x61);
 	spi_sendbyte(0xbb);
@@ -97,9 +98,9 @@ void rx_init()
 
 
 
-// always on channel set 1
+// always on (CH_ON) channel set 1 
 	aux[AUXNUMBER - 2] = 1;
-// always off channel set 0
+// always off (CH_OFF) channel set 0
 	aux[AUXNUMBER - 1] = 0;
 
 #ifdef AUX1_START_ON
@@ -140,6 +141,7 @@ float packettodata(int *data)
 
 static int decodepacket(void)
 {
+
 	if (rxdata[0] == 165)
 	  {
 		  int sum = 0;
@@ -162,21 +164,35 @@ static int decodepacket(void)
 #endif
 
 
-			    // trims are 50% of controls at max             
-			    // trims are not used because they interfere with dynamic trims feature of devo firmware
+			    // trims are 50% of controls at max
+			    // trims are not used as trims because they interfere
+			    // with dynamic trims feature of devo firmware
 
 //                      rx[0] = rx[0] + 0.03225 * 0.5 * (float)(((rxdata[4])>>2) - 31);
 //                      rx[1] = rx[1] + 0.03225 * 0.5 * (float)(((rxdata[6])>>2) - 31);
 //                      rx[2] = rx[2] + 0.03225 * 0.5 * (float)(((rxdata[10])>>2) - 31);
 
+			    // Instead they are used as binary aux channels
+#ifdef USE_STOCK_TX
+char trims[4];
+			    trims[0] = rxdata[6] >> 2;
+			    trims[1] = rxdata[4] >> 2;
+			   // trims[2] = rxdata[8] >> 2; // throttle and yaw trims are not used
+			   // trims[3] = rxdata[10] >> 2;
+			    for (int i = 0; i < 2; i++)
+				    if (trims[i] != lasttrim[i])
+				      {
+					      aux[CH_PIT_TRIM + i] = trims[i] > lasttrim[i];
+					      lasttrim[i] = trims[i];
+				      }
+#endif
+			    aux[CH_FLIP] = (rxdata[2] & 0x08) ? 1 : 0;
 
-			    aux[0] = (rxdata[2] & 0x08) ? 1 : 0;
+			    aux[CH_EXPERT] = (rxdata[1] == 0xfa) ? 1 : 0;
 
-			    aux[1] = (rxdata[1] == 0xfa) ? 1 : 0;
+			    aux[CH_HEADFREE] = (rxdata[2] & 0x02) ? 1 : 0;
 
-			    aux[2] = (rxdata[2] & 0x02) ? 1 : 0;
-
-			    aux[3] = (rxdata[2] & 0x01) ? 1 : 0;	// rth channel
+			    aux[CH_RTH] = (rxdata[2] & 0x01) ? 1 : 0;	// rth channel
 
 			    for (int i = 0; i < AUXNUMBER - 2; i++)
 			      {
@@ -195,8 +211,7 @@ static int decodepacket(void)
 
 
 char rfchannel[4];
-int rxaddress[5];
-int rxmode = 0;
+int rxmode = RX_MODE_BIND;
 int chan = 0;
 
 void nextchannel()
@@ -233,7 +248,7 @@ void checkrx(void)
 	int pass = 0;
 	if (packetreceived)
 	  {
-		  if (rxmode == 0)
+		  if (rxmode == RX_MODE_BIND)
 		    {		// rx startup , bind mode
 			    xn_readpayload(rxdata, 15);
 
@@ -243,15 +258,17 @@ void checkrx(void)
 				      rfchannel[1] = rxdata[7];
 				      rfchannel[2] = rxdata[8];
 				      rfchannel[3] = rxdata[9];
-
+							
+							int rxaddress[5];
 				      rxaddress[0] = rxdata[1];
 				      rxaddress[1] = rxdata[2];
 				      rxaddress[2] = rxdata[3];
 				      rxaddress[3] = rxdata[4];
 				      rxaddress[4] = rxdata[5];
-				      rxmode = 123;
+				      
 				      xn_writerxaddress(rxaddress);
 				      xn_writereg(0x25, rfchannel[chan]);	// Set channel frequency 
+							rxmode = RX_MODE_NORMAL;
 
 #ifdef SERIAL
 				      printf(" BIND \n");
@@ -295,7 +312,7 @@ void checkrx(void)
 	unsigned long time = gettime();
 
 	// sequence period 12000
-	if (time - lastrxtime > 13000 && rxmode != 0)
+	if (time - lastrxtime > 13000 && rxmode != RX_MODE_BIND)
 	  {			//  channel with no reception   
 		  lastrxtime = time;
 		  nextchannel();

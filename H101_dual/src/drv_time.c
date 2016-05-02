@@ -52,12 +52,13 @@ unsigned long time_update(void)
 	if (ticks < lastticks)
 		elapsedticks = lastticks - ticks;
 	else
-	  {			// overflow ( underflow really)
+	  {	// overflow ( underflow really)
 		  elapsedticks = lastticks + (maxticks - ticks);
 	  }
 
 	lastticks = ticks;
-	globalticks = globalticks + elapsedticks / 6;
+	// added +3 to center truncation losses around zero
+	globalticks = globalticks + 3 + elapsedticks / 6;
 	return globalticks;
 }
 
@@ -66,7 +67,6 @@ unsigned long time_update(void)
 unsigned long gettime()
 {
 	unsigned long time = time_update();
-//time = time/1;
 	return time;
 }
 

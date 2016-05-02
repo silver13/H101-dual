@@ -50,6 +50,10 @@
 #define LEVEL_MAX_RATE_LO 360.0f
 #define LEVEL_MAX_RATE_HI 360.0f
 
+// this make the controls mirrored in inverted mode
+//#define NATIVE_INVERTED_MODE
+
+
 
 
 // disable inbuilt expo functions
@@ -100,10 +104,15 @@
 // 3 - headingreturn
 // 4 - AUX1 ( gestures <<v and >>v)
 // 5 - AUX2+ (  none    )
-// 6 - on always
-// 7 - off always
+// 6 - Pitch trims
+// 7 - Roll trims
+// 8 - Throttle trims
+// 9 - Yaw trims
+// 10 - on always
+// 11 - off always
 // CH_ON , CH_OFF , CH_FLIP , CH_EXPERT
 // CH_HEADFREE , CH_RTH , CH_AUX1 , CH_AUX2 , CH_AUX3 , CH_AUX4
+// CH_PIT_TRIM, CH_RLL_TRIM, CH_THR_TRIM, CH_YAW_TRIM
 #define HEADLESSMODE CH_OFF
 
 
@@ -113,12 +122,17 @@
 // 2 - headfree
 // 3 - headingreturn
 // 4 - AUX1 ( gestures <<v and >>v)
-// 5 - AUX2+ (  none    )
-// 6 - on always
-// 7 - off always
+// 5 - AUX2 (  none    )
+// 6 - Pitch trims
+// 7 - Roll trims
+// 8 - Throttle trims
+// 9 - Yaw trims
+// 10 - on always
+// 11 - off always
 // CH_ON , CH_OFF , CH_FLIP , CH_EXPERT
 // CH_HEADFREE , CH_RTH , CH_AUX1 , CH_AUX2 , CH_AUX3 , CH_AUX4
-#define RATES 1
+// CH_PIT_TRIM, CH_RLL_TRIM
+#define RATES CH_EXPERT
 
 
 // level / acro mode switch
@@ -129,10 +143,15 @@
 // 3 - headingreturn
 // 4 - AUX1 ( gestures <<v and >>v)
 // 5 - AUX2+ (  none    )
-// 6 - on always
-// 7 - off always
+// 6 - Pitch trims
+// 7 - Roll trims
+// 8 - Throttle trims
+// 9 - Yaw trims
+// 10 - on always
+// 11 - off always
 // CH_ON , CH_OFF , CH_FLIP , CH_EXPERT
 // CH_HEADFREE , CH_RTH , CH_AUX1 , CH_AUX2 , CH_AUX3 , CH_AUX4
+// CH_PIT_TRIM, CH_RLL_TRIM
 #define LEVELMODE CH_AUX1
 
 
@@ -154,6 +173,9 @@
 // use yaw/pitch instead of roll/pitch for gestures
 //#define GESTURES_USE_YAW
 
+// comment out if not using ( disables trim as channels, will still work with stock tx except that feature )
+// remember if using trims as switches => devo/tx module incompatible
+//#define USE_STOCK_TX
 
 
 

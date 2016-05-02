@@ -80,12 +80,6 @@ int lastdir;
 
 int currentdir;
 
-/*
-// bump test vars
-int lastchange;
-int pulse;
-unsigned long timestart;
-*/
 
 extern float apid(int x);
 extern void imu_calc(void);
@@ -144,19 +138,12 @@ void control(void)
 
 if (currentdir == REVERSE)
 		{	
-			// invert pitch in reverse mode 
+		#ifndef NATIVE_INVERTED_MODE
+		// invert pitch in reverse mode 
 		//rxtemp[ROLL] = - rx[ROLL];
 		rxcopy[PITCH] = - rx[PITCH];
 		rxcopy[YAW]	= - rx[YAW];	
-				
-		}
-		else
-		{
-			// normal thrust mode
-			//rxtemp[ROLL] = - rx[ROLL];
-			//rxtemp[PITCH] = - rx[PITCH];
-			//rxtemp[YAW]	= - rx[YAW];	 	
-			
+		#endif		
 		}
 		
 	if (auxchange[HEADLESSMODE])
@@ -205,6 +192,10 @@ if (currentdir == REVERSE)
 			      {
 				      aux[CH_AUX1] = 0;
 			      }
+					if (command == 4)
+			      {
+				      aux[CH_AUX2] = !aux[CH_AUX2];
+			      }
 		    }
 	  }
 
@@ -251,8 +242,8 @@ if (currentdir == REVERSE)
 		  // reduce angle Iterm towards zero
 		  extern float aierror[3];
 			
-		  aierror[0] *= 0.8f;
-			aierror[1] *= 0.8f;
+		  aierror[0] = 0.0f;
+			aierror[1] = 0.0f;
 
 
 	  }
@@ -346,12 +337,7 @@ if (currentdir == REVERSE)
 			pidoutput[PITCH] = -pidoutput[PITCH];
 			//pidoutput[YAW] = -pidoutput[YAW];	
 		}
-		else
-		{
-			//pidoutput[ROLL] = -pidoutput[ROLL];
-			//pidoutput[PITCH] = -pidoutput[PITCH];
-			//pidoutput[YAW] = -pidoutput[YAW];	
-		}
+	
 
 				
 #ifdef INVERT_YAW_PID
@@ -368,7 +354,15 @@ if (currentdir == REVERSE)
 // we invert again cause it's used by the pid internally (for limit)
 		  pidoutput[2] = -pidoutput[2];
 #endif
-
+// we invert again cause it's used by the pid internally (for limit)
+		if (currentdir == REVERSE)
+		{
+			// inverted flight
+			//pidoutput[ROLL] = -pidoutput[ROLL];
+			pidoutput[PITCH] = -pidoutput[PITCH];
+			//pidoutput[YAW] = -pidoutput[YAW];		
+		}
+	
 
 #ifdef MIX_LOWER_THROTTLE
 
@@ -380,7 +374,7 @@ if (currentdir == REVERSE)
 
 		  float overthrottle = 0;
 
-		  for (int i = 0; i < 3; i++)
+		  for (int i = 0; i <= 3; i++)
 		    {
 			    if (mix[i] > overthrottle)
 				    overthrottle = mix[i];
@@ -423,7 +417,7 @@ if (currentdir == REVERSE)
 			    // reduce by a percentage only, so we get an inbetween performance
 			    overthrottle *= ((float)MIX_THROTTLE_REDUCTION_PERCENT / 100.0f);
 
-			    for (int i = 0; i < 3; i++)
+			    for (int i = 0; i <= 3; i++)
 			      {
 				      mix[i] -= overthrottle;
 			      }

@@ -8,21 +8,14 @@
 
 #define APIDNUMBER 3
 
-//                                                                              ANGLE PIDS      
+//                   						 ANGLE PIDS      
 // yaw is done by the rate yaw pid
-// Kp                                                                                                   ROLL     PITCH    YAW
+// Kp              	         ROLL     PITCH    YAW
 float apidkp[APIDNUMBER] = { 1.8e-2, 1.8e-2, 0e-1 };	//
 
-// angle feedforward
-float apidff[APIDNUMBER] = { 0.0e-2, 0.0e-2, 0e-1 };
-
-// Ki                                                                                                   ROLL     PITCH    YAW
-
+// Ki                        ROLL     PITCH    YAW
 float apidki[APIDNUMBER] = { 0.0e-2, 0.0e-2, 0e-1 };	//
 
-//                                                                                                      ROLL     PITCH    YAW
-// Kd ( don't use )
-float apidkd[APIDNUMBER] = { 0.0e-2, 0.0e-2, 0e-2 };	// 
 
 
 // limit of integral term (abs)
@@ -43,11 +36,6 @@ extern float attitude[3];
 
 float apid(int x)
 {
-#if ( APIDNUMBER > 3)
-	int index = x % 3;
-#else
-	int index = x;
-#endif
 
 	if (onground)
 	  {
@@ -56,32 +44,28 @@ float apid(int x)
 	// anti windup
 	// prevent integral increase if output is at max
 	int iwindup = 0;
-	if ((apidoutput[x] == OUTLIMIT_FLOAT) && (gyro[index] > 0))
+	if ((apidoutput[x] == OUTLIMIT_FLOAT) && (gyro[x] > 0))
 	  {
 		  iwindup = 1;
 	  }
-	if ((apidoutput[x] == -OUTLIMIT_FLOAT) && (gyro[index] < 0))
+	if ((apidoutput[x] == -OUTLIMIT_FLOAT) && (gyro[x] < 0))
 	  {
 		  iwindup = 1;
 	  }
 	if (!iwindup)
 	  {
-		  aierror[x] = aierror[x] + angleerror[index] * apidki[x] * looptime;
+		  aierror[x] = aierror[x] + angleerror[x] * apidki[x] * looptime;
 	  }
 
 	limitf(&aierror[x], ITERMLIMIT_FLOAT);
 
 	// P term
-	apidoutput[x] = angleerror[index] * apidkp[x];
-	// FF term
-	apidoutput[x] += attitude[index] * apidff[x];
+	apidoutput[x] = angleerror[x] * apidkp[x];
 
 	// I term       
 	apidoutput[x] += aierror[x];
 
-	// D term
-	apidoutput[x] = apidoutput[x] - (gyro[index]) * apidkd[x];
-
+		
 	limitf(&apidoutput[x], OUTLIMIT_FLOAT);
 
 

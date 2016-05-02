@@ -57,10 +57,6 @@ const float outlimit[PIDNUMBER] = { 0.8, 0.8, 0.4 };
 const float integrallimit[PIDNUMBER] = { 0.8, 0.8, 0.4 };
 
 
-// this Kp2 is used for a I-PD controller instead of the above  PI-D
-// set the top Kp to zero or use a mix of the 2
-// there is no need to use this
-float pidkp2[PIDNUMBER] = { 0.0e-2, 0.0e-2, 0e-2 };
 
 
 #ifdef NORMAL_DTERM
@@ -144,9 +140,6 @@ float pid(int x)
 
 	// P term
 	pidoutput[x] = error[x] * pidkp[x];
-
-	// P2 (direct feedback) term    
-	pidoutput[x] = pidoutput[x] - gyro[x] * pidkp2[x];
 
 	// I term       
 	pidoutput[x] += ierror[x];
