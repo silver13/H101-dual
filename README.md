@@ -39,6 +39,8 @@ Note, the acc calibration also saves gyro biases which are used in some cases. T
 
 *Calibration has to be done on a horizontal surface*
 
+###Wiki
+http://sirdomsen.diskstation.me/dokuwiki/doku.php?id=start
 
 ###15.02.16
 * added inverted flight to dual mode
