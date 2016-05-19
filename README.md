@@ -42,6 +42,10 @@ Note, the acc calibration also saves gyro biases which are used in some cases. T
 ###Wiki
 http://sirdomsen.diskstation.me/dokuwiki/doku.php?id=start
 
+###19.05.16
+* added 3d throttle option to dual mode
+* (older) added "native inverted mode" to dual mode code
+
 ###15.02.16
 * added inverted flight to dual mode
 
