@@ -80,6 +80,10 @@ int lastdir;
 
 int currentdir;
 
+// for 3d throttle
+#ifdef THREE_D_THROTTLE	
+int throttlesafe_3d = 0;
+#endif
 
 extern float apid(int x);
 extern void imu_calc(void);
@@ -100,7 +104,7 @@ void control(void)
 	float maxangle;
 	float anglerate;
 
-
+#ifndef THREE_D_THROTTLE
 	if ( aux[INVERTEDMODE] ) 
 	{
 		bridge_sequencer(REVERSE);	// reverse
@@ -109,7 +113,10 @@ void control(void)
 	{
 		bridge_sequencer(FORWARD);	// forward
 	}
+#else
 
+#endif
+	
 	// pwmdir controls hardware directly so we make a copy here
 	currentdir = pwmdir;
 
@@ -254,15 +261,46 @@ if (currentdir == REVERSE)
 	pid(0);
 	pid(1);
 	pid(2);
-
+		
+#ifndef THREE_D_THROTTLE	
 // map throttle so under 10% it is zero 
 	float throttle = mapf(rx[3], 0, 1, -0.1, 1);
 	if (throttle < 0)
 		throttle = 0;
 	if (throttle > 1.0f)
 		throttle = 1.0f;
+#endif	
+	
+#ifdef THREE_D_THROTTLE	
+	// map throttle so under 10% it is zero 
+	float throttle = mapf(rx[3], 0, 1, -1, 1);
 
+limitf(&throttle, 1.0);
+	
+	if ( throttle > 0 )
+	{
+		bridge_sequencer(FORWARD);	// forward
+	}else 
+	{
+		bridge_sequencer(REVERSE);	// reverse
+	}
+	
+	if ( !throttlesafe_3d )
+	{
+		if (throttle > 0) 
+		{
+			throttlesafe_3d = 1;
+			ledcommand = 1;
+		}
+		throttle = 0;
+	}
+	
+  throttle = fabsf(throttle);
 
+	throttle = mapf (throttle , THREE_D_THROTTLE_DEADZONE , 1, 0 , 1); 	
+	if ( failsafe ) throttle = 0; 
+#endif	// end 3d throttle remap
+	
 // turn motors off if throttle is off and pitch / roll sticks are centered
 	if (failsafe || (throttle < 0.001f && (!ENABLESTIX || (fabs(rx[0]) < 0.5f && fabs(rx[1]) < 0.5f))))
 

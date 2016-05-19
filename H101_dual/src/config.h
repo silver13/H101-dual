@@ -50,10 +50,15 @@
 #define LEVEL_MAX_RATE_LO 360.0f
 #define LEVEL_MAX_RATE_HI 360.0f
 
+
 // this make the controls mirrored in inverted mode
 //#define NATIVE_INVERTED_MODE
 
+// 3d throttle - center off
+//#define THREE_D_THROTTLE
 
+// deadzone in center of 3d throttle 0.0 - 1.0 
+#define THREE_D_THROTTLE_DEADZONE 0.2
 
 
 // disable inbuilt expo functions
