@@ -7,7 +7,7 @@
 
   <Targets>
     <Target>
-      <TargetName>H8mini</TargetName>
+      <TargetName>H101_dual</TargetName>
       <ToolsetNumber>0x4</ToolsetNumber>
       <ToolsetName>ARM-ADS</ToolsetName>
       <pCCUsed>5060183::V5.06 update 2 (build 183)::ARMCC</pCCUsed>

@@ -56,6 +56,7 @@ extern float looptime;
 extern float attitude[3];
 
 int onground = 1;
+int onground_long = 1;
 
 float thrsum;
 
@@ -272,7 +273,9 @@ if (currentdir == REVERSE)
 #endif	
 	
 #ifdef THREE_D_THROTTLE	
-	// map throttle so under 10% it is zero 
+	// this changes throttle so under center motor direction is reversed
+	
+	// map throttle with zero center
 	float throttle = mapf(rx[3], 0, 1, -1, 1);
 
 limitf(&throttle, 1.0);
@@ -302,11 +305,18 @@ limitf(&throttle, 1.0);
 #endif	// end 3d throttle remap
 	
 // turn motors off if throttle is off and pitch / roll sticks are centered
-	if (failsafe || (throttle < 0.001f && (!ENABLESTIX || (fabs(rx[0]) < 0.5f && fabs(rx[1]) < 0.5f))))
-
-	  {			// motors off
-
-		  onground = 1;
+	if (failsafe || (throttle < 0.001f && ( !ENABLESTIX || !onground_long || aux[LEVELMODE] || (fabsf(rx[0]) < (float) ENABLESTIX_TRESHOLD && fabsf(rx[1]) < (float) ENABLESTIX_TRESHOLD))))	  {			// motors off
+		
+		onground = 1;
+			
+		if ( onground_long )
+		{
+			if ( gettime() - onground_long > 1000000)
+			{
+				onground_long = 0;
+			}
+		}	
+			
 		  thrsum = 0;
 		  for (int i = 0; i <= 3; i++)
 		    {
@@ -329,11 +339,11 @@ limitf(&throttle, 1.0);
 		  // reset hpf filter;
 		  throttlehpf(0);
 #endif
-
+// end motors off / failsafe / onground
 	  }
 	else
 	  {
-
+// motors on - normal flight
 
 #ifdef 	THROTTLE_TRANSIENT_COMPENSATION
 		  throttle += 7.0f * throttlehpf(throttle);
@@ -344,7 +354,7 @@ limitf(&throttle, 1.0);
 #endif
 
 
-		  // throttle angle compensation
+// throttle angle compensation
 #ifdef AUTO_THROTTLE
 		  if (aux[LEVELMODE] || AUTO_THROTTLE_ACRO_MODE)
 		    {
@@ -365,6 +375,8 @@ limitf(&throttle, 1.0);
 		    }
 #endif
 		  onground = 0;
+			onground_long = gettime();
+				
 		  float mix[4];
   if ( stage == BRIDGE_WAIT ) onground = 1;
 

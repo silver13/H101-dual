@@ -286,14 +286,13 @@
 // enable motors if pitch / roll controls off center (at zero throttle)
 // possible values: 0 / 1
 #define ENABLESTIX 0
+#define ENABLESTIX_TRESHOLD 0.3
+
 
 // only for compilers other than gcc
 #ifndef __GNUC__
-
 #pragma diag_warning 1035 , 177 , 4017
-
 #pragma diag_error 260 
-
 #endif
 // --fpmode=fast ON
 
