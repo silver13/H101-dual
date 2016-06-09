@@ -71,6 +71,12 @@ float angleerror[3];
 
 float overthrottlefilt;
 
+#ifdef STOCK_TX_AUTOCENTER
+float autocenter[3];
+float lastrx[3];
+unsigned int consecutive[3];
+#endif
+
 extern int pwmdir;
 
 void bridge_sequencer(int dir);
@@ -159,14 +165,19 @@ if (currentdir == REVERSE)
 		  yawangle = 0;
 	  }
 
-	if ((aux[HEADLESSMODE]) && !aux[LEVELMODE])
+	if ((aux[HEADLESSMODE]) )
 	  {
+		yawangle = yawangle + gyro[2] * looptime;
+			
+		while (yawangle < -3.14159265f)
+    yawangle += 6.28318531f;
 
-		  yawangle = yawangle + gyro[2] * looptime;
-
-		  float temp = rxcopy[0];
-		  rxcopy[0] = rxcopy[0] * cosf(yawangle) - rxcopy[1] * sinf(yawangle);
-		  rxcopy[1] = rxcopy[1] * cosf(yawangle) + temp * sinf(yawangle);
+    while (yawangle >  3.14159265f)
+    yawangle -= 6.28318531f;
+		
+		float temp = rxcopy[0];
+		rxcopy[0] = rxcopy[0] * fastcos( yawangle) - rxcopy[1] * fastsin(yawangle );
+		rxcopy[1] = rxcopy[1] * fastcos( yawangle) + temp * fastsin(yawangle ) ;
 	  }
 	else
 	  {
@@ -316,7 +327,12 @@ limitf(&throttle, 1.0);
 				onground_long = 0;
 			}
 		}	
-			
+
+		#ifdef MOTOR_BEEPS
+		extern void motorbeep( void);
+		motorbeep();
+		#endif
+		
 		  thrsum = 0;
 		  for (int i = 0; i <= 3; i++)
 		    {
@@ -339,6 +355,23 @@ limitf(&throttle, 1.0);
 		  // reset hpf filter;
 		  throttlehpf(0);
 #endif
+
+#ifdef STOCK_TX_AUTOCENTER
+      for( int i = 0 ; i <3;i++)
+				{
+					if ( rx[i] == lastrx[i] )
+						{
+						  consecutive[i]++;
+							
+						}
+					else consecutive[i] = 0;
+					lastrx[i] = rx[i];
+					if ( consecutive[i] > 1000 && fabsf( rx[i]) < 0.1f )
+						{
+							autocenter[i] = rx[i];
+						}
+				}
+#endif				
 // end motors off / failsafe / onground
 	  }
 	else
@@ -356,7 +389,7 @@ limitf(&throttle, 1.0);
 
 // throttle angle compensation
 #ifdef AUTO_THROTTLE
-		  if (aux[LEVELMODE] || AUTO_THROTTLE_ACRO_MODE)
+		  if (aux[LEVELMODE])
 		    {
 
 			    float autothrottle = fastcos(attitude[0] * DEGTORAD) * fastcos(attitude[1] * DEGTORAD);
@@ -373,6 +406,11 @@ limitf(&throttle, 1.0);
 				    throttle = 1.0f;
 
 		    }
+#endif
+
+#ifdef LVC_PREVENT_RESET
+extern float vbatt;
+if (vbatt < (float) LVC_PREVENT_RESET_VOLTAGE) throttle = 0;
 #endif
 		  onground = 0;
 			onground_long = gettime();

@@ -120,3 +120,5 @@ float fastcos(float x)
 	x += 1.57079632;
 	return fastsin(x);
 }
+
+
