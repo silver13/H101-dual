@@ -99,20 +99,20 @@
 
 
 
-
 // Headless mode
-// 0 - flip 
-// 1 - expert
-// 2 - headfree
-// 3 - headingreturn
-// 4 - AUX1 ( gestures <<v and >>v)
-// 5 - AUX2+ (  none    )
-// 6 - Pitch trims
-// 7 - Roll trims
-// 8 - Throttle trims
-// 9 - Yaw trims
-// 10 - on always
-// 11 - off always
+// CH_FLIP - 0 - flip 
+// CH_EXPERT - 1 - expert
+// CH_HEADFREE - 2 - headfree
+// CH_RTH - 3 - headingreturn
+// CH_AUX1 - 4 - AUX1 ( gestures <<v and >>v)
+// CH_AUX2 - 5 - AUX2+ (  up - up - up    )
+// CH_PIT_TRIM - 6 - Pitch trims
+// CH_RLL_TRIM - 7 - Roll trims
+// CH_THR_TRIM - 8 - Throttle trims
+// CH_YAW_TRIM - 9 - Yaw trims
+// CH_ON - 10 - on always
+// CH_OFF - 11 - off always
+//
 // CH_ON , CH_OFF , CH_FLIP , CH_EXPERT
 // CH_HEADFREE , CH_RTH , CH_AUX1 , CH_AUX2 , CH_AUX3 , CH_AUX4
 // CH_PIT_TRIM, CH_RLL_TRIM, CH_THR_TRIM, CH_YAW_TRIM
