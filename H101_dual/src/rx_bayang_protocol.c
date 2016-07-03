@@ -185,7 +185,14 @@ char trims[4];
 					      aux[CH_PIT_TRIM + i] = trims[i] > lasttrim[i];
 					      lasttrim[i] = trims[i];
 				      }
+#else
+					aux[CH_INV] = (rxdata[1] & 0x80)?1:0; // inverted flag
+						
+					aux[CH_VID] = (rxdata[2] & 0x10) ? 1 : 0;
+												
+					aux[CH_HEADFREE] = (rxdata[2] & 0x20) ? 1 : 0;						
 #endif
+							
 			    aux[CH_FLIP] = (rxdata[2] & 0x08) ? 1 : 0;
 
 			    aux[CH_EXPERT] = (rxdata[1] == 0xfa) ? 1 : 0;
@@ -194,6 +201,8 @@ char trims[4];
 
 			    aux[CH_RTH] = (rxdata[2] & 0x01) ? 1 : 0;	// rth channel
 
+
+							
 			    for (int i = 0; i < AUXNUMBER - 2; i++)
 			      {
 				      auxchange[i] = 0;

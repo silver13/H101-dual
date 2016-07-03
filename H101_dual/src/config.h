@@ -99,7 +99,9 @@
 
 
 
-// Headless mode
+// Channel assignments
+//
+
 // CH_FLIP - 0 - flip 
 // CH_EXPERT - 1 - expert
 // CH_HEADFREE - 2 - headfree
@@ -116,8 +118,9 @@
 // CH_ON , CH_OFF , CH_FLIP , CH_EXPERT
 // CH_HEADFREE , CH_RTH , CH_AUX1 , CH_AUX2 , CH_AUX3 , CH_AUX4
 // CH_PIT_TRIM, CH_RLL_TRIM, CH_THR_TRIM, CH_YAW_TRIM
-#define HEADLESSMODE CH_OFF
 
+// devo can use DEVO_CHAN_5 - DEVO_CHAN_10
+#define HEADLESSMODE CH_OFF
 
 // rates / expert mode
 // same settings as above (default - CH_EXPERT)
@@ -142,7 +145,7 @@
 //#define GESTURES_USE_YAW
 
 // comment out if not using ( disables trim as channels, will still work with stock tx except that feature )
-// remember if using trims as switches => devo/tx module incompatible
+// devo/tx module incompatible
 //#define USE_STOCK_TX
 
 // automatically remove center bias ( needs throttle off for 1 second )
