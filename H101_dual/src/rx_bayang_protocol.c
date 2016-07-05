@@ -186,11 +186,11 @@ char trims[4];
 					      lasttrim[i] = trims[i];
 				      }
 #else
-					aux[CH_INV] = (rxdata[1] & 0x80)?1:0; // inverted flag
+					aux[CH_INV] = (rxdata[3] & 0x80)?1:0; // inverted flag
 						
 					aux[CH_VID] = (rxdata[2] & 0x10) ? 1 : 0;
 												
-					aux[CH_HEADFREE] = (rxdata[2] & 0x20) ? 1 : 0;						
+					aux[CH_PIC] = (rxdata[2] & 0x20) ? 1 : 0;						
 #endif
 							
 			    aux[CH_FLIP] = (rxdata[2] & 0x08) ? 1 : 0;

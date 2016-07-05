@@ -45,6 +45,7 @@
 #define MAX_ANGLE_LO 35.0f
 #define MAX_ANGLE_HI 55.0f
 
+
 // max rate for rate pid in level mode
 // this should usually not change unless faster / slower response is desired.
 #define LEVEL_MAX_RATE_LO 360.0f
@@ -222,10 +223,10 @@
 // pwm frequency for motor control
 // a higher frequency makes the motors more linear
 //#define PWM_490HZ
-#define PWM_8KHZ
+//#define PWM_8KHZ
 //#define PWM_16KHZ
 //#define PWM_24KHZ
-//#define PWM_32KHZ
+#define PWM_32KHZ
 
 // failsafe time in uS
 #define FAILSAFETIME 1000000  // one second
@@ -247,7 +248,13 @@
 
 
 // time to change motor direction (uS)
-#define BRIDGE_TIMEOUT 100000
+#ifdef THREE_D_THROTTLE
+// with 3d throttle a short timeout as it takes time to move the stick
+#define BRIDGE_TIMEOUT 3000
+#else
+//otherwise a 0.05s pause
+#define BRIDGE_TIMEOUT 50000
+#endif
 
 // enable motors if pitch / roll controls off center (at zero throttle)
 // possible values: 0 / 1
