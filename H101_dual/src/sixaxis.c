@@ -178,7 +178,7 @@ void gyro_cal(void)
 		  gyro[0] = (int16_t) ((data[2] << 8) + data[3]);
 		  gyro[2] = (int16_t) ((data[4] << 8) + data[5]);
 
-
+#ifdef OLD_LED_FLASH
 		  if ((time - timestart) % 200000 > 100000)
 		    {
 			    ledon(B00000101);
@@ -189,7 +189,28 @@ void gyro_cal(void)
 			    ledon(B00001010);
 			    ledoff(B00000101);
 		    }
+#else
+static int ledlevel = 0;
+static int loopcount = 0;
 
+loopcount++;
+if ( loopcount>>5 )
+{
+	loopcount = 0;
+	ledlevel = ledlevel + 1;
+	ledlevel &=15;
+}
+
+if ( ledlevel > (loopcount&0xF) ) 
+{
+	ledon( 255);
+}
+else 
+{
+	ledoff( 255);
+}
+#endif
+				
 		  for (int i = 0; i < 3; i++)
 		    {
 
@@ -203,6 +224,9 @@ void gyro_cal(void)
 			    if (fabsf(gyro[i]) > 100 + fabsf(limit[i]))
 			      {
 				      timestart = gettime();
+							#ifndef OLD_LED_FLASH
+							ledlevel = 1;
+							#endif
 			      }
 			    else
 			      {

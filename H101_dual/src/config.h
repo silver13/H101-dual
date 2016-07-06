@@ -261,6 +261,9 @@
 #define ENABLESTIX 0
 #define ENABLESTIX_TRESHOLD 0.3
 
+// old calibration flash
+//#define OLD_LED_FLASH
+
 
 // only for compilers other than gcc
 #ifndef __GNUC__
