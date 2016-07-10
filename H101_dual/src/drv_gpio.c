@@ -1,5 +1,6 @@
 #include "gd32f1x0.h"
 #include "drv_gpio.h"
+#include "config.h"
 
 void gpio_init(void)
 {
@@ -27,7 +28,29 @@ void gpio_init(void)
 
 	GPIO_WriteBit(GPIOA, GPIO_PIN_4, Bit_RESET);	// bridge dir 2???
 
-
-
-
 }
+
+#ifdef BUZZER_PIN
+
+// init buzzer separately because it may use SWDAT don't want to enable it right away
+void gpio_init_buzzer(void)
+{
+	// only repurpose the pin after rx/tx have bound and 20s has elapsed
+	extern int rxmode;
+	if (RX_MODE_NORMAL == rxmode)
+	{
+		// set gpio pin as output
+		GPIO_InitPara GPIO_InitStructure;
+
+		// common settings to set ports
+		GPIO_InitStructure.GPIO_Pin = BUZZER_PIN;
+		GPIO_InitStructure.GPIO_Mode = GPIO_MODE_OUT;
+		GPIO_InitStructure.GPIO_Speed = GPIO_SPEED_50MHZ;
+		GPIO_InitStructure.GPIO_OType = GPIO_OTYPE_PP;
+		GPIO_InitStructure.GPIO_PuPd = GPIO_PUPD_NOPULL;
+
+		GPIO_Init(BUZZER_PIN_PORT,&GPIO_InitStructure);
+	}
+}
+#endif
+

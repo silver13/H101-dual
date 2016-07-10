@@ -254,6 +254,21 @@ vbatt = battadc;
 
 		  if (rxmode != RX_MODE_BIND)
 		    {		// non bind                    
+#ifdef BUZZER_PIN
+				static int buzzer_init = 0;
+				// wait 10 seconds before configuring the gpio buzzer pin
+				// to ensure there is time to program the chip (if using SWDAT or SWCLK)
+				if (!buzzer_init && maintime > 10000000) 
+				{
+					gpio_init_buzzer();
+					buzzer_init = 1;
+				}
+				else
+				{
+					buzzer();
+				}
+#endif
+
 			    if (failsafe)
 			      {
 				      if (lowbatt)
