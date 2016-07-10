@@ -31,13 +31,13 @@ THE SOFTWARE.
 
 #include "gd32f1x0.h"
 
+#include "config.h"
 #include "led.h"
 #include "util.h"
 #include "sixaxis.h"
 #include "drv_adc.h"
 #include "drv_time.h"
 #include "drv_softi2c.h"
-#include "config.h"
 #include "drv_pwm.h"
 #include "drv_adc.h"
 #include "drv_gpio.h"
