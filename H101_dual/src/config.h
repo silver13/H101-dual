@@ -214,8 +214,8 @@
 
 // motor curve to use
 // the pwm frequency has to be set independently
-//#define MOTOR_CURVE_NONE
-#define MOTOR_CURVE_6MM_H101_490HZ
+#define MOTOR_CURVE_NONE
+//#define MOTOR_CURVE_6MM_H101_490HZ
 //#define MOTOR_CURVE_6MM_490HZ
 //#define MOTOR_CURVE_85MM_8KHZ
 //#define MOTOR_CURVE_85MM_32KHZ
