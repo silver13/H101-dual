@@ -559,6 +559,13 @@ if (vbatt < (float) LVC_PREVENT_RESET_VOLTAGE) throttle = 0;
 
 }
 
+/////////////////////////////
+/////////////////////////////
+
+
+
+
+
 #ifdef MOTOR_CURVE_6MM_490HZ
 // the old map for 490Hz
 float motormap(float input)

@@ -247,8 +247,21 @@ int channelcount[4];
 int failcount;
 int packetrx;
 int packetpersecond;
-#warning "RX debug enabled"
+
+
+int skipstats[12];
+int afterskip[12];
+//#warning "RX debug enabled"
 #endif
+
+unsigned int skipchannel = 0;
+int lastrxchan;
+int timingfail = 0;
+float packettimefilt = 3000;
+
+
+
+#define FILTERCALC( sampleperiod, filtertime) (1.0f - ((float)sampleperiod) / ((float)filtertime))
 
 
 void checkrx(void)
@@ -289,12 +302,18 @@ void checkrx(void)
 #ifdef RXDEBUG
 			    channelcount[chan]++;
 			    packettime = gettime() - lastrxtime;
+					
+					//if ( packettime > 1500&& packettime < 4500 && !timingfail ) lpf( &packettimefilt , packettime , FILTERCALC( 1 , 1000));
+					//limitf(&packettimefilt , 4500);
+					if ( skipchannel&& !timingfail ) afterskip[skipchannel]++;
+					if ( timingfail ) afterskip[0]++;
+
 #endif
-
-			    //chan++;
-			    //if (chan > 3 ) chan = 0;
+					timingfail = 0;
+					skipchannel = 0;
+	
 			    nextchannel();
-
+					lastrxchan = chan;
 			    lastrxtime = gettime();
 			    xn_readpayload(rxdata, 15);
 			    pass = decodepacket();
@@ -320,14 +339,37 @@ void checkrx(void)
 
 	unsigned long time = gettime();
 
+
+		if ( skipchannel <5 && rxmode != RX_MODE_BIND)
+		{
+			unsigned int temp = time - lastrxtime ;
+
+			if (!timingfail&& temp > 500 && ( temp - 250 )/(int)packettimefilt >= (skipchannel + 1) ) 
+			{
+				nextchannel();
+#ifdef RXDEBUG				
+				skipstats[skipchannel]++;
+#endif				
+				skipchannel++;
+			}
+			
+		}
 	// sequence period 12000
 	if (time - lastrxtime > 13000 && rxmode != RX_MODE_BIND)
-	  {			//  channel with no reception   
+	  {			
+			//  channel with no reception   
 		  lastrxtime = time;
+			// set channel to last with reception
+			chan = lastrxchan;
+			// advance to next channel
 		  nextchannel();
+			// set flag to discard packet timing
+			timingfail = 1;
+
 	  }
+	
 	if (time - failsafetime > FAILSAFETIME)
-	  {			//  failsafe
+	  {	//  failsafe
 		  failsafe = 1;
 		  rx[0] = 0;
 		  rx[1] = 0;

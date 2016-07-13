@@ -187,12 +187,13 @@
 // increase if battery low comes on at max throttle
 // decrease if battery low warning goes away at high throttle
 // in volts
-#define VDROP_FACTOR 0.60f
+#define VDROP_FACTOR 0.70f
 
 // voltage hysteresys
 // in volts
 #define HYST 0.10f
 
+// lower throttle to keep voltage above set treshold
 //#define LVC_PREVENT_RESET
 #define LVC_PREVENT_RESET_VOLTAGE 2.85
 
@@ -237,7 +238,7 @@
 // things that are experimental / old / etc
 // do not change things below
 
-// invert yaw pid for hubsan motors
+// invert yaw pid
 //#define INVERT_YAW_PID
 
 //some debug stuff
@@ -265,6 +266,11 @@
 //#define OLD_LED_FLASH
 
 
+
+
+
+
+// do not change
 // only for compilers other than gcc
 #ifndef __GNUC__
 #pragma diag_warning 1035 , 177 , 4017
