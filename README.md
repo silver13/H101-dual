@@ -42,6 +42,11 @@ Note, the acc calibration also saves gyro biases which are used in some cases. T
 ###Wiki
 http://sirdomsen.diskstation.me/dokuwiki/doku.php?id=start
 
+###14.07.16
+* some rx changes (hopping code)
+* motor curve default changed
+* pids changed to version by SirDomsen
+
 ###19.05.16
 * added 3d throttle option to dual mode
 * (older) added "native inverted mode" to dual mode code
