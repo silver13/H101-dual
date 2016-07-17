@@ -226,8 +226,9 @@ int chan = 0;
 void nextchannel()
 {
 	chan++;
-	if (chan > 3)
-		chan = 0;
+//	if (chan > 3)
+//		chan = 0;
+	chan%=4;
 	xn_writereg(0x25, rfchannel[chan]);
 }
 
@@ -309,12 +310,11 @@ void checkrx(void)
 					if ( timingfail ) afterskip[0]++;
 
 #endif
-					timingfail = 0;
-					skipchannel = 0;
+
+unsigned long temptime = gettime();
 	
 			    nextchannel();
-					lastrxchan = chan;
-			    lastrxtime = gettime();
+
 			    xn_readpayload(rxdata, 15);
 			    pass = decodepacket();
 
@@ -323,7 +323,11 @@ void checkrx(void)
 #ifdef RXDEBUG
 				      packetrx++;
 #endif
-				      failsafetime = lastrxtime;
+							skipchannel = 0;
+							timingfail = 0;
+							lastrxchan = chan;
+							lastrxtime = temptime;
+				      failsafetime = temptime;
 				      failsafe = 0;
 			      }
 			    else
@@ -360,7 +364,7 @@ void checkrx(void)
 			//  channel with no reception   
 		  lastrxtime = time;
 			// set channel to last with reception
-			chan = lastrxchan;
+			if (!timingfail) chan = lastrxchan;
 			// advance to next channel
 		  nextchannel();
 			// set flag to discard packet timing
