@@ -27,6 +27,7 @@ CFLAGS = $(MCFLAGS)  $(OPTIMIZE)  $(DEFS) -I. -I./ $(INCLUDES) -Wl,-T,flash.ld,-
 AFLAGS = $(MCFLAGS)
 
 SRC = 	$(wildcard $(topdir)/H101_dual/src/*.c) \
+	$(wildcard $(topdir)/H101_dual/src/config.h) \
 	$(wildcard $(topdir)/H101_dual/src/*.cpp) \
 	$(topdir)/CMSIS/system_gd32f1x0.c \
 	core_cm3.c \

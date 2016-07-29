@@ -75,6 +75,7 @@ unsigned long ledcommandtime = 0;
 
 int lowbatt = 0;
 float vbatt = 4.2;
+float vbattfilt = 4.2;
 
 #ifdef DEBUG
 unsigned long elapsedtime;
@@ -148,7 +149,7 @@ int main(void)
 	rx_init();
 
 	int count = 0;
-	float vbattfilt = 0.0;
+	vbattfilt = 0.0;
 
 	while (count < 64)
 	  {

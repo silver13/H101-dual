@@ -187,12 +187,13 @@
 // increase if battery low comes on at max throttle
 // decrease if battery low warning goes away at high throttle
 // in volts
-#define VDROP_FACTOR 0.60f
+#define VDROP_FACTOR 0.70f
 
 // voltage hysteresys
 // in volts
 #define HYST 0.10f
 
+// lower throttle to keep voltage above set treshold
 //#define LVC_PREVENT_RESET
 #define LVC_PREVENT_RESET_VOLTAGE 2.85
 
@@ -214,8 +215,8 @@
 
 // motor curve to use
 // the pwm frequency has to be set independently
-//#define MOTOR_CURVE_NONE
-#define MOTOR_CURVE_6MM_H101_490HZ
+#define MOTOR_CURVE_NONE
+//#define MOTOR_CURVE_6MM_H101_490HZ
 //#define MOTOR_CURVE_6MM_490HZ
 //#define MOTOR_CURVE_85MM_8KHZ
 //#define MOTOR_CURVE_85MM_32KHZ
@@ -241,7 +242,7 @@
 // things that are experimental / old / etc
 // do not change things below
 
-// invert yaw pid for hubsan motors
+// invert yaw pid
 //#define INVERT_YAW_PID
 
 //some debug stuff
@@ -249,6 +250,9 @@
 
 // disable motors for testing
 //#define NOMOTORS
+
+// throttle direct to motors for thrust measure/ esc testing
+//#define MOTORS_TO_THROTTLE
 
 
 // time to change motor direction (uS)
@@ -269,6 +273,17 @@
 //#define OLD_LED_FLASH
 
 
+// limit minimum motor output to a value (0.0 - 1.0)
+//#define MOTOR_MIN_ENABLE
+#define MOTOR_MIN_VALUE 0.05
+
+// limit max motor output to a value (0.0 - 1.0)
+//#define MOTOR_MAX_ENABLE
+#define MOTOR_MAX_VALUE 1.00
+
+
+
+// do not change
 // only for compilers other than gcc
 #ifndef __GNUC__
 #pragma diag_warning 1035 , 177 , 4017
