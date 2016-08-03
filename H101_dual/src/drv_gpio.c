@@ -33,11 +33,12 @@ void gpio_init(void)
 #ifdef BUZZER_PIN
 
 // init buzzer separately because it may use SWDAT don't want to enable it right away
-void gpio_init_buzzer(void)
+int gpio_init_buzzer(void)
 {
-	// only repurpose the pin after rx/tx have bound and 20s has elapsed
+	// only repurpose the pin after rx/tx have bound or 10s has elapsed
 	extern int rxmode;
-	if (RX_MODE_NORMAL == rxmode)
+	extern unsigned long maintime;
+	if (RX_MODE_NORMAL == rxmode || maintime > 10000000)
 	{
 		// set gpio pin as output
 		GPIO_InitPara GPIO_InitStructure;
@@ -50,7 +51,9 @@ void gpio_init_buzzer(void)
 		GPIO_InitStructure.GPIO_PuPd = GPIO_PUPD_NOPULL;
 
 		GPIO_Init(BUZZER_PIN_PORT,&GPIO_InitStructure);
+		return 1;
 	}
+	return 0;
 }
 #endif
 

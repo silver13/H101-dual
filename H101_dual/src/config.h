@@ -237,6 +237,10 @@
 #define BUZZER_PIN_PORT  GPIOA
 #define BUZZER_DELAY     5000000 // 5 seconds after loss of tx or low bat before buzzer starts
 
+#ifdef BUZZER_PIN
+#undef STOP_LOWBATTERY // don't stop software on low battery (so buzzer will still sound) 
+#endif
+
 
 // ########################################
 // things that are experimental / old / etc
