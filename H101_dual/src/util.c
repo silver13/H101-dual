@@ -37,7 +37,7 @@ float lpfcalc(float sampleperiod, float filtertime)
 		return 0;
 	if (filtertime <= 0)
 		return 1;
-	float ga = expf(-1.0f / ((1.0 / sampleperiod) * (filtertime)));
+	float ga = expf(-1.0f / ((1.0f / sampleperiod) * (filtertime)));
 	if (ga > 1)
 		ga = 1;
 	return ga;
@@ -99,18 +99,18 @@ void TE(void)
 float fastsin(float x)
 {
 	//always wrap input angle to -PI..PI
-	while (x < -3.14159265)
-		x += 6.28318531;
+	while (x < -3.14159265f)
+		x += 6.28318531f;
 
-	while (x > 3.14159265)
-		x -= 6.28318531;
+	while (x > 3.14159265f)
+		x -= 6.28318531f;
 	float sin1;
 
 //compute sine
 	if (x < 0)
-		sin1 = (1.27323954 + .405284735 * x) * x;
+		sin1 = (1.27323954f + .405284735f * x) * x;
 	else
-		sin1 = (1.27323954 - .405284735 * x) * x;
+		sin1 = (1.27323954f - .405284735f * x) * x;
 
 
 	return sin1;
@@ -120,12 +120,12 @@ float fastsin(float x)
 
 float fastcos(float x)
 {
-	x += 1.57079632;
+	x += 1.57079632f;
 	return fastsin(x);
 }
 
 
-#ifdef BUZZER_PIN
+#ifdef BUZZER_ENABLE
 
 
 // output polarity

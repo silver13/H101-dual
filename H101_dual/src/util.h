@@ -15,7 +15,7 @@ void TE( void);
 float fastsin( float x );
 float fastcos( float x );
 
-#ifdef BUZZER_PIN
+#ifdef ENABLE_BUZZER
 void buzzer( void );
 #endif
 

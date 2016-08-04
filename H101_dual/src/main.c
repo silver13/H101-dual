@@ -289,7 +289,7 @@ vbatt = battadc;
 			    ledflash(100000 + 500000 * (lowbatt), 12);
 		    }
 
-#ifdef BUZZER_PIN
+#ifdef BUZZER_ENABLE
 			static int buzzer_init = 0;
 			// wait 10 seconds (or 30 seconds if quad doesn't bind)
 			// before configuring the gpio buzzer pin to ensure

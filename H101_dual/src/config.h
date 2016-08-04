@@ -229,17 +229,17 @@
 //#define PWM_24KHZ
 #define PWM_32KHZ
 
+
 // failsafe time in uS
 #define FAILSAFETIME 1000000  // one second
 
+
 // uncomment to enable buzzer
+//#define BUZZER_ENABLE
+
 #define BUZZER_PIN       GPIO_PIN_14 // SWCLK
 #define BUZZER_PIN_PORT  GPIOA
 #define BUZZER_DELAY     5000000 // 5 seconds after loss of tx or low bat before buzzer starts
-
-#ifdef BUZZER_PIN
-#undef STOP_LOWBATTERY // don't stop software on low battery (so buzzer will still sound) 
-#endif
 
 
 // ########################################
@@ -285,6 +285,11 @@
 //#define MOTOR_MAX_ENABLE
 #define MOTOR_MAX_VALUE 1.00
 
+
+
+#ifdef ENABLE_BUZZER
+#undef STOP_LOWBATTERY // don't stop software on low battery (so buzzer will still sound) 
+#endif
 
 
 // do not change

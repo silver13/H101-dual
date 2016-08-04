@@ -30,7 +30,7 @@ void gpio_init(void)
 
 }
 
-#ifdef BUZZER_PIN
+#ifdef BUZZER_ENABLE
 
 // init buzzer separately because it may use SWDAT don't want to enable it right away
 int gpio_init_buzzer(void)
