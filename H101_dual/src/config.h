@@ -287,7 +287,7 @@
 
 
 
-#ifdef ENABLE_BUZZER
+#ifdef BUZZER_ENABLE
 #undef STOP_LOWBATTERY // don't stop software on low battery (so buzzer will still sound) 
 #endif
 
