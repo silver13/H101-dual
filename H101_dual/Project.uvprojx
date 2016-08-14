@@ -133,7 +133,7 @@
             <RunIndependent>0</RunIndependent>
             <UpdateFlashBeforeDebugging>1</UpdateFlashBeforeDebugging>
             <Capability>1</Capability>
-            <DriverSelection>4103</DriverSelection>
+            <DriverSelection>4100</DriverSelection>
           </Flash1>
           <bUseTDR>1</bUseTDR>
           <Flash2>STLink\ST-LINKIII-KEIL_SWO.dll</Flash2>
@@ -556,6 +556,11 @@
               <FileName>gestures.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\src\gestures.c</FilePath>
+            </File>
+            <File>
+              <FileName>flip_sequencer.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\src\flip_sequencer.c</FilePath>
             </File>
             <File>
               <FileName>flash.c</FileName>

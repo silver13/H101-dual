@@ -33,7 +33,6 @@ static __INLINE uint32_t SysTick_Config2(uint32_t ticks)
 void time_init()
 {
 
-	// if (SysTick_Config(SystemCoreClock / (9) )) //1sec interrupts
 	if (SysTick_Config2(48000000 / 8))
 	  {			// not able to set divider
 		  failloop(5);

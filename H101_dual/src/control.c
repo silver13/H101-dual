@@ -32,43 +32,42 @@ THE SOFTWARE.
 #include "control.h"
 #include "defines.h"
 #include "drv_time.h"
-
 #include "sixaxis.h"
-
 #include "gestures.h"
+#include "flip_sequencer.h"
+
+
+extern float lpffilter(float in, int num);
+extern float throttlehpf(float in);
+extern float apid(int x);
+extern void imu_calc(void);
+extern void savecal(void);
+extern int gestures(void);
+extern void pid_precalc(void);
 
 
 extern int ledcommand;
-
 extern float rx[4];
 extern float gyro[3];
 extern int failsafe;
-extern float pidoutput[3];
-
-extern float lpffilter(float in, int num);
-
-extern float throttlehpf(float in);
-
+extern float pidoutput[PIDNUMBER];
 extern char auxchange[AUXNUMBER];
 extern char aux[AUXNUMBER];
-
-extern float looptime;
 extern float attitude[3];
+extern float looptime;
+extern float angleerror[3];
+extern float error[PIDNUMBER];
 
 int onground = 1;
 int onground_long = 1;
 
 float thrsum;
-
 float rxcopy[4];
 
-float error[PIDNUMBER];
 float motormap(float input);
 int lastchange;
 
 float yawangle;
-float angleerror[3];
-
 float overthrottlefilt;
 
 #ifdef STOCK_TX_AUTOCENTER
@@ -96,11 +95,15 @@ extern float apid(int x);
 extern void imu_calc(void);
 extern void savecal(void);
 
-void motorcontrol(void);
-int gestures(void);
-void pid_precalc(void);
-float motorfilter(float motorin, int number);
+//void motorcontrol(void);
+//int gestures(void);
+//void pid_precalc(void);
+//float motorfilter(float motorin, int number);
 
+extern int controls_override;
+extern float rx_override[];
+extern int acro_override;
+extern int level_override;
 
 void control(void)
 {
@@ -146,9 +149,23 @@ void control(void)
 
 	for (int i = 0; i < 3; i++)
 	  {
-		  rxcopy[i] = rx[i];
+		#ifdef STOCK_TX_AUTOCENTER
+		rxcopy[i] = rx[i] - autocenter[i];
+		#else
+		rxcopy[i] = rx[i];
+		#endif
 	  }
 
+		
+  flip_sequencer();
+	
+
+
+	if ( (!aux[STARTFLIP])&&auxchange[STARTFLIP] )
+	{
+		start_flip();
+		auxchange[STARTFLIP]= 0;		
+	}	
 
 if (currentdir == REVERSE)
 		{	
@@ -218,6 +235,17 @@ if (currentdir == REVERSE)
 		    }
 	  }
 
+	if ( controls_override)
+	{
+		for ( int i = 0 ; i < 3 ; i++)
+		{
+			rxcopy[i] = rx_override[i];
+		}
+		 ratemulti = 1.0f;
+		 maxangle = MAX_ANGLE_HI;
+		 anglerate = LEVEL_MAX_RATE_HI;
+	}
+		
 	imu_calc();
 
 	pid_precalc();
@@ -241,7 +269,7 @@ if (currentdir == REVERSE)
 		}
 		
 
-	if (aux[LEVELMODE])
+	if ((aux[LEVELMODE]||level_override)&&!acro_override)
 	  {			// level mode
 
 		  angleerror[0] = rxcopy[0] * maxangle - attitudecopy[0];
@@ -316,7 +344,8 @@ limitf(&throttle, 1.0);
 #endif	// end 3d throttle remap
 	
 // turn motors off if throttle is off and pitch / roll sticks are centered
-	if (failsafe || (throttle < 0.001f && ( !ENABLESTIX || !onground_long || aux[LEVELMODE] || (fabsf(rx[0]) < (float) ENABLESTIX_TRESHOLD && fabsf(rx[1]) < (float) ENABLESTIX_TRESHOLD))))	  {			// motors off
+	if (failsafe || (throttle < 0.001f && ( !ENABLESTIX || !onground_long || aux[LEVELMODE] || level_override || (fabsf(rx[0]) < (float) ENABLESTIX_TRESHOLD && fabsf(rx[1]) < (float) ENABLESTIX_TRESHOLD))))
+	  {			// motors off
 		
 		onground = 1;
 			
@@ -378,6 +407,8 @@ limitf(&throttle, 1.0);
 	  {
 // motors on - normal flight
 
+		onground_long = gettime();
+			
 #ifdef 	THROTTLE_TRANSIENT_COMPENSATION
 		  throttle += 7.0f * throttlehpf(throttle);
 		  if (throttle < 0)
@@ -387,7 +418,7 @@ limitf(&throttle, 1.0);
 #endif
 
 
-// throttle angle compensation
+		  // throttle angle compensation
 #ifdef AUTO_THROTTLE
 		  if (aux[LEVELMODE])
 		    {
@@ -413,8 +444,6 @@ extern float vbatt;
 if (vbatt < (float) LVC_PREVENT_RESET_VOLTAGE) throttle = 0;
 #endif
 		  onground = 0;
-			onground_long = gettime();
-				
 		  float mix[4];
   if ( stage == BRIDGE_WAIT ) onground = 1;
 
@@ -427,6 +456,10 @@ if (vbatt < (float) LVC_PREVENT_RESET_VOLTAGE) throttle = 0;
 		}
 	
 
+			if ( controls_override)
+			{// change throttle in flip mode
+				throttle = rx_override[3];
+			}
 				
 #ifdef INVERT_YAW_PID
 		  pidoutput[2] = -pidoutput[2];
@@ -462,7 +495,7 @@ if (vbatt < (float) LVC_PREVENT_RESET_VOLTAGE) throttle = 0;
 
 		  float overthrottle = 0;
 
-		  for (int i = 0; i <= 3; i++)
+		  for (int i = 0; i < 4; i++)
 		    {
 			    if (mix[i] > overthrottle)
 				    overthrottle = mix[i];
@@ -505,7 +538,7 @@ if (vbatt < (float) LVC_PREVENT_RESET_VOLTAGE) throttle = 0;
 			    // reduce by a percentage only, so we get an inbetween performance
 			    overthrottle *= ((float)MIX_THROTTLE_REDUCTION_PERCENT / 100.0f);
 
-			    for (int i = 0; i <= 3; i++)
+			    for (int i = 0; i < 4; i++)
 			      {
 				      mix[i] -= overthrottle;
 			      }
@@ -515,7 +548,7 @@ if (vbatt < (float) LVC_PREVENT_RESET_VOLTAGE) throttle = 0;
 
 #ifdef MOTOR_FILTER
 
-		  for (int i = 0; i <= 3; i++)
+		  for (int i = 0; i < 4; i++)
 		    {
 			    mix[i] = motorfilter(mix[i], i);
 		    }
@@ -527,7 +560,7 @@ if (vbatt < (float) LVC_PREVENT_RESET_VOLTAGE) throttle = 0;
 #ifdef CLIP_FF
 		  float clip_ff(float motorin, int number);
 
-		  for (int i = 0; i <= 3; i++)
+		  for (int i = 0; i < 4; i++)
 		    {
 			    mix[i] = clip_ff(mix[i], i);
 		    }
@@ -569,7 +602,7 @@ if (vbatt < (float) LVC_PREVENT_RESET_VOLTAGE) throttle = 0;
 
 
 		  thrsum = 0;
-		  for (int i = 0; i <= 3; i++)
+		  for (int i = 0; i < 4; i++)
 		    {
 			    if (mix[i] < 0)
 				    mix[i] = 0;
@@ -640,7 +673,29 @@ float motormap(float input)
 }
 #endif
 
+
 #ifdef MOTOR_CURVE_85MM_8KHZ
+// Hubsan 8.5mm 8khz pwm motor map
+// new curve
+float motormap(float input)
+{
+//      Hubsan 8.5mm motors and props 
+
+	if (input > 1)
+		input = 1;
+	if (input < 0)
+		input = 0;
+
+	input = input * input * 0.683f + input * (0.262f);
+	input += 0.06f;
+
+	return input;
+}
+#endif
+
+
+
+#ifdef MOTOR_CURVE_85MM_8KHZ_OLD
 // Hubsan 8.5mm 8khz pwm motor map
 float motormap(float input)
 {

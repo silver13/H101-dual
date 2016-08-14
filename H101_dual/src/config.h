@@ -74,6 +74,7 @@
 
 
 
+
 // Hardware gyro LPF filter frequency
 // gyro filter 0 = 250hz delay 0.97mS
 // gyro filter 1 = 184hz delay 2.9mS
@@ -103,6 +104,7 @@
 // Channel assignments
 //
 
+
 // CH_FLIP - 0 - flip 
 // CH_EXPERT - 1 - expert
 // CH_HEADFREE - 2 - headfree
@@ -116,27 +118,24 @@
 // CH_ON - 10 - on always
 // CH_OFF - 11 - off always
 //
-// CH_ON , CH_OFF , CH_FLIP , CH_EXPERT
-// CH_HEADFREE , CH_RTH , CH_AUX1 , CH_AUX2 , CH_AUX3 , CH_AUX4
-// CH_PIT_TRIM, CH_RLL_TRIM, CH_THR_TRIM, CH_YAW_TRIM
-
 // devo can use DEVO_CHAN_5 - DEVO_CHAN_10
+
+// Headless mode
 #define HEADLESSMODE CH_OFF
 
 // rates / expert mode
-// same settings as above (default - CH_EXPERT)
 #define RATES CH_EXPERT
 
-
 // level / acro mode switch
-// CH_AUX1 = gestures (default - CH_AUX1)
-// same settings as above
 #define LEVELMODE CH_AUX1
 
+// channel to initiate automatic flip
+#define STARTFLIP CH_OFF
 
 // channel for inverted mode
 // same settings as above (default - off)
-#define INVERTEDMODE CH_OFF
+#define INVERTEDMODE CH_FLIP
+
 
 
 // aux1 channel starts on if this is defined, otherwise off.
@@ -215,10 +214,12 @@
 
 // motor curve to use
 // the pwm frequency has to be set independently
+// 720 motors use curve none and pwm 8K
 #define MOTOR_CURVE_NONE
 //#define MOTOR_CURVE_6MM_H101_490HZ
 //#define MOTOR_CURVE_6MM_490HZ
 //#define MOTOR_CURVE_85MM_8KHZ
+//#define MOTOR_CURVE_85MM_8KHZ_OLD
 //#define MOTOR_CURVE_85MM_32KHZ
 
 // pwm frequency for motor control
@@ -233,13 +234,16 @@
 // failsafe time in uS
 #define FAILSAFETIME 1000000  // one second
 
-
 // uncomment to enable buzzer
 //#define BUZZER_ENABLE
 
 #define BUZZER_PIN       GPIO_PIN_14 // SWCLK
 #define BUZZER_PIN_PORT  GPIOA
 #define BUZZER_DELAY     5000000 // 5 seconds after loss of tx or low bat before buzzer starts
+
+// enable "bluetooth low energy" beacon
+//#define BLUETOOTH_ENABLE
+//#define USE_IBEACON
 
 
 // ########################################
@@ -295,8 +299,10 @@
 // do not change
 // only for compilers other than gcc
 #ifndef __GNUC__
+
 #pragma diag_warning 1035 , 177 , 4017
 #pragma diag_error 260 
+
 #endif
 // --fpmode=fast ON
 

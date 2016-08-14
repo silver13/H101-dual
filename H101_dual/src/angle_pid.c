@@ -23,16 +23,14 @@ float apidki[APIDNUMBER] = { 0.0e-2, 0.0e-2, 0e-1 };	//
 
 #define OUTLIMIT_FLOAT 1.0f
 
-float aierror[APIDNUMBER] = { 0, 0, 0 };
-
-float apidoutput[APIDNUMBER];
-
+extern float attitude[3];
 extern int onground;
 extern float looptime;
 extern float gyro[3];
 
-extern float angleerror[3];
-extern float attitude[3];
+float aierror[APIDNUMBER] = { 0, 0, 0 };
+float apidoutput[APIDNUMBER];
+float angleerror[3];
 
 float apid(int x)
 {

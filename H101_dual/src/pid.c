@@ -32,7 +32,7 @@ THE SOFTWARE.
 //#define SECOND_ORDER_DTERM
 #define NEW_DTERM
 
-//#include <stdbool.h>
+
 #include "pid.h"
 #include "util.h"
 #include "config.h"
@@ -66,7 +66,7 @@ static float lastrate[PIDNUMBER];
 #endif
 float pidoutput[PIDNUMBER];
 
-extern float error[PIDNUMBER];
+float error[PIDNUMBER];
 extern float looptime;
 extern float gyro[3];
 extern int onground;
