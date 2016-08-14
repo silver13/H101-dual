@@ -134,7 +134,7 @@
 
 // channel for inverted mode
 // same settings as above (default - off)
-#define INVERTEDMODE CH_FLIP
+#define INVERTEDMODE CH_OFF
 
 
 
