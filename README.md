@@ -87,6 +87,11 @@ Read [INSTALL.md](INSTALL.md) for more information.
 ###Wiki
 http://sirdomsen.diskstation.me/dokuwiki/doku.php?id=start
 
+###14.08.16
+* bluetooth beacon added
+* flips
+* other code changes from H8
+
 ###14.07.16
 * some rx changes (hopping code)
 * motor curve default changed
