@@ -133,8 +133,10 @@
 #define STARTFLIP CH_OFF
 
 // channel for inverted mode
-// same settings as above (default - off)
 #define INVERTEDMODE CH_OFF
+
+// leds on / off channel
+#define LEDS_ON CH_ON
 
 
 
@@ -164,19 +166,12 @@
 // options for mix throttle lowering if enabled
 // 0 - 100 range ( 100 = full reduction / 0 = no reduction )
 #define MIX_THROTTLE_REDUCTION_PERCENT 100
-// lpf (exponential) shape if on, othewise linear
-//#define MIX_THROTTLE_FILTER_LPF
-
 
 
 // battery saver ( only at powerup )
 // does not start software if battery is too low
 // flashes 2 times repeatedly at startup
 #define STOP_LOWBATTERY
-
-// under this voltage the software will not start 
-// if STOP_LOWBATTERY is defined above
-#define STOP_LOWBATTERY_TRESH 3.3f
 
 // voltage too start warning
 // volts
@@ -246,6 +241,16 @@
 //#define USE_IBEACON
 
 
+
+
+
+
+
+
+
+
+
+
 // ########################################
 // things that are experimental / old / etc
 // do not change things below
@@ -289,15 +294,27 @@
 //#define MOTOR_MAX_ENABLE
 #define MOTOR_MAX_VALUE 1.00
 
+// under this voltage the software will not start 
+// if STOP_LOWBATTERY is defined
+#define STOP_LOWBATTERY_TRESH 3.3f
 
 
+
+// define logic
+
+// don't stop software on low battery so buzzer will still sound
 #ifdef BUZZER_ENABLE
-#undef STOP_LOWBATTERY // don't stop software on low battery (so buzzer will still sound) 
+#undef STOP_LOWBATTERY 
 #endif
 
+// disable startup battery check so beacon can work after a reset
+#ifdef BLUETOOTH_ENABLE
+#undef STOP_LOWBATTERY
+#endif
 
 // do not change
 // only for compilers other than gcc
+// some warnings, mainly double to float conversion
 #ifndef __GNUC__
 
 #pragma diag_warning 1035 , 177 , 4017

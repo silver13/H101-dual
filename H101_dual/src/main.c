@@ -77,6 +77,8 @@ int lowbatt = 0;
 float vbatt = 4.2;
 float vbattfilt = 4.2;
 
+extern char aux[AUXNUMBER];
+
 #ifdef DEBUG
 unsigned long elapsedtime;
 #endif
@@ -280,7 +282,12 @@ vbatt = battadc;
 							  ledflash(100000, 8);
 						  }
 						else
-							ledon(255);
+						{
+							if ( aux[LEDS_ON] )
+							ledon( 255);
+							else 
+							ledoff( 255);
+						}
 					}
 			      }
 		    }

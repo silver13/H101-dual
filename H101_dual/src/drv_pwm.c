@@ -10,8 +10,6 @@ TIMER_OCInitPara TIM_OCInitStructure;
 // CHANGING THE H-BRIDGE CODE CAN RESULT IN CONNECTING THE FETs ACROSS THE BATTERY
 // AND AS SUCH BRAKING THE BOARD
 
-// forward / reverse function names and macros may be inaccurate
-
 
 // CENTER ALIGNED PWM METHOD
 
@@ -79,7 +77,11 @@ void pwm_init(void)
 
 	TIMER_BaseInitPara TIM_TimeBaseStructure;
 
-	RCC_APB1PeriphClock_Enable(RCC_APB1PERIPH_TIMER2 | RCC_APB1PERIPH_TIMER14, ENABLE);
+	RCC_APB1PeriphClock_Enable(RCC_APB1PERIPH_TIMER2 | 
+															RCC_APB1PERIPH_TIMER14 |
+																RCC_APB1PERIPH_TIMER3, ENABLE);
+	
+	RCC_APB2PeriphClock_Enable(RCC_APB2PERIPH_TIMER1, ENABLE);
 
 // timer 2
 	TIM_TimeBaseStructure.TIMER_Prescaler = TIMER_PRESCALER - 1;	//
@@ -129,7 +131,6 @@ void pwm_init(void)
 	GPIO_PinAFConfig(GPIOA, GPIO_PINSOURCE10, GPIO_AF_2);
 	GPIO_PinAFConfig(GPIOA, GPIO_PINSOURCE8, GPIO_AF_2);
 
-	RCC_APB2PeriphClock_Enable(RCC_APB2PERIPH_TIMER1, ENABLE);
 
 // timer 1
 
@@ -188,7 +189,6 @@ void pwm_init(void)
 
 	GPIO_PinAFConfig(GPIOB, GPIO_PINSOURCE1, GPIO_AF_1);
 
-	RCC_APB1PeriphClock_Enable(RCC_APB1PERIPH_TIMER3, ENABLE);
 
 // timer 3
 
@@ -258,9 +258,9 @@ void pwm_init(void)
 
 int pwmdir = 0;
 
-void pwm_set_forward(uint8_t number, float pwm);
-
 void pwm_set_reverse(uint8_t number, float pwm);
+
+void pwm_set_forward(uint8_t number, float pwm);
 
 
 
@@ -331,18 +331,18 @@ void pwm_set(uint8_t number, float pwm)
 
 	if (pwmdir == DIR1)
 	  {
-		  pwm_set_forward(number, pwm);
+		  pwm_set_reverse(number, pwm);
 	  }
 	if (pwmdir == DIR2)
 	  {
-		  pwm_set_reverse(number, pwm);
+		  pwm_set_forward(number, pwm);
 	  }
 
 
 }
 
-//  may be forward
-void pwm_set_reverse(uint8_t number, float pwm)
+
+void pwm_set_forward(uint8_t number, float pwm)
 {
 	pwm = pwm * PWMTOP;
 
@@ -379,8 +379,8 @@ void pwm_set_reverse(uint8_t number, float pwm)
 
 }
 
-// may be reverse
-void pwm_set_forward(uint8_t number, float pwm)
+
+void pwm_set_reverse(uint8_t number, float pwm)
 {
 	pwm = pwm * PWMTOP;
 
@@ -392,19 +392,19 @@ void pwm_set_forward(uint8_t number, float pwm)
 	TIM_OCInitStructure.TIMER_Pulse = (uint32_t) pwm;
 	switch (number)
 	  {
-	  case 0:		// FR ok
+	  case 2:		// FR ok
 		  TIMER_OC2_Init(TIMER1, &TIM_OCInitStructure);
 		  break;
 
-	  case 1:		// BR ok
+	  case 3:		// BR ok
 		  TIMER_OC4_Init(TIMER3, &TIM_OCInitStructure);
 		  break;
 
-	  case 2:		// FL ok
+	  case 0:		// FL ok
 		  TIMER_OC1_Init(TIMER2, &TIM_OCInitStructure);
 		  break;
 
-	  case 3:		// BL ok        
+	  case 1:		// BL ok        
 		  TIMER_OC3_Init(TIMER2, &TIM_OCInitStructure);
 		  break;
 
@@ -424,7 +424,7 @@ void pwm_dir(int dir)
 	  {
 		  pwmdir = DIR2;
 		  for (int i = 0; i <= 3; i++)
-			  pwm_set_forward(i, 0.0f);
+			  pwm_set_reverse(i, 0.0f);
 		  GPIO_WriteBit(GPIOF, GPIO_PIN_1, Bit_SET);	// bridge dir 1      
 		  GPIO_WriteBit(GPIOA, GPIO_PIN_4, Bit_RESET);	// bridge dir 2
 
@@ -434,7 +434,7 @@ void pwm_dir(int dir)
 	  {
 		  pwmdir = DIR1;
 		  for (int i = 0; i <= 3; i++)
-			  pwm_set_reverse(i, 0.0f);
+			  pwm_set_forward(i, 0.0f);
 		  GPIO_WriteBit(GPIOF, GPIO_PIN_1, Bit_RESET);	// bridge dir 1
 		  GPIO_WriteBit(GPIOA, GPIO_PIN_4, Bit_SET);	// bridge dir 2
 	  }
@@ -442,8 +442,8 @@ void pwm_dir(int dir)
 	  {
 		  for (int i = 0; i <= 3; i++)
 		    {
-			    pwm_set_forward(i, 0.0f);
 			    pwm_set_reverse(i, 0.0f);
+			    pwm_set_forward(i, 0.0f);
 		    }
 		  GPIO_WriteBit(GPIOF, GPIO_PIN_1, Bit_RESET);	// bridge dir 1    
 		  GPIO_WriteBit(GPIOA, GPIO_PIN_4, Bit_RESET);	// bridge dir 2
