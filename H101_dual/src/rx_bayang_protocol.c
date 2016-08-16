@@ -87,6 +87,7 @@ float rx[4];
 char aux[AUXNUMBER];
 char lastaux[AUXNUMBER];
 char auxchange[AUXNUMBER];
+char lasttrim[4];
 
   char rfchannel[4];
 	int rxaddress[5];
