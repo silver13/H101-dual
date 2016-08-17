@@ -12,12 +12,12 @@
 #define DEGTORAD 0.017453292f
 #define RADTODEG 57.29577951f
 
-#define AUXNUMBER 12
+#define AUXNUMBER 13
 
 #define PI  3.14159265358979323846f 
 
-#define CH_ON 10
-#define CH_OFF 11
+#define CH_ON (AUXNUMBER - 2)
+#define CH_OFF (AUXNUMBER - 1)
 #define CH_FLIP 0
 #define CH_EXPERT 1
 #define CH_HEADFREE 2
@@ -30,7 +30,7 @@
 #define CH_THR_TRIM 8
 #define CH_YAW_TRIM 9
 
-#define CH_INV 6
+#define CH_INV 10
 #define CH_VID 7
 #define CH_PIC 8
 

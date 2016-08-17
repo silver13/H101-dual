@@ -106,6 +106,8 @@ extern float rx_override[];
 extern int acro_override;
 extern int level_override;
 
+int motor_dir = 0;
+
 void control(void)
 {
 
@@ -115,7 +117,18 @@ void control(void)
 	float maxangle;
 	float anglerate;
 
-#ifndef THREE_D_THROTTLE
+#ifdef AUTO_INVERT
+	if ( motor_dir ) 
+	{
+		bridge_sequencer(REVERSE);	// reverse
+	}
+	else
+	{
+		bridge_sequencer(FORWARD);	// forward
+	}
+#endif
+	
+#ifdef MANUAL_INVERT
 	if ( aux[INVERTEDMODE] ) 
 	{
 		bridge_sequencer(REVERSE);	// reverse
@@ -124,8 +137,6 @@ void control(void)
 	{
 		bridge_sequencer(FORWARD);	// forward
 	}
-#else
-
 #endif
 	
 	// pwmdir controls hardware directly so we make a copy here
@@ -168,14 +179,40 @@ void control(void)
 		auxchange[STARTFLIP]= 0;		
 	}	
 
+extern void start_invert( void);		
+		if ( (!aux[STARTINVERT])&&auxchange[STARTINVERT] )
+	{
+		start_invert();		
+		auxchange[STARTINVERT]= 0;		
+	}	
+
+
+	if ( controls_override )
+	{
+		for ( int i = 0 ; i < 3 ; i++)
+		{
+			rxcopy[i] = rx_override[i];
+		}
+		 ratemulti = 1.0f;
+		 maxangle = MAX_ANGLE_HI;
+		 anglerate = LEVEL_MAX_RATE_HI;
+	}
+	
 if (currentdir == REVERSE)
 		{	
 		#ifndef NATIVE_INVERTED_MODE
-		// invert pitch in reverse mode 
-		//rxtemp[ROLL] = - rx[ROLL];
-		rxcopy[PITCH] = - rx[PITCH];
-		rxcopy[YAW]	= - rx[YAW];	
-		#endif		
+		// invert pitch in inverted mode
+		rxcopy[PITCH] = - rxcopy[PITCH];
+		rxcopy[YAW]	= - rxcopy[YAW];	
+		#else
+		// make flips work in "normal mode" 
+		// instead of mirrored
+    if (controls_override)
+		{
+		rxcopy[PITCH] = - rxcopy[PITCH];
+		rxcopy[YAW]	= - rxcopy[YAW];	
+		}
+		#endif
 		}
 		
 	if (auxchange[HEADLESSMODE])
@@ -236,16 +273,6 @@ if (currentdir == REVERSE)
 		    }
 	  }
 
-	if ( controls_override)
-	{
-		for ( int i = 0 ; i < 3 ; i++)
-		{
-			rxcopy[i] = rx_override[i];
-		}
-		 ratemulti = 1.0f;
-		 maxangle = MAX_ANGLE_HI;
-		 anglerate = LEVEL_MAX_RATE_HI;
-	}
 		
 	imu_calc();
 
@@ -358,6 +385,13 @@ limitf(&throttle, 1.0);
 			}
 		}	
 
+		#ifdef AUTO_INVERT
+	extern float GEstG[3];
+	// check gravity vector to see if inverted
+	if ( GEstG[2] < 0 ) motor_dir = 1;
+  else motor_dir = 0;		
+		#endif
+		
 		#ifdef MOTOR_BEEPS
 		extern void motorbeep( void);
 		motorbeep();

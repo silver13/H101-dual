@@ -115,6 +115,9 @@
 // CH_RLL_TRIM - 7 - Roll trims
 // CH_THR_TRIM - 8 - Throttle trims
 // CH_YAW_TRIM - 9 - Yaw trims
+// CH_INV 10 - Inverted mode 
+// CH_VID 7 - 
+// CH_PIC 8 - 
 // CH_ON - 10 - on always
 // CH_OFF - 11 - off always
 //
@@ -130,13 +133,23 @@
 #define LEVELMODE CH_AUX1
 
 // channel to initiate automatic flip
-#define STARTFLIP CH_OFF
+#define STARTFLIP CH_FLIP
 
 // channel for inverted mode
 #define INVERTEDMODE CH_OFF
 
+// channel to initiate an automatic invert
+#define STARTINVERT CH_INV
+
 // leds on / off channel
 #define LEDS_ON CH_ON
+
+
+// manual invert - old way of changing motor direction
+// auto - new , does not work with 3d throttle
+// auto controlled by STARTINVERT channel or at zero throttle
+//#define MANUAL_INVERT
+#define AUTO_INVERT
 
 
 
@@ -324,8 +337,11 @@
 // --fpmode=fast ON
 
 
-
-
+#ifdef THREE_D_THROTTLE
+#ifdef AUTO_INVERT
+#error AUTO_INVERT and THREE_D_THROTTLE do not work combined
+#endif
+#endif
 
 
 
