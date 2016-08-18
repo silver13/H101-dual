@@ -34,29 +34,22 @@ THE SOFTWARE.
 #include "drv_time.h"
 #include "sixaxis.h"
 #include "gestures.h"
-#include "flip_sequencer.h"
 
 
-extern float lpffilter(float in, int num);
 extern float throttlehpf(float in);
-extern float apid(int x);
-extern void imu_calc(void);
-extern void savecal(void);
-extern int gestures(void);
-extern void pid_precalc(void);
 
 
 extern int ledcommand;
 extern float rx[4];
 extern float gyro[3];
 extern int failsafe;
-extern float pidoutput[PIDNUMBER];
 extern char auxchange[AUXNUMBER];
 extern char aux[AUXNUMBER];
 extern float attitude[3];
 extern float looptime;
 extern float angleerror[3];
 extern float error[PIDNUMBER];
+extern float pidoutput[PIDNUMBER];
 
 int onground = 1;
 int onground_long = 1;
@@ -96,17 +89,7 @@ extern float apid(int x);
 extern void imu_calc(void);
 extern void savecal(void);
 
-//void motorcontrol(void);
-//int gestures(void);
-//void pid_precalc(void);
-//float motorfilter(float motorin, int number);
 
-extern int controls_override;
-extern float rx_override[];
-extern int acro_override;
-extern int level_override;
-
-int motor_dir = 0;
 
 void control(void)
 {
@@ -116,19 +99,9 @@ void control(void)
 	float ratemultiyaw;
 	float maxangle;
 	float anglerate;
-
-#ifdef AUTO_INVERT
-	if ( motor_dir ) 
-	{
-		bridge_sequencer(REVERSE);	// reverse
-	}
-	else
-	{
-		bridge_sequencer(FORWARD);	// forward
-	}
-#endif
 	
-#ifdef MANUAL_INVERT
+	
+#ifndef THREE_D_THROTTLE
 	if ( aux[INVERTEDMODE] ) 
 	{
 		bridge_sequencer(REVERSE);	// reverse
@@ -168,35 +141,7 @@ void control(void)
 		#endif
 	  }
 
-		
-  flip_sequencer();
-	
 
-
-	if ( (!aux[STARTFLIP])&&auxchange[STARTFLIP] )
-	{
-		start_flip();
-		auxchange[STARTFLIP]= 0;		
-	}	
-
-extern void start_invert( void);		
-		if ( (!aux[STARTINVERT])&&auxchange[STARTINVERT] )
-	{
-		start_invert();		
-		auxchange[STARTINVERT]= 0;		
-	}	
-
-
-	if ( controls_override )
-	{
-		for ( int i = 0 ; i < 3 ; i++)
-		{
-			rxcopy[i] = rx_override[i];
-		}
-		 ratemulti = 1.0f;
-		 maxangle = MAX_ANGLE_HI;
-		 anglerate = LEVEL_MAX_RATE_HI;
-	}
 	
 if (currentdir == REVERSE)
 		{	
@@ -204,14 +149,6 @@ if (currentdir == REVERSE)
 		// invert pitch in inverted mode
 		rxcopy[PITCH] = - rxcopy[PITCH];
 		rxcopy[YAW]	= - rxcopy[YAW];	
-		#else
-		// make flips work in "normal mode" 
-		// instead of mirrored
-    if (controls_override)
-		{
-		rxcopy[PITCH] = - rxcopy[PITCH];
-		rxcopy[YAW]	= - rxcopy[YAW];	
-		}
 		#endif
 		}
 		
@@ -297,7 +234,7 @@ if (currentdir == REVERSE)
 		}
 		
 
-	if ((aux[LEVELMODE]||level_override)&&!acro_override)
+	if ( aux[LEVELMODE] )
 	  {			// level mode
 
 		  angleerror[0] = rxcopy[0] * maxangle - attitudecopy[0];
@@ -372,7 +309,7 @@ limitf(&throttle, 1.0);
 #endif	// end 3d throttle remap
 	
 // turn motors off if throttle is off and pitch / roll sticks are centered
-	if (failsafe || (throttle < 0.001f && ( !ENABLESTIX || !onground_long || aux[LEVELMODE] || level_override || (fabsf(rx[0]) < (float) ENABLESTIX_TRESHOLD && fabsf(rx[1]) < (float) ENABLESTIX_TRESHOLD))))
+	if (failsafe || (throttle < 0.001f && ( !ENABLESTIX || !onground_long || aux[LEVELMODE] || (fabsf(rx[0]) < (float) ENABLESTIX_TRESHOLD && fabsf(rx[1]) < (float) ENABLESTIX_TRESHOLD))))
 	  {			// motors off
 		
 		onground = 1;
@@ -491,10 +428,6 @@ if (vbatt < (float) LVC_PREVENT_RESET_VOLTAGE) throttle = 0;
 		}
 	
 
-			if ( controls_override)
-			{// change throttle in flip mode
-				throttle = rx_override[3];
-			}
 				
 #ifdef INVERT_YAW_PID
 		  pidoutput[2] = -pidoutput[2];

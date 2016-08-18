@@ -558,11 +558,6 @@
               <FilePath>.\src\gestures.c</FilePath>
             </File>
             <File>
-              <FileName>flip_sequencer.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\src\flip_sequencer.c</FilePath>
-            </File>
-            <File>
               <FileName>flash.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\src\flash.c</FilePath>

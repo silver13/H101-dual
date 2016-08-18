@@ -132,24 +132,13 @@
 // level / acro mode switch
 #define LEVELMODE CH_AUX1
 
-// channel to initiate automatic flip
-#define STARTFLIP CH_FLIP
-
 // channel for inverted mode
 #define INVERTEDMODE CH_OFF
-
-// channel to initiate an automatic invert
-#define STARTINVERT CH_INV
 
 // leds on / off channel
 #define LEDS_ON CH_ON
 
 
-// manual invert - old way of changing motor direction
-// auto - new , does not work with 3d throttle
-// auto controlled by STARTINVERT channel or at zero throttle
-//#define MANUAL_INVERT
-#define AUTO_INVERT
 
 
 
@@ -335,15 +324,6 @@
 
 #endif
 // --fpmode=fast ON
-
-
-#ifdef THREE_D_THROTTLE
-#ifdef AUTO_INVERT
-#error AUTO_INVERT and THREE_D_THROTTLE do not work combined
-#endif
-#endif
-
-
 
 
 
