@@ -74,9 +74,7 @@ extern int pwmdir;
 
 void bridge_sequencer(int dir);
 // bridge 
-int stage;
-int laststage;
-int lastdir;
+int bridge_stage = BRIDGE_WAIT;
 
 int currentdir;
 
@@ -322,12 +320,12 @@ limitf(&throttle, 1.0);
 			}
 		}	
 
-		#ifdef AUTO_INVERT
+
 	extern float GEstG[3];
 	// check gravity vector to see if inverted
-	if ( GEstG[2] < 0 ) motor_dir = 1;
-  else motor_dir = 0;		
-		#endif
+	if ( GEstG[2] < 0 ) aux[CH_AUX3] = 1;
+  else aux[CH_AUX3] = 0;		
+
 		
 		#ifdef MOTOR_BEEPS
 		extern void motorbeep( void);
@@ -417,7 +415,7 @@ if (vbatt < (float) LVC_PREVENT_RESET_VOLTAGE) throttle = 0;
 #endif
 		  onground = 0;
 		  float mix[4];
-  if ( stage == BRIDGE_WAIT ) onground = 1;
+  if ( bridge_stage == BRIDGE_WAIT ) onground = 1;
 
 	if (currentdir == REVERSE)
 		{
@@ -804,7 +802,7 @@ float clip_ff(float motorin, int number)
 
 
 
-unsigned long bridgetime;
+unsigned long bridgetime = 0;
 
 // the bridge sequencer creates a pause between motor direction changes
 // that way the motors do not try to instantly go in reverse and have time to slow down
@@ -813,21 +811,21 @@ unsigned long bridgetime;
 void bridge_sequencer(int dir)
 {
 
-	if (dir == DIR1 && stage != BRIDGE_FORWARD)
+	if (dir == DIR1 && bridge_stage != BRIDGE_FORWARD)
 	  {
 
-		  if (stage == BRIDGE_REVERSE)
+		  if (bridge_stage == BRIDGE_REVERSE)
 		    {
-			    stage = BRIDGE_WAIT;
+			    bridge_stage = BRIDGE_WAIT;
 			    bridgetime = gettime();
 			    pwm_dir(FREE);
 		    }
-		  if (stage == BRIDGE_WAIT)
+		  if (bridge_stage == BRIDGE_WAIT)
 		    {
 			    if (gettime() - bridgetime > BRIDGE_TIMEOUT)
 			      {
 				      // timeout has elapsed
-				      stage = BRIDGE_FORWARD;
+				      bridge_stage = BRIDGE_FORWARD;
 				      pwm_dir(DIR1);
 
 			      }
@@ -835,21 +833,21 @@ void bridge_sequencer(int dir)
 		    }
 
 	  }
-	if (dir == DIR2 && stage != BRIDGE_REVERSE)
+	if (dir == DIR2 && bridge_stage != BRIDGE_REVERSE)
 	  {
 
-		  if (stage == BRIDGE_FORWARD)
+		  if (bridge_stage == BRIDGE_FORWARD)
 		    {
-			    stage = BRIDGE_WAIT;
+			    bridge_stage = BRIDGE_WAIT;
 			    bridgetime = gettime();
 			    pwm_dir(FREE);
 		    }
-		  if (stage == BRIDGE_WAIT)
+		  if (bridge_stage == BRIDGE_WAIT)
 		    {
 			    if (gettime() - bridgetime > BRIDGE_TIMEOUT)
 			      {
 				      // timeout has elapsed
-				      stage = BRIDGE_REVERSE;
+				      bridge_stage = BRIDGE_REVERSE;
 				      pwm_dir(DIR2);
 
 			      }

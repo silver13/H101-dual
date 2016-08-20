@@ -111,6 +111,7 @@
 // CH_RTH - 3 - headingreturn
 // CH_AUX1 - 4 - AUX1 ( gestures <<v and >>v)
 // CH_AUX2 - 5 - AUX2+ (  up - up - up    )
+// CH_AUX3 - gravity channel ( on if inverted , updated at zero throttle)
 // CH_PIT_TRIM - 6 - Pitch trims
 // CH_RLL_TRIM - 7 - Roll trims
 // CH_THR_TRIM - 8 - Throttle trims
@@ -132,8 +133,8 @@
 // level / acro mode switch
 #define LEVELMODE CH_AUX1
 
-// channel for inverted mode
-#define INVERTEDMODE CH_OFF
+// channel for inverted mode ( default - CH_AUX3 - gravity based) 
+#define INVERTEDMODE CH_AUX3
 
 // leds on / off channel
 #define LEDS_ON CH_ON

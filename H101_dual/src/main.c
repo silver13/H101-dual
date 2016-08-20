@@ -100,7 +100,9 @@ int main(void)
 
 	pwm_init();
 
-	bridge_sequencer(DIR1);
+  pwm_dir(FREE);
+	
+//	bridge_sequencer(DIR1);
 
 	pwm_set(MOTOR_FL, 0);	// FL
 	pwm_set(MOTOR_FR, 0);
