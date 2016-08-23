@@ -6,6 +6,7 @@
 Select folder for the correct firmware:
 * H101_Acro: Acro only, inverted flight possible (manual on a switch)
 * H101_dual: either/both modes, inverted flight possible (manual on a switch)
+* H101_dual: (default) motor direction is automatically set at takeoff / zero-throttle, based on orientation
 
 
 For programming the ground pad is marked (B-) on the pcb(near the edge) .It is also close to some other components. Note there is also a (B+) pad,do not connect this. 
