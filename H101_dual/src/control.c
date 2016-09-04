@@ -208,9 +208,6 @@ if (currentdir == REVERSE)
 		    }
 	  }
 
-		
-	imu_calc();
-
 	pid_precalc();
 
 float attitudecopy[2];
@@ -218,17 +215,17 @@ float attitudecopy[2];
 if (currentdir == REVERSE)
 		{	
 		// account for 180 deg wrap since inverted attitude is near 180
-		if ( attitude[0] > 0) attitudecopy[0] = attitude[0] - 180;
-		else attitudecopy[0] = attitude[0] + 180;		
+		if ( attitude[0] > 0) attitudecopy[0] = attitude[0] - 180 - (float) TRIM_ROLL_INV;
+		else attitudecopy[0] = attitude[0] + 180 - (float) TRIM_ROLL_INV;		
 			
-		if ( attitude[1] > 0) attitudecopy[1] = attitude[1] - 180;
-		else attitudecopy[1] = attitude[1] + 180;		
+		if ( attitude[1] > 0) attitudecopy[1] = attitude[1] - 180 - (float) TRIM_PITCH_INV;
+		else attitudecopy[1] = attitude[1] + 180 - (float) TRIM_PITCH_INV;		
 		}
 		else
 		{
 			// normal thrust mode
-			attitudecopy[0] = attitude[0];
-			attitudecopy[1] = attitude[1];
+			attitudecopy[0] = attitude[0] + (float) TRIM_ROLL;
+			attitudecopy[1] = attitude[1] + (float) TRIM_PITCH;
 		}
 		
 
@@ -633,6 +630,9 @@ if (vbatt < (float) LVC_PREVENT_RESET_VOLTAGE) throttle = 0;
 
 	  }			// end motors on
 
+		
+	imu_calc();
+	
 }
 
 /////////////////////////////

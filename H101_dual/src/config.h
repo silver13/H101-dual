@@ -270,6 +270,16 @@
 // throttle direct to motors for thrust measure/ esc testing
 //#define MOTORS_TO_THROTTLE
 
+// level mode "manual" trims ( in degrees)
+// pitch positive forward trim
+// roll positive right trim
+#define TRIM_PITCH 0.0
+#define TRIM_ROLL 0.0
+
+// inverted trims
+#define TRIM_PITCH_INV 0.0
+#define TRIM_ROLL_INV 0.0
+
 
 // time to change motor direction (uS)
 #ifdef THREE_D_THROTTLE

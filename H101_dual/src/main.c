@@ -323,7 +323,7 @@ vbatt = battadc;
 		  elapsedtime = gettime() - maintime;
 #endif
 // loop time 1ms                
-		  while ((gettime() - maintime) < 1000)
+		  while ((gettime() - maintime) < (1000 - 22) )
 			  delay(10);
 
 
