@@ -165,6 +165,10 @@
 // enable auto lower throttle near max throttle to keep control
 // comment out to disable
 //#define MIX_LOWER_THROTTLE
+#define MIX_INCREASE_THROTTLE
+
+// lowers the rates when motor limits exceeded
+//#define RATELIMITER_ENABLE
 
 // options for mix throttle lowering if enabled
 // 0 - 100 range ( 100 = full reduction / 0 = no reduction )

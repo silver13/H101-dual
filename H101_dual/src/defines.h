@@ -12,6 +12,7 @@
 #define DEGTORAD 0.017453292f
 #define RADTODEG 57.29577951f
 
+#define FILTERCALC( sampleperiod, filtertime) (1.0f - ((float)sampleperiod) / ((float)filtertime))
 
 #define PI  3.14159265358979323846f 
 
