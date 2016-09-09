@@ -286,14 +286,9 @@
 #define TRIM_ROLL_INV 0.0
 
 
-// time to change motor direction (uS)
-#ifdef THREE_D_THROTTLE
-// with 3d throttle a short timeout as it takes time to move the stick
-#define BRIDGE_TIMEOUT 3000
-#else
-//otherwise a 0.05s pause
+// adaptive bridge time max (uS)
 #define BRIDGE_TIMEOUT 50000
-#endif
+
 
 // enable motors if pitch / roll controls off center (at zero throttle)
 // possible values: 0 / 1

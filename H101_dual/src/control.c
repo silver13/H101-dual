@@ -37,6 +37,7 @@ THE SOFTWARE.
 
 
 extern float throttlehpf(float in);
+void motor_model( int motor, float thrust );
 
 
 extern int ledcommand;
@@ -372,7 +373,10 @@ limitf(&throttle, 1.0);
 							autocenter[i] = rx[i];
 						}
 				}
-#endif				
+#endif		
+		for( int i = 0 ; i < 4; i++)
+				motor_model( i , 0.0f);	
+				
 // end motors off / failsafe / onground
 	  }
 	else
@@ -677,7 +681,14 @@ if ( excess_ratio < 0.0f ) excess_ratio = 0.0;
 					
 					#ifndef NOMOTORS
 					//normal mode
-					pwm_set( i , test );				
+					pwm_set( i , test );	
+						
+					if (test < 0 ) test = 0;
+					if ( currentdir == REVERSE ) 					
+						motor_model( i , - test);	
+					else
+						motor_model( i , test);	
+					
 					#else
 					#warning "NO MOTORS"
 					#endif
@@ -865,18 +876,44 @@ float clip_ff(float motorin, int number)
 	return motorin;
 }
 
+float motor_filt[4];
 
+// a basic model of a motor, by using a 1st order lpf ( 100mS)
+void motor_model( int motor, float thrust )
+{
+	if (  bridge_stage == BRIDGE_WAIT ) thrust = 0;
+	limitf ( &thrust , 1.0 );
+	lpf( &motor_filt[motor] , thrust , FILTERCALC( 1000 , 100e3) );
+}
 
-
+float motor_model_getthrust( void)
+{
+	//return average thrust of all 4 motors
+	float thrust = 0;
+	for ( int i = 0 ; i < 4; i++)
+		thrust+=fabsf(motor_filt[i]);
+	return thrust *0.25f;
+}
 
 unsigned long bridgetime = 0;
 
 // the bridge sequencer creates a pause between motor direction changes
 // that way the motors do not try to instantly go in reverse and have time to slow down
-
+int lastdir;
+int bridge_timeout = BRIDGE_TIMEOUT;
 
 void bridge_sequencer(int dir)
 {
+	
+if (lastdir != dir && bridge_stage != BRIDGE_WAIT)
+{
+	// bridge timeout scaled by motor speed
+	bridge_timeout = (float) 50000 * motor_model_getthrust();
+	lastdir = dir;
+	if ( bridge_timeout < 3000 ) bridge_timeout = 3000;
+	if ( bridge_timeout > BRIDGE_TIMEOUT ) bridge_timeout = BRIDGE_TIMEOUT;
+}
+
 
 	if (dir == DIR1 && bridge_stage != BRIDGE_FORWARD)
 	  {
@@ -889,7 +926,7 @@ void bridge_sequencer(int dir)
 		    }
 		  if (bridge_stage == BRIDGE_WAIT)
 		    {
-			    if (gettime() - bridgetime > BRIDGE_TIMEOUT)
+			    if (gettime() - bridgetime > bridge_timeout)
 			      {
 				      // timeout has elapsed
 				      bridge_stage = BRIDGE_FORWARD;
@@ -911,7 +948,7 @@ void bridge_sequencer(int dir)
 		    }
 		  if (bridge_stage == BRIDGE_WAIT)
 		    {
-			    if (gettime() - bridgetime > BRIDGE_TIMEOUT)
+			    if (gettime() - bridgetime > bridge_timeout)
 			      {
 				      // timeout has elapsed
 				      bridge_stage = BRIDGE_REVERSE;
