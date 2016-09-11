@@ -904,7 +904,7 @@ int bridge_timeout = BRIDGE_TIMEOUT;
 
 void bridge_sequencer(int dir)
 {
-	
+/*	
 if (lastdir != dir && bridge_stage != BRIDGE_WAIT)
 {
 	// bridge timeout scaled by motor speed
@@ -913,7 +913,8 @@ if (lastdir != dir && bridge_stage != BRIDGE_WAIT)
 	if ( bridge_timeout < 3000 ) bridge_timeout = 3000;
 	if ( bridge_timeout > BRIDGE_TIMEOUT ) bridge_timeout = BRIDGE_TIMEOUT;
 }
-
+*/
+bridge_timeout = BRIDGE_TIMEOUT;
 
 	if (dir == DIR1 && bridge_stage != BRIDGE_FORWARD)
 	  {
