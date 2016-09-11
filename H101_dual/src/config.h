@@ -275,6 +275,15 @@
 // throttle direct to motors for thrust measure/ esc testing
 //#define MOTORS_TO_THROTTLE
 
+// time to change motor direction (uS)
+#ifdef THREE_D_THROTTLE
+// with 3d throttle a short timeout as it takes time to move the stick
+#define BRIDGE_TIMEOUT 10000
+#else
+//otherwise a 0.05s pause
+#define BRIDGE_TIMEOUT 50000
+#endif
+
 // level mode "manual" trims ( in degrees)
 // pitch positive forward trim
 // roll positive right trim
