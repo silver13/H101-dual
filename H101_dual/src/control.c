@@ -885,7 +885,7 @@ void bridge_sequencer(int dir)
 		    }
 		  if (bridge_stage == BRIDGE_WAIT)
 		    {
-			    if (gettime() - bridgetime > bridge_timeout)
+			    if (gettime() - bridgetime > BRIDGE_TIMEOUT)
 			      {
 				      // timeout has elapsed
 				      bridge_stage = BRIDGE_REVERSE;
@@ -907,7 +907,7 @@ void bridge_sequencer(int dir)
 		    }
 		  if (bridge_stage == BRIDGE_WAIT)
 		    {
-			    if (gettime() - bridgetime > bridge_timeout)
+			    if (gettime() - bridgetime > BRIDGE_TIMEOUT)
 			      {
 				      // timeout has elapsed
 				      bridge_stage = BRIDGE_FORWARD;
