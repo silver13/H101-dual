@@ -677,7 +677,11 @@ if ( excess_ratio < 0.0f ) excess_ratio = 0.0;
 					
 					#ifndef NOMOTORS
 					//normal mode
-					pwm_set( i , test );	
+					if (bridge_stage == BRIDGE_WAIT) {
+						pwm_set( i , 0 );
+					} else {
+						pwm_set( i , test );
+					}
 					#else
 					#warning "NO MOTORS"
 					#endif
