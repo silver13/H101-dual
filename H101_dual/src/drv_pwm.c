@@ -456,7 +456,7 @@ void pwm_dir(int dir)
 		     pwm_set_forward( i , 0.0f );
 		     pwm_set_reverse( i , 0.0f );
 		     }
-		     delay(1000);
+		     delay(100);
 		     GPIO_WriteBit(GPIOF, GPIO_PIN_1, Bit_SET); // bridge dir 1
 		     GPIO_WriteBit(GPIOA, GPIO_PIN_4, Bit_SET); // bridge dir 2
 		   */
