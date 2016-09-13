@@ -874,29 +874,7 @@ unsigned long bridgetime = 0;
 void bridge_sequencer(int dir)
 {
 
-	if (dir == DIR1 && bridge_stage != BRIDGE_FORWARD)
-	  {
-
-		  if (bridge_stage == BRIDGE_REVERSE)
-		    {
-			    bridge_stage = BRIDGE_WAIT;
-			    bridgetime = gettime();
-			    pwm_dir(FREE);
-		    }
-		  if (bridge_stage == BRIDGE_WAIT)
-		    {
-			    if (gettime() - bridgetime > BRIDGE_TIMEOUT)
-			      {
-				      // timeout has elapsed
-				      bridge_stage = BRIDGE_FORWARD;
-				      pwm_dir(DIR1);
-
-			      }
-
-		    }
-
-	  }
-	if (dir == DIR2 && bridge_stage != BRIDGE_REVERSE)
+	if (dir == REVERSE && bridge_stage != BRIDGE_REVERSE)
 	  {
 
 		  if (bridge_stage == BRIDGE_FORWARD)
@@ -907,11 +885,33 @@ void bridge_sequencer(int dir)
 		    }
 		  if (bridge_stage == BRIDGE_WAIT)
 		    {
-			    if (gettime() - bridgetime > BRIDGE_TIMEOUT)
+			    if (gettime() - bridgetime > bridge_timeout)
 			      {
 				      // timeout has elapsed
 				      bridge_stage = BRIDGE_REVERSE;
-				      pwm_dir(DIR2);
+				      pwm_dir(REVERSE);
+
+			      }
+
+		    }
+
+	  }
+	if (dir == FORWARD && bridge_stage != BRIDGE_FORWARD)
+	  {
+
+		  if (bridge_stage == BRIDGE_REVERSE)
+		    {
+			    bridge_stage = BRIDGE_WAIT;
+			    bridgetime = gettime();
+			    pwm_dir(FREE);
+		    }
+		  if (bridge_stage == BRIDGE_WAIT)
+		    {
+			    if (gettime() - bridgetime > bridge_timeout)
+			      {
+				      // timeout has elapsed
+				      bridge_stage = BRIDGE_FORWARD;
+				      pwm_dir(FORWARD);
 
 			      }
 
