@@ -165,6 +165,10 @@
 // enable auto lower throttle near max throttle to keep control
 // comment out to disable
 //#define MIX_LOWER_THROTTLE
+#define MIX_INCREASE_THROTTLE
+
+// lowers the rates when motor limits exceeded
+//#define RATELIMITER_ENABLE
 
 // options for mix throttle lowering if enabled
 // 0 - 100 range ( 100 = full reduction / 0 = no reduction )
@@ -271,6 +275,15 @@
 // throttle direct to motors for thrust measure/ esc testing
 //#define MOTORS_TO_THROTTLE
 
+// time to change motor direction (uS)
+#ifdef THREE_D_THROTTLE
+// with 3d throttle a short timeout as it takes time to move the stick
+#define BRIDGE_TIMEOUT 10000
+#else
+//otherwise a 0.05s pause
+#define BRIDGE_TIMEOUT 50000
+#endif
+
 // level mode "manual" trims ( in degrees)
 // pitch positive forward trim
 // roll positive right trim
@@ -282,14 +295,9 @@
 #define TRIM_ROLL_INV 0.0
 
 
-// time to change motor direction (uS)
-#ifdef THREE_D_THROTTLE
-// with 3d throttle a short timeout as it takes time to move the stick
-#define BRIDGE_TIMEOUT 3000
-#else
-//otherwise a 0.05s pause
+// adaptive bridge time max (uS)
 #define BRIDGE_TIMEOUT 50000
-#endif
+
 
 // enable motors if pitch / roll controls off center (at zero throttle)
 // possible values: 0 / 1

@@ -38,7 +38,6 @@ THE SOFTWARE.
 
 extern float throttlehpf(float in);
 
-
 extern int ledcommand;
 extern float rx[4];
 extern float gyro[3];
@@ -63,6 +62,7 @@ int lastchange;
 float yawangle;
 float overthrottlefilt;
 float underthrottlefilt;
+float feedback[3] = {1.0 , 1.0 , 1.0};
 
 #ifdef STOCK_TX_AUTOCENTER
 float autocenter[3];
@@ -243,8 +243,8 @@ if (currentdir == REVERSE)
 	else
 	  {			// rate mode
 
-		  error[0] = rxcopy[0] * MAX_RATE * DEGTORAD * ratemulti - gyro[0];
-		  error[1] = rxcopy[1] * MAX_RATE * DEGTORAD * ratemulti - gyro[1];
+		  error[0] = rxcopy[0] * MAX_RATE * DEGTORAD * ratemulti * feedback[0] - gyro[0];
+		  error[1] = rxcopy[1] * MAX_RATE * DEGTORAD * ratemulti * feedback[1] - gyro[1];
 
 		  // reduce angle Iterm towards zero
 		  extern float aierror[3];
@@ -256,11 +256,15 @@ if (currentdir == REVERSE)
 	  }
 
 
-	error[2] = rxcopy[2] * MAX_RATEYAW * DEGTORAD * ratemultiyaw - gyro[2];
+	error[2] = rxcopy[2] * MAX_RATEYAW * DEGTORAD * ratemultiyaw * feedback[2] - gyro[2];
 
 	pid(0);
 	pid(1);
 	pid(2);
+
+	feedback[0] = 1.0f;
+	feedback[1] = 1.0f;
+	feedback[2] = 1.0f;
 		
 #ifndef THREE_D_THROTTLE	
 // map throttle so under 10% it is zero 
@@ -367,7 +371,8 @@ limitf(&throttle, 1.0);
 							autocenter[i] = rx[i];
 						}
 				}
-#endif				
+#endif		
+			
 // end motors off / failsafe / onground
 	  }
 	else
@@ -448,7 +453,7 @@ if (vbatt < (float) LVC_PREVENT_RESET_VOLTAGE) throttle = 0;
 		}
 	
 
-#ifdef MIX_LOWER_THROTTLE
+#if ( defined MIX_LOWER_THROTTLE || defined MIX_INCREASE_THROTTLE)
 
 //#define MIX_INCREASE_THROTTLE
 
@@ -466,6 +471,10 @@ if (vbatt < (float) LVC_PREVENT_RESET_VOLTAGE) throttle = 0;
 //1.0 = reduce all the way to zero 
 #ifndef MIX_THROTTLE_REDUCTION_MAX
 #define MIX_THROTTLE_REDUCTION_MAX 0.5
+#endif
+
+#ifndef MIX_THROTTLE_INCREASE_MAX
+#define MIX_THROTTLE_INCREASE_MAX 0.2
 #endif
 
 #ifndef MIX_MOTOR_MAX
@@ -501,11 +510,31 @@ if (vbatt < (float) LVC_PREVENT_RESET_VOLTAGE) throttle = 0;
 			  overthrottlefilt -= 0.01f;
 #endif
 			
+			// over			
+		  if (overthrottlefilt > (float)MIX_THROTTLE_REDUCTION_MAX)
+			  overthrottlefilt = (float)MIX_THROTTLE_REDUCTION_MAX;
+		  if (overthrottlefilt < -0.1f)
+			  overthrottlefilt = -0.1;
+
+		  overthrottle = overthrottlefilt;
+			
+		  if (overthrottle < 0.0f)
+			  overthrottle = -0.0001f;
+		
+			// reduce by a percentage only, so we get an inbetween performance
+			overthrottle *= ((float)MIX_THROTTLE_REDUCTION_PERCENT / 100.0f);
+
+#ifndef MIX_LOWER_THROTTLE
+	// disable if not enabled
+	overthrottle = -0.0001f;
+#endif		
+		
+			
 #ifdef MIX_INCREASE_THROTTLE
 // under			
 			
-		  if (underthrottle < -(float)MIX_THROTTLE_REDUCTION_MAX)
-			  underthrottle = -(float)MIX_THROTTLE_REDUCTION_MAX;
+		  if (underthrottle < -(float)MIX_THROTTLE_INCREASE_MAX)
+			  underthrottle = -(float)MIX_THROTTLE_INCREASE_MAX;
 			
 #ifdef MIX_THROTTLE_FILTER_LPF
 		  if (underthrottle < underthrottlefilt)
@@ -514,9 +543,9 @@ if (vbatt < (float) LVC_PREVENT_RESET_VOLTAGE) throttle = 0;
 			  lpf(&underthrottlefilt, underthrottle, 0.72);	// 50hz 1khz sample rate
 #else
 		  if (underthrottle < underthrottlefilt)
-			  underthrottlefilt += 0.005f;
+			  underthrottlefilt -= 0.005f;
 		  else
-			  underthrottlefilt -= 0.01f;
+			  underthrottlefilt += 0.01f;
 #endif
 // under
 			if (underthrottlefilt < - (float)MIX_THROTTLE_REDUCTION_MAX)
@@ -532,24 +561,7 @@ if (vbatt < (float) LVC_PREVENT_RESET_VOLTAGE) throttle = 0;
 			underthrottle *= ((float)MIX_THROTTLE_REDUCTION_PERCENT / 100.0f);
 			
 #endif			
-// over			
-		  if (overthrottlefilt > (float)MIX_THROTTLE_REDUCTION_MAX)
-			  overthrottlefilt = (float)MIX_THROTTLE_REDUCTION_MAX;
-		  if (overthrottlefilt < -0.1f)
-			  overthrottlefilt = -0.1;
-
-
-		  overthrottle = overthrottlefilt;
-
-			
-		  if (overthrottle < 0.0f)
-			  overthrottle = -0.0001f;
-
-			
-			// reduce by a percentage only, so we get an inbetween performance
-			overthrottle *= ((float)MIX_THROTTLE_REDUCTION_PERCENT / 100.0f);
-
-			
+	
 			
 		  if (overthrottle > 0 || underthrottle < 0 )
 		    {		// exceeding max motor thrust
@@ -559,8 +571,63 @@ if (vbatt < (float) LVC_PREVENT_RESET_VOLTAGE) throttle = 0;
 				      mix[i] -= temp;
 			      }
 		    }
+// end MIX_LOWER_THROTTLE
 #endif	
 
+				
+
+#ifdef RATELIMITER_ENABLE
+// rate limiter if motors limit exceeded
+
+// 50mS lpf to remove vibrations
+#define RATELIMITER_FILT_TIME_US 50e3	
+// reduce rates by half maximum 0.0 - 1.0 higher = more action
+#define RATELIMITER_MULTIPLIER_LIMIT 0.5f
+// at 1mS loop time 0.01 step takes 50mS to reach 0.5 reduction
+#define RATELIMITER_P_TERM 1.0f
+
+// variable for low pass filter
+static float feedbackfilt =  1.0f ;
+// limit exceeded by this amount
+float excess = 0;
+// motor thrust used by controls ( for one motor )
+float range = (fabsf(pidoutput[0]) + fabsf(pidoutput[1]) +fabsf(pidoutput[2]));
+{	
+		float overthrottle =  0.0f;
+		float underthrottle = 0.01f;
+			
+				for (int i = 0; i < 4; i++)
+					{
+						if (mix[i] > overthrottle)
+							overthrottle = mix[i];
+						if (mix[i] < underthrottle)
+							underthrottle = mix[i];
+					}
+
+				overthrottle -= 1.0f ;
+
+	if ( overthrottle > 0 )
+		excess = overthrottle;
+	if (underthrottle < 0)
+		excess += underthrottle;
+}
+
+
+float excess_ratio = RATELIMITER_P_TERM * (fabs(excess)) / range ;
+
+
+if ( excess_ratio > (float) RATELIMITER_MULTIPLIER_LIMIT ) excess_ratio = (float) RATELIMITER_MULTIPLIER_LIMIT;
+if ( excess_ratio < 0.0f ) excess_ratio = 0.0;
+
+	lpf( &feedbackfilt , excess_ratio , FILTERCALC( 1e3, RATELIMITER_FILT_TIME_US ) );
+
+	for ( int i = 0 ; i < 3 ; i++)
+		{
+			feedback[i] =  1.0f - feedbackfilt;
+		}	
+// end RATELIMITER_ENABLE
+#endif
+			
 
 #ifdef MOTOR_FILTER
 
@@ -610,7 +677,7 @@ if (vbatt < (float) LVC_PREVENT_RESET_VOLTAGE) throttle = 0;
 					
 					#ifndef NOMOTORS
 					//normal mode
-					pwm_set( i , test );				
+					pwm_set( i , test );	
 					#else
 					#warning "NO MOTORS"
 					#endif
@@ -799,14 +866,10 @@ float clip_ff(float motorin, int number)
 }
 
 
-
-
-
 unsigned long bridgetime = 0;
 
 // the bridge sequencer creates a pause between motor direction changes
 // that way the motors do not try to instantly go in reverse and have time to slow down
-
 
 void bridge_sequencer(int dir)
 {
