@@ -426,7 +426,6 @@ void pwm_dir(int dir)
 		  for (int i = 0; i <= 3; i++)
 			  pwm_set_reverse(i, 0.0f);
 		  GPIO_WriteBit(GPIOA, GPIO_PIN_4, Bit_RESET);	// bridge dir 2
-		  delay(1000);
 		  GPIO_WriteBit(GPIOF, GPIO_PIN_1, Bit_SET);	// bridge dir 1
 
 	  }
@@ -437,7 +436,6 @@ void pwm_dir(int dir)
 		  for (int i = 0; i <= 3; i++)
 			  pwm_set_forward(i, 0.0f);
 		  GPIO_WriteBit(GPIOF, GPIO_PIN_1, Bit_RESET);	// bridge dir 1
-		  delay(1000);
 		  GPIO_WriteBit(GPIOA, GPIO_PIN_4, Bit_SET);	// bridge dir 2
 	  }
 	if (dir == FREE)
