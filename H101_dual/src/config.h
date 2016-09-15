@@ -295,10 +295,6 @@
 #define TRIM_ROLL_INV 0.0
 
 
-// adaptive bridge time max (uS)
-#define BRIDGE_TIMEOUT 50000
-
-
 // enable motors if pitch / roll controls off center (at zero throttle)
 // possible values: 0 / 1
 #define ENABLESTIX 0
