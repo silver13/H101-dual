@@ -264,9 +264,9 @@
 // do not change things below
 
 // serial prints with info
-#define SERIAL
+//#define SERIAL
 // serial driver on SWCLK - 57600 default
-#define SERIAL_DRV
+//#define SERIAL_DRV
 
 // invert yaw pid
 //#define INVERT_YAW_PID
