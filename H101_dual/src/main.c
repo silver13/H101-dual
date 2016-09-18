@@ -90,10 +90,6 @@ int main(void)
 
 	gpio_init();
 
-#ifdef SERIAL
-	serial_init();
-#endif
-
 	i2c_init();
 
 	spi_init();
@@ -181,6 +177,10 @@ int main(void)
 
 	gyro_cal();
 
+#ifdef SERIAL_DRV
+	serial_init();
+#endif
+	
 	imu_init();
 	
 	extern unsigned int liberror;
