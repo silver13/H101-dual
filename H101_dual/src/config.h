@@ -242,7 +242,7 @@
 //#define BUZZER_PIN       GPIO_PIN_13 // SWDAT
 #define BUZZER_PIN       GPIO_PIN_14 // SWCLK
 #define BUZZER_PIN_PORT  GPIOA
-#define BUZZER_DELAY     5000000 // 5 seconds after loss of tx or low bat before buzzer starts
+#define BUZZER_DELAY     5e6 // 5 seconds after loss of tx or low bat before buzzer starts
 
 // enable "bluetooth low energy" beacon
 //#define BLUETOOTH_ENABLE
@@ -298,10 +298,6 @@
 // inverted trims
 #define TRIM_PITCH_INV 0.0
 #define TRIM_ROLL_INV 0.0
-
-
-// adaptive bridge time max (uS)
-#define BRIDGE_TIMEOUT 50000
 
 
 // enable motors if pitch / roll controls off center (at zero throttle)
