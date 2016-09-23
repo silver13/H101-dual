@@ -304,6 +304,7 @@
 // possible values: 0 / 1
 #define ENABLESTIX 0
 #define ENABLESTIX_TRESHOLD 0.3
+#define ENABLESTIX_TIMEOUT 1e6
 
 // old calibration flash
 //#define OLD_LED_FLASH

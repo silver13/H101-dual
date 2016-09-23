@@ -308,14 +308,14 @@ limitf(&throttle, 1.0);
 #endif	// end 3d throttle remap
 	
 // turn motors off if throttle is off and pitch / roll sticks are centered
-	if (failsafe || (throttle < 0.001f && ( !ENABLESTIX || !onground_long || aux[LEVELMODE] || (fabsf(rx[0]) < (float) ENABLESTIX_TRESHOLD && fabsf(rx[1]) < (float) ENABLESTIX_TRESHOLD))))
+	if (failsafe || (throttle < 0.001f && ( !ENABLESTIX || !onground_long || aux[LEVELMODE] || (fabsf(rx[0]) < (float) ENABLESTIX_TRESHOLD && fabsf(rx[1]) < (float) ENABLESTIX_TRESHOLD && fabsf(rx[2]) < (float) ENABLESTIX_TRESHOLD ))))
 	  {			// motors off
 		
 		onground = 1;
 			
 		if ( onground_long )
 		{
-			if ( gettime() - onground_long > 1000000)
+			if ( gettime() - onground_long > ENABLESTIX_TIMEOUT)
 			{
 				onground_long = 0;
 			}
