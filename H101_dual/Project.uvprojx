@@ -570,6 +570,11 @@
               <FilePath>.\src\buzzer.c</FilePath>
             </File>
             <File>
+              <FileName>stickvector.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\src\stickvector.c</FilePath>
+            </File>
+            <File>
               <FileName>util.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\src\util.c</FilePath>

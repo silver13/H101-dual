@@ -119,14 +119,14 @@ void control(void)
 		  ratemulti = HIRATEMULTI;
 		  ratemultiyaw = HIRATEMULTIYAW;
 		  maxangle = MAX_ANGLE_HI;
-		  anglerate = LEVEL_MAX_RATE_HI;
+		  anglerate = LEVEL_MAX_RATE_HI * DEGTORAD;
 	  }
 	else
 	  {
 		  ratemulti = 1.0f;
 		  ratemultiyaw = 1.0f;
 		  maxangle = MAX_ANGLE_LO;
-		  anglerate = LEVEL_MAX_RATE_LO;
+		  anglerate = LEVEL_MAX_RATE_LO * DEGTORAD;
 	  }
 
 
@@ -209,36 +209,40 @@ if (currentdir == REVERSE)
 	  }
 
 	pid_precalc();
-
-float attitudecopy[2];
-		
-if (currentdir == REVERSE)
-		{	
-		// account for 180 deg wrap since inverted attitude is near 180
-		if ( attitude[0] > 0) attitudecopy[0] = attitude[0] - 180 - (float) TRIM_ROLL_INV;
-		else attitudecopy[0] = attitude[0] + 180 - (float) TRIM_ROLL_INV;		
-			
-		if ( attitude[1] > 0) attitudecopy[1] = attitude[1] - 180 - (float) TRIM_PITCH_INV;
-		else attitudecopy[1] = attitude[1] + 180 - (float) TRIM_PITCH_INV;		
-		}
-		else
-		{
-			// normal thrust mode
-			attitudecopy[0] = attitude[0] + (float) TRIM_ROLL;
-			attitudecopy[1] = attitude[1] + (float) TRIM_PITCH;
-		}
 		
 
 	if ( aux[LEVELMODE] )
-	  {			// level mode
+	  {// level mode
 
-		  angleerror[0] = rxcopy[0] * maxangle - attitudecopy[0];
-		  angleerror[1] = rxcopy[1] * maxangle - attitudecopy[1];
+		extern void stick_vector( float , int);
+		extern float errorvect[];	
+		float yawerror[3];
+		extern float GEstG[3];			
+			
+		stick_vector( maxangle , currentdir == REVERSE );
+		
+		float yawrate = rxcopy[2] * (float) MAX_RATEYAW * DEGTORAD * ( 1/2048.0f);
+		
+		yawerror[0] = GEstG[1]  * yawrate;
+		yawerror[1] = - GEstG[0]  * yawrate;
+		yawerror[2] = GEstG[2]  * yawrate;
 
-		  error[0] = apid(0) * anglerate * DEGTORAD - gyro[0];
-		  error[1] = apid(1) * anglerate * DEGTORAD - gyro[1];
-
-
+		if (currentdir == REVERSE)
+		{
+			yawerror[0] = - yawerror[0];
+			yawerror[1] = - yawerror[1];
+			yawerror[2] = - yawerror[2];
+		}	
+		
+			
+		for ( int i = 0 ; i <2; i++)
+			{
+			angleerror[i] = errorvect[i] * RADTODEG;
+			error[i] = apid(i) * anglerate + yawerror[i] - gyro[i];
+			}
+			
+		error[2] = yawerror[2]  - gyro[2];
+	  
 	  }
 	else
 	  {			// rate mode
@@ -252,11 +256,10 @@ if (currentdir == REVERSE)
 		  aierror[0] = 0.0f;
 			aierror[1] = 0.0f;
 
-
+		error[2] = rxcopy[2] * MAX_RATEYAW * DEGTORAD * ratemultiyaw * feedback[2] - gyro[2];
 	  }
 
 
-	error[2] = rxcopy[2] * MAX_RATEYAW * DEGTORAD * ratemultiyaw * feedback[2] - gyro[2];
 
 	pid(0);
 	pid(1);
@@ -395,7 +398,15 @@ limitf(&throttle, 1.0);
 		  if (aux[LEVELMODE])
 		    {
 
-			    float autothrottle = fastcos(attitude[0] * DEGTORAD) * fastcos(attitude[1] * DEGTORAD);
+			   // float autothrottle = fastcos(attitude[0] * DEGTORAD) * fastcos(attitude[1] * DEGTORAD);
+				 extern float GEstG[];
+				float autothrottle;
+				if ( 	GEstG[2] < 0 && currentdir == REVERSE)
+					autothrottle = - GEstG[2] * ( 1/2048.0f);
+					
+				if ( 	GEstG[2] > 0 && currentdir == FORWARD)
+					autothrottle =  GEstG[2] * ( 1/2048.0f);
+				
 			    float old_throttle = throttle;
 			    if (autothrottle <= 0.5f)
 				    autothrottle = 0.5f;
