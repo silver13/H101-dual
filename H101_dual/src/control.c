@@ -221,7 +221,7 @@ if (currentdir == REVERSE)
 			
 		stick_vector( maxangle , currentdir == REVERSE );
 		
-		float yawrate = rxcopy[2] * (float) MAX_RATEYAW * DEGTORAD * ( 1/2048.0f);
+		float yawrate = rxcopy[2] * (float) MAX_RATEYAW * DEGTORAD * ratemultiyaw  * ( 1/2048.0f);
 		
 		yawerror[0] = GEstG[1]  * yawrate;
 		yawerror[1] = - GEstG[0]  * yawrate;
