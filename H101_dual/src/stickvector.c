@@ -65,16 +65,76 @@ limitf( & errorvect[1] , 1.0);
 
 
 // fix to recover if triggered inverted
-if ( inverted && (GEstG[2] > 1000) )
+// the vector cross product results in zero for opposite vectors, so it's bad at 180 error
+// without this the quad will not invert if angle difference = 180 
+
+static int flip_active_once = 0;
+static int flipaxis = 0;
+static int flipdir = 0;
+int flip_active = 0;
+
+#define rollrate 2.0f
+#define g_treshold 250
+#define roll_bias 500
+
+if ( inverted && (GEstG[2] > g_treshold) )
 {
-	// set maximum roll
-	errorvect[0] = 1.0;
+	flip_active = 1;
+	// rotate around axis with larger leaning angle
+
+		if ( flipdir ) 
+		{
+			errorvect[flipaxis] = rollrate;
+		}
+		else 
+		{
+			errorvect[flipaxis] = -rollrate;			
+		}
+		
 }
-// fix to recover if triggered inverted
-if ( !inverted && (GEstG[2] < -1000) )
+else if ( !inverted && (GEstG[2] < -g_treshold) )
 {
-	// set maximum roll
-	errorvect[0] = 1.0;
+	flip_active = 1;
+
+		if ( flipdir ) 
+		{
+			errorvect[flipaxis] = -rollrate;
+		}
+		else 
+		{
+			errorvect[flipaxis] = rollrate;			
+		}
+
+}
+else
+	flip_active_once = 0;
+
+// set common things here to avoid duplication
+if ( flip_active )
+{
+	if ( !flip_active_once )
+	{
+		// check which axis is further from center, with a bias towards roll
+		// because a roll flip does not leave the quad facing the wrong way
+		if( fabsf(GEstG[0])+ roll_bias > fabsf(GEstG[1]) )
+		{
+			// flip in roll axis
+			flipaxis = 0;
+		}
+		else
+			flipaxis = 1;
+	
+	if (  GEstG[flipaxis] > 0 )
+		flipdir = 1;
+	else
+		flipdir = 0;
+	
+	flip_active_once = 1;
+	}
+	
+	// set the error in other axis to return to zero
+	errorvect[!flipaxis] = g_vect[!flipaxis]; 
+	
 }
 
 }
