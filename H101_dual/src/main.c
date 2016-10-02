@@ -49,6 +49,7 @@ THE SOFTWARE.
 #include "drv_i2c.h"
 #include "buzzer.h"
 #include "binary.h"
+#include <math.h>
 
 #include <inttypes.h>
 
@@ -246,6 +247,49 @@ vbatt = battadc;
 		lpf ( &thrfilt , thrsum , 0.9968f);	// 0.5 sec at 1.6ms loop time	
 		
 		lpf ( &vbattfilt , battadc , 0.9968f);		
+
+#ifdef AUTO_VDROP_FACTOR
+
+static float lastout[12];
+static float lastin[12];
+static float vcomp[12];
+static float score[12];
+static int current_index = 0;
+
+int minindex = 0;
+float min = score[0];
+
+{
+	int i = current_index;
+
+	vcomp[i] = vbattfilt + (float) i *0.1f * thrfilt;
+		
+	if ( lastin[i] < 0.1f ) lastin[i] = vcomp[i];
+	float temp;
+	//	y(n) = x(n) - x(n-1) + R * y(n-1) 
+	//  out = in - lastin + coeff*lastout
+		// hpf
+	 temp = vcomp[i] - lastin[i] + FILTERCALC( 1000*12 , 1000e3) *lastout[i];
+		lastin[i] = vcomp[i];
+		lastout[i] = temp;
+	 lpf ( &score[i] , fabsf(temp) , FILTERCALC( 1000*12 , 10e6 ) );
+
+	}
+	current_index++;
+	if ( current_index >= 12 ) current_index = 0;
+
+	for ( int i = 0 ; i < 12; i++ )
+	{
+	 if ( score[i] < min )  
+		{
+			min = score[i];
+			minindex = i;
+		}
+}
+
+#undef VDROP_FACTOR
+#define VDROP_FACTOR  minindex * 0.1f
+#endif
 
 		if ( lowbatt ) hyst = HYST;
 		else hyst = 0.0f;

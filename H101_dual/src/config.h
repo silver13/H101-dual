@@ -190,6 +190,9 @@
 // in volts
 #define VDROP_FACTOR 0.70f
 
+// determine VDROP_FACTOR automatically in-flight, set factor ignored
+#define AUTO_VDROP_FACTOR
+
 // voltage hysteresys
 // in volts
 #define HYST 0.10f
