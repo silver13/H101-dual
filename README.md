@@ -19,7 +19,7 @@ It works with Devo , stock or H8 mini tx.You could also use the diy [nrf24_multi
  * GigaDevice GD32F130G6 cortex-M3 32k
  * Invensense gyro + accelerometer
  * XN297 transceiver
- * 8 Nfets and 8 Pfets. The P fets are controlled commonly in groups of 4.
+ * 8 Nfets and 8 Pfets. The P fets are controlled together in 2 groups of 4.
 
 
 Cpu datasheet: [Pdf](https://app.box.com/s/3zi661iffmit1rwda499wu8vycv03biv) Cpu Documentation: [Pdf](https://app.box.com/s/pehsanvluc40qu8k2036sbjk5ti08y2m)
@@ -87,6 +87,15 @@ Read [INSTALL.md](INSTALL.md) for more information.
 
 ###Wiki
 http://sirdomsen.diskstation.me/dokuwiki/doku.php?id=start
+
+### .10.16
+* High angle update (level mode works up to 90 degrees)
+* level mode drift bug fix
+* auto voltage drop calculation added
+* acro to level mode handling improved, now flips around roll or pitch if needed
+* buzzer functionality added, on programming pins
+* serial "out" can be used on one of the programming pins
+* pwm deadtime bug fix when toggling direction
 
 ###14.08.16
 * bluetooth beacon added
