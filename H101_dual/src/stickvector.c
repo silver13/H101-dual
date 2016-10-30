@@ -39,9 +39,17 @@ stickvector[0] = fastsin( roll );
 stickvector[1] = fastsin( pitch );
 stickvector[2] = fastcos( roll ) * fastcos( pitch );
 
-float mag2 = Q_rsqrt( (stickvector[0] * stickvector[0] + stickvector[1] * stickvector[1]) / (1 - stickvector[2] * stickvector[2]));
+	
+float	mag2 = (stickvector[0] * stickvector[0] + stickvector[1] * stickvector[1]);
+
+if ( mag2 > 0.001f ) 
+{
+mag2 = Q_rsqrt( mag2 / (1 - stickvector[2] * stickvector[2]) );
+}
+else mag2 = 0.707f;
+
 stickvector[0] *=mag2;
-stickvector[1] *=mag2;	
+stickvector[1] *=mag2;		
 
 if ( inverted )
 {

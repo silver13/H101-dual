@@ -53,6 +53,16 @@ THE SOFTWARE.
 
 #include <inttypes.h>
 
+
+
+#ifdef __GNUC__
+// gcc warnings and fixes
+#undef AUTO_VDROP_FACTOR
+#warning #define AUTO_VDROP_FACTOR not working with gcc, using fixed factor
+#endif
+
+
+
 // hal
 void clk_init(void);
 
