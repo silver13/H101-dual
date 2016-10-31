@@ -5,8 +5,8 @@
 __DO NOT ACCIDENTALLY FLASH THE H8MINI FIRMWARE TO THE H101__ (it may break it)
 
 Select folder for the correct firmware:
-* H101_Acro: Acro only, inverted flight possible (manual on a switch)
-* H101_dual: either/both modes, inverted flight possible (manual on a switch)
+* __H101_Acro__: Acro only, inverted flight possible (manual on a switch)
+* __H101_dual__: either/both modes, inverted flight possible (manual on a switch)
 
 Note for H101_dual code: By default motor direction is automatically set at takeoff / zero-throttle, based on orientation.
 
@@ -34,11 +34,12 @@ Firmware thread featuring flashing info : [rcgroups.com](http://www.rcgroups.com
 
 ###Changing settings
 
-config.h - all settings: rates, switches/buttons config, other options
+__config.h__ - all settings: rates, switches/buttons config, other options
 
-pid.c - pids ( tuned for standard H101)
+__pid.c__ - pids ( tuned for standard H101)
 
-angle_pid.c (*dual mode only*) level mode pid, also uses acro pids in level mode, so it should fly ok in acro mode first.
+__angle_pid.c__ (*dual mode only*) level mode pid, also uses acro pids in level mode, so it should fly ok in acro mode first.
+
 
 After changing settings, remember to click compile first, not just upload.
 
