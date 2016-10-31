@@ -530,6 +530,11 @@
               <FilePath>.\src\led.c</FilePath>
             </File>
             <File>
+              <FileName>rgb_led.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\src\rgb_led.c</FilePath>
+            </File>
+            <File>
               <FileName>main.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\src\main.c</FilePath>
@@ -599,6 +604,11 @@
               <FileType>5</FileType>
               <FilePath>.\src\config.h</FilePath>
             </File>
+            <File>
+              <FileName>hardware.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\src\hardware.h</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -658,6 +668,11 @@
               <FileName>drv_fmc1.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\src\drv_fmc1.c</FilePath>
+            </File>
+            <File>
+              <FileName>drv_rgb.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\src\drv_rgb.c</FilePath>
             </File>
           </Files>
         </Group>
