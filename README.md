@@ -2,18 +2,18 @@
 
 *now with dual mode as well*
 
+__DO NOT ACCIDENTALLY FLASH THE H8MINI FIRMWARE TO THE H101__ (it may break it)
 
 Select folder for the correct firmware:
-* H101_Acro: Acro only, inverted flight possible (manual on a switch)
-* H101_dual: either/both modes, inverted flight possible (manual on a switch)
-* H101_dual: (default) motor direction is automatically set at takeoff / zero-throttle, based on orientation
+* __H101_Acro__: Acro only, inverted flight possible (manual on a switch)
+* __H101_dual__: either/both modes, inverted flight possible (manual on a switch)
+
+Note for H101_dual code: By default motor direction is automatically set at takeoff / zero-throttle, based on orientation.
 
 
 For programming the ground pad is marked (B-) on the pcb(near the edge) .It is also close to some other components. Note there is also a (B+) pad,do not connect this. 
 
 It works with Devo , stock or H8 mini tx.You could also use the diy [nrf24_multipro](https://github.com/goebish/nrf24_multipro) module by Goebish.
-
-*** DO NOT ACCIDENTALLY FLASH THE H8MINI FIRMWARE TO THE H101*** (it may break it)
 
 
  * GigaDevice GD32F130G6 cortex-M3 32k
@@ -24,7 +24,7 @@ It works with Devo , stock or H8 mini tx.You could also use the diy [nrf24_multi
 
 Cpu datasheet: [Pdf](https://app.box.com/s/3zi661iffmit1rwda499wu8vycv03biv) Cpu Documentation: [Pdf](https://app.box.com/s/pehsanvluc40qu8k2036sbjk5ti08y2m)
 
-The firmware needs Keil.GD32F1xx_DFP.1.1.0.pack which adds support for the cpu to Keil (5.15 used).
+The firmware needs Keil.GD32F1xx_DFP.1.1.0.pack which adds support for the cpu to Keil (5.15 used). Later Keil versions will ask for the pack to be installed if not present, and will download it automatically.
 
 
 The firmware flash procedure is the same as the H8.
@@ -34,26 +34,27 @@ Firmware thread featuring flashing info : [rcgroups.com](http://www.rcgroups.com
 
 ###Changing settings
 
-config.h - all settings: rates, switches/buttons config, other options
+__config.h__ - all settings: rates, switches/buttons config, other options
 
-pid.c - pids ( tuned for standard H8 mini)
+__pid.c__ - pids ( tuned for standard H101)
 
-angle_pid.c (*dual mode only*) level mode pid, also uses acro pids in level mode, so it should fly ok in acro mode first.
+__angle_pid.c__ (*dual mode only*) level mode pid, also uses acro pids in level mode, so it should fly ok in acro mode first.
+
 
 After changing settings, remember to click compile first, not just upload.
 
 #####Stock tx:
-On the stock tx only the rate (expert) button works. Trims are not functional on the stock tx.
+On the stock tx only the rate (expert) button works. Trims are not functional on the stock tx, but the buttons can be used for controlling functions such as acro / level switch.
 
 #####Devo tx:
 Channels work as intended except the rate/expert channel which is always on. Dynamic trims are not used, and trims should not be required.
 
-Assign the extra channels to the desired functions in config.h. Right now there is only headless and hi/low rates to set if needed. The defaults should be ok too. ( no headless / rates high always)
+Assign the extra channels to the desired functions in config.h. A setting such as "#define LEVELMODE DEVO_CHAN_9" could be used, for example.
 
 #####Gyro calibration
 Gyro calibration runs automatically after power up, and usually completes within 2-4 seconds. If for some reason the calibration fails to complete, such as if there is movement, it will eventually time out in 15 seconds.
 
-During calibration the leds flash in an "X" like pattern. If movement is detected the flashing stops and only 2 leds illuminate. The flashing resumes when movement stops.
+During calibration the leds glow from low brightness to high brightness. If movement is detected the flashing stops. The flashing resumes when movement stops.
 
 *The quad should be standing still during gyro calibration for best results*
 
@@ -71,7 +72,7 @@ In some cases the leds are used to indicate error conditions, and as such they f
 The most common of this is 2 flashes = low battery, usually caused by an in-flight reset due to low battery. All other flashes are non user serviceable. The description is in main.c.
 
 #####Led flash patterns
-At startup the leds should flash a gyro calibration pattern for 2 - 15 seconds, glow like pattern. Movement stops the flashing while it occurs.
+At startup the leds should flash a gyro calibration pattern for 2 - 15 seconds, with a glow like pattern. Movement stops the flashing while it occurs.
 
 Following should be a fast (20 times/sec) flash indicating that the quad is waiting for bind. 
 
@@ -87,6 +88,12 @@ Read [INSTALL.md](INSTALL.md) for more information.
 
 ###Wiki
 http://sirdomsen.diskstation.me/dokuwiki/doku.php?id=start
+
+
+### 31.13.16
+* gcc compilation fix for issue introduced by the high angle update
+* RGB strip driver added for ws2812 ws2813 leds (settings in hardware.h)
+* file hardware.h added for compatibility with other builds
 
 ### .10.16
 * High angle update (level mode works up to 90 degrees)
