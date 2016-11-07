@@ -60,6 +60,8 @@ const float integrallimit[PIDNUMBER] = { 0.8, 0.8, 0.4 };
 
 
 
+// multiplier for pids at 3V - for PID_VOLTAGE_COMPENSATION - default 1.33f H101
+#define PID_VC_FACTOR 1.33f
 
 #ifdef NORMAL_DTERM
 static float lastrate[PIDNUMBER];
@@ -71,10 +73,12 @@ extern float looptime;
 extern float gyro[3];
 extern int onground;
 extern float looptime;
+extern float vbattfilt;
 
 static float lasterror[PIDNUMBER];
 float ierror[PIDNUMBER] = { 0, 0, 0 };
 float timefactor;
+float v_compensation = 1.00;
 
 #ifdef NORMAL_DTERM
 static float lastrate[PIDNUMBER];
@@ -96,6 +100,11 @@ static float lasterror2[PIDNUMBER];
 void pid_precalc()
 {
 	timefactor = 0.0032f / looptime;
+#ifdef PID_VOLTAGE_COMPENSATION	
+	v_compensation = mapf ( vbattfilt , 3.00 , 4.00 , PID_VC_FACTOR , 1.00);
+	if( v_compensation > PID_VC_FACTOR) v_compensation = PID_VC_FACTOR;
+	if( v_compensation < 1.00f) v_compensation = 1.00;
+#endif	
 }
 
 
@@ -166,6 +175,10 @@ float pid(int x)
 
 	lastratexx[x][1] = lastratexx[x][0];
 	lastratexx[x][0] = gyro[x];
+#endif
+
+#ifdef PID_VOLTAGE_COMPENSATION
+	pidoutput[x] *= v_compensation;
 #endif
 
 	limitf(&pidoutput[x], outlimit[x]);

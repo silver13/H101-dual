@@ -201,6 +201,7 @@
 //#define LVC_PREVENT_RESET
 #define LVC_PREVENT_RESET_VOLTAGE 2.85
 
+//#define PID_VOLTAGE_COMPENSATION
 
 // enable motor filter
 // hanning 3 sample fir filter
