@@ -299,9 +299,9 @@
 #define TRIM_PITCH 0.0
 #define TRIM_ROLL 0.0
 
-// inverted trims
-#define TRIM_PITCH_INV 0.0
-#define TRIM_ROLL_INV 0.0
+// inverted trims ( disabled)
+//#define TRIM_PITCH_INV 0.0
+//#define TRIM_ROLL_INV 0.0
 
 
 // enable motors if pitch / roll controls off center (at zero throttle)
