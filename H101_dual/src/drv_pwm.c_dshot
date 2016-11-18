@@ -5,10 +5,10 @@
 // No throttle jitter, not min/max calibration, just pure digital goodness :)
 
 // Dshot150 would be fast enough for up to 8 kHz main loop frequency. But
-// since this implementation does simple bit banging, Dshot150 takes a lot
-// (about 11%) of our 1 ms main loop time, yielding to only 6 % idle time.
-// Dshot300 takes about 5.5%, which is more tolerable. Implementing the driver
-// using DMA (like Betaflight does) is left as an excercise for the reader ;)
+// since this implementation does simple bit banging, Dshot150 takes a lot of
+// our 1 ms main loop time. Dshot300 takes less time for bit banging, which
+// leaves more idle time. Implementing the driver using DMA (like Betaflight
+// does) is left as an excercise for the reader ;)
 
 // The ESC signal must be taken before the FET, i.e. non-inverted. The
 // signal after the FET with a pull-up resistor is not good enough.
@@ -32,14 +32,12 @@
 //#define DSHOT300
 
 
-#include <math.h>
 #include <gd32f1x0.h>
 
 #include "config.h"
 #include "defines.h"
 #include "drv_pwm.h"
 #include "drv_time.h"
-#include "util.h"
 
 #ifdef THREE_D_THROTTLE
 #error "Not tested with THREE_D_THROTTLE config option"
@@ -102,14 +100,14 @@ void pwm_set( uint8_t number, float pwm )
 #ifdef BIDIRECTIONAL
 
 	if ( pwmdir == FORWARD ) {
-		value = lroundf( mapf( pwm, 0.0, 0.999, 48.0, 1047.0 ) );
+		value = 48 + (uint16_t)( pwm * 1000 ); // maps 0.0 .. 0.999 to 48 .. 1047
 	} else if ( pwmdir == REVERSE ) {
-		value = lroundf( mapf( pwm, 0.0, 0.999, 1048.0, 2047.0 ) );
+		value = 1048 + (uint16_t)( pwm * 1000 ); // maps 0.0 .. 0.999 to 1048 .. 2047
 	}
 
 #else
 
-	value = lroundf( mapf( pwm, 0.0, 0.999, 48.0, 2047.0 ) );
+	value = 48 + (uint16_t)( pwm * 2002 ); // maps 0.0 .. 0.999 to 48 .. 2047
 
 #endif
 
