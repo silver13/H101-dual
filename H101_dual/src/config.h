@@ -139,6 +139,9 @@
 // leds on / off channel
 #define LEDS_ON CH_ON
 
+// Channel to turn a GPIO pin on/off. Can be used to switch
+// a FPV camera on/off. Select the FPV_PIN in hardware.h
+//#define FPV_ON CH_VID // DEVO_CHAN_8
 
 
 
