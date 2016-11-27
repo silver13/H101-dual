@@ -12,3 +12,9 @@
 
 #define FPV_PIN GPIO_PIN_14 // SWCLK
 #define FPV_PIN_PORT GPIOA
+
+
+//#define BUZZER_PIN       GPIO_PIN_13 // SWDAT
+#define BUZZER_PIN       GPIO_PIN_14 // SWCLK
+#define BUZZER_PIN_PORT  GPIOA
+#define BUZZER_DELAY     5e6 // 5 seconds after loss of tx or low bat before buzzer starts

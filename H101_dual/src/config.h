@@ -3,7 +3,7 @@
 
 /*
 
- .----------------.  .----------------.  .----------------.  .----------------. 
+ .----------------.  .----------------.  .----------------.  .----------------.
 | .--------------. || .--------------. || .--------------. || .--------------. |
 | |  ____  ____  | || |     __       | || |     ____     | || |     __       | |
 | | |_   ||   _| | || |    /  |      | || |   .'    '.   | || |    /  |      | |
@@ -13,7 +13,7 @@
 | | |____||____| | || |   |_____|    | || |   '.____.'   | || |   |_____|    | |
 | |              | || |              | || |              | || |              | |
 | '--------------' || '--------------' || '--------------' || '--------------' |
- '----------------'  '----------------'  '----------------'  '----------------' 
+ '----------------'  '----------------'  '----------------'  '----------------'
 
 ***DO NOT FLASH H8 FIRMWARE TO THE H101 BY ACCIDENT***
 
@@ -58,7 +58,7 @@
 // 3d throttle - center off
 //#define THREE_D_THROTTLE
 
-// deadzone in center of 3d throttle 0.0 - 1.0 
+// deadzone in center of 3d throttle 0.0 - 1.0
 #define THREE_D_THROTTLE_DEADZONE 0.2
 
 
@@ -68,7 +68,7 @@
 // use if your tx has no expo function
 // also comment out DISABLE_EXPO to use
 // -1 to 1 , 0 = no exp
-// positive = less sensitive near center 
+// positive = less sensitive near center
 #define EXPO_XY 0.3f
 #define EXPO_YAW 0.0f
 
@@ -105,7 +105,7 @@
 //
 
 
-// CH_FLIP - 0 - flip 
+// CH_FLIP - 0 - flip
 // CH_EXPERT - 1 - expert
 // CH_HEADFREE - 2 - headfree
 // CH_RTH - 3 - headingreturn
@@ -116,9 +116,9 @@
 // CH_RLL_TRIM - 7 - Roll trims
 // CH_THR_TRIM - 8 - Throttle trims
 // CH_YAW_TRIM - 9 - Yaw trims
-// CH_INV 10 - Inverted mode 
-// CH_VID 7 - 
-// CH_PIC 8 - 
+// CH_INV 10 - Inverted mode
+// CH_VID 7 -
+// CH_PIC 8 -
 // CH_ON - 10 - on always
 // CH_OFF - 11 - off always
 //
@@ -133,7 +133,7 @@
 // level / acro mode switch
 #define LEVELMODE CH_AUX1
 
-// channel for inverted mode ( default - CH_AUX3 - gravity based) 
+// channel for inverted mode ( default - CH_AUX3 - gravity based)
 #define INVERTEDMODE CH_AUX3
 
 // leds on / off channel
@@ -243,13 +243,8 @@
 // failsafe time in uS
 #define FAILSAFETIME 1000000  // one second
 
-// uncomment to enable buzzer
+// uncomment to enable buzzer. Select the BUZZER_PIN in hardware.h
 //#define BUZZER_ENABLE
-
-//#define BUZZER_PIN       GPIO_PIN_13 // SWDAT
-#define BUZZER_PIN       GPIO_PIN_14 // SWCLK
-#define BUZZER_PIN_PORT  GPIOA
-#define BUZZER_DELAY     5e6 // 5 seconds after loss of tx or low bat before buzzer starts
 
 // enable "bluetooth low energy" beacon
 //#define BLUETOOTH_ENABLE
@@ -325,7 +320,7 @@
 //#define MOTOR_MAX_ENABLE
 #define MOTOR_MAX_VALUE 1.00
 
-// under this voltage the software will not start 
+// under this voltage the software will not start
 // if STOP_LOWBATTERY is defined
 #define STOP_LOWBATTERY_TRESH 3.3f
 
@@ -335,7 +330,7 @@
 
 // don't stop software on low battery so buzzer will still sound
 #ifdef BUZZER_ENABLE
-#undef STOP_LOWBATTERY 
+#undef STOP_LOWBATTERY
 #endif
 
 // disable startup battery check so beacon can work after a reset
@@ -349,7 +344,7 @@
 #ifndef __GNUC__
 
 #pragma diag_warning 1035 , 177 , 4017
-#pragma diag_error 260 
+#pragma diag_error 260
 
 #endif
 // --fpmode=fast ON
