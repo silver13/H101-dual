@@ -1,5 +1,3 @@
-# travis build configuration for stm32plus
-
 env:
 #Do not define 'global' env vars here.  They cannot be used with API builds
     matrix:
