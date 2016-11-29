@@ -143,7 +143,9 @@
 // a FPV camera on/off. Select the FPV_PIN in hardware.h
 //#define FPV_ON CH_VID // DEVO_CHAN_8
 
-
+// Airmode keeps the PID loop stabilizing the quads orientation even at zero throttle.
+// To stop the motors on ground a switch on the remote control is necessary.
+//#define AIRMODE_HOLD_SWITCH CH_INV // DEVO_CHAN_5
 
 
 // aux1 channel starts on if this is defined, otherwise off.
