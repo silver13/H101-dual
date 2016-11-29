@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/silver13/H101-acro.png)](https://travis-ci.org/silver13/H101-acro)
+
 # Floureon H101 acro firmware 
 
 *now with dual mode as well*
