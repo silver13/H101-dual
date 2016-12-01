@@ -1,8 +1,11 @@
-# Floureon H101 acro firmware 
+[![Build Status](https://travis-ci.org/silver13/H101-acro.png)](https://travis-ci.org/silver13/H101-acro)
+
+# Floureon H101 and Eachine H8S acro firmware ( red board )
 
 *now with dual mode as well*
 
 __DO NOT ACCIDENTALLY FLASH THE H8MINI FIRMWARE TO THE H101__ (it may break it)
+
 
 Select folder for the correct firmware:
 * __H101_Acro__: Acro only, inverted flight possible (manual on a switch)
