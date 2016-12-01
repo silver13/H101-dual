@@ -52,7 +52,7 @@ float pidkd[PIDNUMBER] = { 6.05e-1, 6.05e-1, 4e-1 };
 
 
 
-// output limit                 
+// output limit
 const float outlimit[PIDNUMBER] = { 0.8, 0.8, 0.4 };
 
 // limit of integral term (abs)
@@ -100,11 +100,11 @@ static float lasterror2[PIDNUMBER];
 void pid_precalc()
 {
 	timefactor = 0.0032f / looptime;
-#ifdef PID_VOLTAGE_COMPENSATION	
+#ifdef PID_VOLTAGE_COMPENSATION
 	v_compensation = mapf ( vbattfilt , 3.00 , 4.00 , PID_VC_FACTOR , 1.00);
 	if( v_compensation > PID_VC_FACTOR) v_compensation = PID_VC_FACTOR;
 	if( v_compensation < 1.00f) v_compensation = 1.00;
-#endif	
+#endif
 }
 
 
@@ -113,7 +113,7 @@ float pid(int x)
 
 	if (onground)
 	  {
-		  ierror[x] *= 0.8f;
+		  ierror[x] *= 0.98f; // 50 ms time-constant
 	  }
 
 	int iwindup = 0;
@@ -152,10 +152,10 @@ float pid(int x)
 	// P term
 	pidoutput[x] = error[x] * pidkp[x];
 
-	// I term       
+	// I term
 	pidoutput[x] += ierror[x];
 
-	// D term                 
+	// D term
 
 #ifdef NORMAL_DTERM
 	pidoutput[x] = pidoutput[x] - (gyro[x] - lastrate[x]) * pidkd[x] * timefactor;

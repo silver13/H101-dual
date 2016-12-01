@@ -903,6 +903,8 @@ void bridge_sequencer(int dir)
 			    bridge_stage = BRIDGE_WAIT;
 			    bridgetime = gettime();
 			    pwm_dir(FREE);
+			    extern float ierror[3];
+			    ierror[0] = 0.0; ierror[1] = 0.0; ierror[2] = 0.0;
 		    }
 		  if (bridge_stage == BRIDGE_WAIT)
 		    {
@@ -925,6 +927,8 @@ void bridge_sequencer(int dir)
 			    bridge_stage = BRIDGE_WAIT;
 			    bridgetime = gettime();
 			    pwm_dir(FREE);
+			    extern float ierror[3];
+			    ierror[0] = 0.0; ierror[1] = 0.0; ierror[2] = 0.0;
 		    }
 		  if (bridge_stage == BRIDGE_WAIT)
 		    {
