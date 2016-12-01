@@ -254,7 +254,7 @@
 
 
 // 0 - 3 transmit power
-#define TX_POWER_TELEMERTY 1
+#define TX_POWER_TELEMETRY 1
 
 // rx protocol selection
 #define RX_BAYANG_TELEMETRY

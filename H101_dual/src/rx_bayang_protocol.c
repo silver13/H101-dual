@@ -73,13 +73,13 @@ THE SOFTWARE.
 
 
 
-#ifdef RX_BAYANG_TELEMETRY
+#ifdef TX_POWER_TELEMETRY
 
 
-#ifndef TX_POWER_TELEMERTY 
+#ifndef TX_POWER_TELEMETRY 
 #define TX_POWER 3
 #else
-#define TX_POWER TX_POWER_TELEMERTY
+#define TX_POWER TX_POWER_TELEMETRY
 #endif
 
 // global variables
