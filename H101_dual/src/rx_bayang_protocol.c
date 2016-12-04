@@ -137,13 +137,11 @@ void rx_init()
     static uint8_t bbcal[6] = { 0x3f, 0x4c, 0x84, 0x6F, 0x9c, 0x20 };
     writeregs(bbcal, sizeof(bbcal));
 // new values
-    static uint8_t rfcal[8] =
-        { 0x3e, 0xc9, 0x9a, 0xA0, 0x61, 0xbb, 0xab, 0x9c };
+    static uint8_t rfcal[8] = { 0x3e, 0xc9, 0x9a, 0xA0, 0x61, 0xbb, 0xab, 0x9c };
     writeregs(rfcal, sizeof(rfcal));
 
 // 0xa7 0x03
-    static uint8_t demodcal[6] =
-        { 0x39, 0x0b, 0xdf, 0xc4, B00100111, B00000000 };
+    static uint8_t demodcal[6] = { 0x39, 0x0b, 0xdf, 0xc4, B00100111, B00000000 };
     writeregs(demodcal, sizeof(demodcal));
 
 
@@ -157,21 +155,21 @@ void rx_init()
     int rxaddress[5] = { 0, 0, 0, 0, 0 };
     xn_writerxaddress(rxaddress);
 
-    xn_writereg(EN_AA, 0);      // aa disabled
+    xn_writereg(EN_AA, 0);  // aa disabled
     xn_writereg(EN_RXADDR, 1);  // pipe 0 only
     xn_writereg(RF_SETUP, XN_POWER);    // lna high current on ( better performance )
     xn_writereg(RX_PW_P0, 15);  // payload size
     xn_writereg(SETUP_RETR, 0); // no retransmissions ( redundant?)
     xn_writereg(SETUP_AW, 3);   // address size (5 bits)
     xn_command(FLUSH_RX);
-    xn_writereg(RF_CH, 0);      // bind on channel 0
+    xn_writereg(RF_CH, 0);  // bind on channel 0
 
 
 #ifdef RADIO_XN297L
     xn_writereg(0x1d, B00111000);   // 64 bit payload , software ce
     spi_cson();
-    spi_sendbyte(0xFD);         // internal CE high command
-    spi_sendbyte(0);            // required for above
+    spi_sendbyte(0xFD); // internal CE high command
+    spi_sendbyte(0);    // required for above
     spi_csoff();
 #endif
 
@@ -200,7 +198,7 @@ void rx_init()
 unsigned long packettime;
 int channelcount[4];
 int failcount;
-int packetrx;
+
 int packetpersecond;
 
 
@@ -209,6 +207,7 @@ int afterskip[12];
 //#warning "RX debug enabled"
 #endif
 
+int packetrx;
 
 
 
@@ -228,41 +227,37 @@ void beacon_sequence()
 
     switch (beacon_seq_state)
       {
-          case 0:
-              // send data
-              telemetry_send = 1;
-              xn_writereg(RF_SETUP, XN_POWER & B11111110);  // lna high current off ( better performance )
-              send_telemetry();
-              beacon_seq_state++;
-              break;
+      case 0:
+          // send data
+          telemetry_send = 1;
+          send_telemetry();
+          beacon_seq_state++;
+          break;
 
-          case 1:
-              // wait for data to finish transmitting
-              if ((xn_readreg(0x17) & B00010000))
-                {
-                    xn_writereg(0, XN_TO_RX);
-                    //xn_writereg(0x25, rfchannel[oldchan]);
-                    beacon_seq_state = 0;
-                    telemetry_send = 0;
-                    xn_writereg(RF_SETUP, XN_POWER | 1);    // lna high current on ( better performance )
-                    nextchannel();
-                }
-              else
-                {               // if it takes too long we get rid of it
-                    if (gettime() - send_time > TELEMETRY_TIMEOUT)
-                      {
-                          xn_command(FLUSH_TX);
-                          xn_writereg(0, XN_TO_RX);
-                          xn_writereg(RF_SETUP, XN_POWER | 1);  // lna high current on ( better performance )
-                          beacon_seq_state = 0;
-                          telemetry_send = 0;
-                      }
-                }
-              break;
+      case 1:
+          // wait for data to finish transmitting
+          if ((xn_readreg(0x17) & B00010000))
+            {
+                xn_writereg(0, XN_TO_RX);
+                beacon_seq_state = 0;
+                telemetry_send = 0;
+                nextchannel();
+            }
+          else
+            {   // if it takes too long we get rid of it
+                if (gettime() - send_time > TELEMETRY_TIMEOUT)
+                  {
+                      xn_command(FLUSH_TX);
+                      xn_writereg(0, XN_TO_RX);
+                      beacon_seq_state = 0;
+                      telemetry_send = 0;
+                  }
+            }
+          break;
 
-          default:
-              beacon_seq_state = 0;
-              break;
+      default:
+          beacon_seq_state = 0;
+          break;
 
 
 
@@ -285,12 +280,6 @@ void send_telemetry()
     txdata[0] = 133;
     txdata[1] = lowbatt;
 
-//  int vbatt = vbattfilt *100;
-//  vbatt = vbatt - 200;
-//  if (vbatt < 0) vbatt = 0;
-//  if (vbatt > 255) vbatt = 255;   
-//  txdata[2] = vbatt;
-
     int vbatt = vbattfilt * 100;
 // battery volt filtered    
     txdata[3] = (vbatt >> 8) & 0xff;
@@ -305,7 +294,7 @@ void send_telemetry()
     if (temp > 255)
         temp = 255;
 
-    txdata[7] = temp;           // rx strenght
+    txdata[7] = temp;   // rx strenght
 
     if (lowbatt)
         txdata[3] |= (1 << 3);
@@ -319,13 +308,10 @@ void send_telemetry()
     txdata[14] = sum;
 
     xn_command(FLUSH_TX);
-
     xn_writereg(0, XN_TO_TX);
-
     xn_writepayload(txdata, 15);
 
     send_time = gettime();
-
     return;
 }
 
@@ -336,7 +322,7 @@ static char checkpacket()
     int status = xn_readreg(7);
 
     if (status & (1 << MASK_RX_DR))
-      {                         // rx clear bit
+      { // rx clear bit
           // this is not working well
           // xn_writereg( STATUS , (1<<MASK_RX_DR) );
           //RX packet received
@@ -376,9 +362,7 @@ static int decodepacket(void)
                 rx[1] = packettodata(&rxdata[6]);
                 rx[2] = packettodata(&rxdata[10]);
                 // throttle     
-                rx[3] =
-                    ((rxdata[8] & 0x0003) * 256 +
-                     rxdata[9]) * 0.000976562f;
+                rx[3] = ((rxdata[8] & 0x0003) * 256 + rxdata[9]) * 0.000976562f;
 
 #ifndef DISABLE_EXPO
                 rx[0] = rcexpo(rx[0], EXPO_XY);
@@ -424,11 +408,11 @@ static int decodepacket(void)
                       lastaux[i] = aux[i];
                   }
 
-                return 1;       // valid packet 
+                return 1;   // valid packet 
             }
-          return 0;             // sum fail
+          return 0; // sum fail
       }
-    return 0;                   // first byte different
+    return 0;   // first byte different
 }
 
 
@@ -436,7 +420,7 @@ static int decodepacket(void)
 void nextchannel()
 {
     rf_chan++;
-    rf_chan %= 4;
+    rf_chan &= 3;
     xn_writereg(0x25, rfchannel[rf_chan]);
 }
 
@@ -461,11 +445,11 @@ void checkrx(void)
     if (packetreceived)
       {
           if (rxmode == RX_MODE_BIND)
-            {                   // rx startup , bind mode
+            {   // rx startup , bind mode
                 xn_readpayload(rxdata, 15);
 
                 if (rxdata[0] == 0xa4 || rxdata[0] == 0xa3)
-                  {             // bind packet
+                  { // bind packet
                       if (rxdata[0] == 0xa3)
                         {
                             telemetry_enabled = 1;
@@ -495,7 +479,7 @@ void checkrx(void)
                   }
             }
           else
-            {                   // normal mode  
+            {   // normal mode  
 #ifdef RXDEBUG
                 channelcount[rf_chan]++;
                 packettime = gettime() - lastrxtime;
@@ -514,9 +498,7 @@ void checkrx(void)
 
                 if (pass)
                   {
-#ifdef RXDEBUG
                       packetrx++;
-#endif
                       if (telemetry_enabled)
                           beacon_sequence();
                       skipchannel = 0;
@@ -535,9 +517,9 @@ void checkrx(void)
 #endif
                   }
 
-            }                   // end normal rx mode
+            }   // end normal rx mode
 
-      }                         // end packet received
+      } // end packet received
 
 // finish sending if already started
     if (telemetry_send)
@@ -546,8 +528,7 @@ void checkrx(void)
     unsigned long time = gettime();
 
 
-    if (time - lastrxtime > (HOPPING_NUMBER * packet_period + 1000)
-        && rxmode != RX_MODE_BIND)
+    if (time - lastrxtime > (HOPPING_NUMBER * packet_period + 1000) && rxmode != RX_MODE_BIND)
       {
           //  channel with no reception   
           lastrxtime = time;
@@ -560,14 +541,11 @@ void checkrx(void)
           timingfail = 1;
       }
 
-    if (!timingfail && !telemetry_send && skipchannel < HOPPING_NUMBER + 1
-        && rxmode != RX_MODE_BIND)
+    if (!timingfail && !telemetry_send && skipchannel < HOPPING_NUMBER + 1 && rxmode != RX_MODE_BIND)
       {
           unsigned int temp = time - lastrxtime;
 
-          if (temp > 1000
-              && (temp - (PACKET_OFFSET)) / ((int) packet_period) >=
-              (skipchannel + 1))
+          if (temp > 1000 && (temp - (PACKET_OFFSET)) / ((int) packet_period) >= (skipchannel + 1))
             {
                 nextchannel();
 #ifdef RXDEBUG
@@ -578,21 +556,32 @@ void checkrx(void)
       }
 
     if (time - failsafetime > FAILSAFETIME)
-      {                         //  failsafe
+      {
+          //  failsafe
           failsafe = 1;
           rx[0] = 0;
           rx[1] = 0;
           rx[2] = 0;
           rx[3] = 0;
       }
-#ifdef RXDEBUG
-    if (gettime() - secondtimer > 1000000)
+
+    static uint8_t index = 0;
+    static uint8_t rxarray[4];
+
+    if (gettime() - secondtimer > 250000)
       {
-          packetpersecond = packetrx;
+          // calculate rate over 250 ms and add together to get 1 second
+          // for faster update rate   
+          index++;
+          index &= 3;   // same as "index %=4"
+          rxarray[index] = packetrx;
+
+          packetpersecond = rxarray[0] + rxarray[1] + rxarray[2] + rxarray[3];
+
           packetrx = 0;
           secondtimer = gettime();
       }
-#endif
+
 
 }
 
