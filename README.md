@@ -92,8 +92,10 @@ Read [INSTALL.md](INSTALL.md) for more information.
 ###Wiki
 http://sirdomsen.diskstation.me/dokuwiki/doku.php?id=start
 
+### 01.12.16
+* added telemetry for devo tx
 
-### 31.13.16
+### 31.10.16
 * gcc compilation fix for issue introduced by the high angle update
 * RGB strip driver added for ws2812 ws2813 leds (settings in hardware.h)
 * file hardware.h added for compatibility with other builds
