@@ -123,6 +123,7 @@
 // CH_OFF - 11 - off always
 //
 // devo can use DEVO_CHAN_5 - DEVO_CHAN_10
+// Multiprotocol can use MULTI_CHAN_5 - MULTI_CHAN_10
 
 // Headless mode
 #define HEADLESSMODE CH_OFF
