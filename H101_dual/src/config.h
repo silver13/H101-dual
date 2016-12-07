@@ -140,8 +140,14 @@
 // leds on / off channel
 #define LEDS_ON CH_ON
 
+
+// toggle is a block with an input and an output
+// uncomment input to enable ( aux 2 is gesture up - up - up )
+//#define TOGGLE_IN CH_AUX2
+#define TOGGLE_OUT CH_AUX4
+
 // Channel to turn a GPIO pin on/off. Can be used to switch
-// a FPV camera on/off. Select the FPV_PIN in hardware.h
+// a FPV camera on/off . Select the FPV_PIN in hardware.h
 //#define FPV_ON CH_VID // DEVO_CHAN_8
 
 // Airmode keeps the PID loop stabilizing the quads orientation even at zero throttle.
@@ -151,6 +157,7 @@
 
 // aux1 channel starts on if this is defined, otherwise off.
 #define AUX1_START_ON
+//#define AUX4_START_ON
 
 // use yaw/pitch instead of roll/pitch for gestures
 //#define GESTURES_USE_YAW

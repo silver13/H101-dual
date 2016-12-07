@@ -38,7 +38,7 @@
 #define CH_VID 7
 #define CH_PIC 8
 #define CH_AUX3 11
-#define CH_AUX4 CH_OFF
+#define CH_AUX4 12
 
 #define DEVO_CHAN_5 CH_INV
 #define DEVO_CHAN_6 CH_FLIP

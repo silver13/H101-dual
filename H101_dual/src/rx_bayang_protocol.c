@@ -122,6 +122,10 @@ void rx_init()
     aux[CH_AUX1] = 1;
 #endif
 
+#ifdef AUX4_START_ON
+    aux[CH_AUX4] = 1;
+#endif
+
 
 #ifdef RADIO_XN297L
 
