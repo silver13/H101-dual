@@ -16,8 +16,9 @@ Note for H101_dual code: By default motor direction is automatically set at take
 
 For programming the ground pad is marked (B-) on the pcb(near the edge) .It is also close to some other components. Note there is also a (B+) pad,do not connect this. 
 
-It works with Devo , stock or H8 mini tx.You could also use the diy [nrf24_multipro](https://github.com/goebish/nrf24_multipro) module by Goebish.
+It works with Devo, stock or H8 mini tx.
 
+You could also use diy [nrf24_multipro](https://github.com/goebish/nrf24_multipro) module by Goebish or [DIY-Multiprotocol-TX-Module](https://github.com/pascallanger/DIY-Multiprotocol-TX-Module) which supports telemetry.
 
  * GigaDevice GD32F130G6 cortex-M3 32k
  * Invensense gyro + accelerometer
