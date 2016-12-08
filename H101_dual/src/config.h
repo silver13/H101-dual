@@ -256,9 +256,7 @@
 // uncomment to enable buzzer. Select the BUZZER_PIN in hardware.h
 //#define BUZZER_ENABLE
 
-// enable "bluetooth low energy" beacon
-//#define BLUETOOTH_ENABLE
-//#define USE_IBEACON
+
 
 
 // 0 - 3 transmit power
@@ -267,7 +265,7 @@
 // rx protocol selection
 #define RX_BAYANG_TELEMETRY
 //#define RX_BAYANG_BLE
-
+//#define RX_BAYANG_BLE_APP
 
 
 
@@ -350,7 +348,7 @@
 #endif
 
 // disable startup battery check so beacon can work after a reset
-#ifdef BLUETOOTH_ENABLE
+#ifdef RX_BAYANG_BLE
 #undef STOP_LOWBATTERY
 #endif
 
