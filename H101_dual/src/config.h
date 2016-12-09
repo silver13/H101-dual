@@ -352,6 +352,10 @@
 #undef STOP_LOWBATTERY
 #endif
 
+#ifdef RX_BAYANG_BLE_APP
+#undef STOP_LOWBATTERY
+#endif
+
 // do not change
 // only for compilers other than gcc
 // some warnings, mainly double to float conversion

@@ -54,18 +54,18 @@ THE SOFTWARE.
 // -----------------------------------------------
 // Configuration for SilverVISE telemetry  - start
 // -----------------------------------------------
-// Following set of options will be used only if you enabled #define RX_BAYANG_BLE
+// Following set of options will be used only if you enabled #define RX_BAYANG_BLE_APP
 //
 // For telemetry with SilverVISE application, you must define unique name of each quad you flash.
 // Names between quadcopters must not be the same if you plan to fly more than one in the same time.
-// Name must be entered inside quotation marks ("") - just replace NONAME with desired quad name.
+// Name must be entered inside quotation marks ("") - just replace H101 with desired quad name.
 // Be original and keep up to 6 characters (any longer name will be cut to first 6 characters).
 // You can use letters A to Z, numbers 0 to 9 and some special characters like # / \ - _ etc.
 // Please use only caps lock letters because name is not case sensitive. Avoid using blanks in name!
 
 #define MY_QUAD_NAME "H101"
 
-// MY_QUAD_ID defines unique ID for MAC address. Replace "--- set value here ---" text with any value between 1 and 255.
+// MY_QUAD_ID defines unique ID for MAC address. Leave 123 or replace it with any other value between 1 and 255.
 // Use ONLY values between 1 and 255!
 // This is actually one byte of MAC address used for bluetooth communication between quad and SilverVISE application.
 // Unique MY_QUAD_ID can be the same for all your quads as long as you won't have powered on more than one in the same time (or you are sure that nobody else uses the same number
@@ -90,19 +90,19 @@ THE SOFTWARE.
 // and get propper image in SilverVISE application.
 // For this firmware and H101 board, values are:
 //
-// 20 - Floureon H101 - original quadcopter (default)
-// 21 - X9 frame with H101 board
-// 22 - Custom frame with H101 board
+// 0x20 - Floureon H101 - original quadcopter (default)
+// 0x21 - X9 frame with H101 board
+// 0x22 - Custom frame with H101 board
 //
-// 33 - Eachine H8S 3D mini blue frame - H101 board
-// 34 - Eachine H8S 3D mini green frame - H101 board
+// 0x33 - Eachine H8S 3D mini blue frame - H101 board
+// 0x34 - Eachine H8S 3D mini green frame - H101 board
 //
-// 33 - Eachine E010 red frame - H101 board
-// 34 - Eachine E010 green frame - H101 board
+// 0x43 - Eachine E010 red frame - H101 board
+// 0x44 - Eachine E010 green frame - H101 board
 //
 // Values 01 to 19 are reserved for H8 firmwares. 00 represents unknown quad (generic image)
 
-//#define MY_QUAD_MODEL 20
+//#define MY_QUAD_MODEL 0x20
 
 // *** THE FOLLOWING THREE SETTINGS USE ONLY IF YOU HAVE PROBLEMS WITH VERY OFTEN "TLM DISCONNECTING" ALARMS, ESPECIALLY ON FULL THROTTLE ***
 // If you do not experience these problems and have stable telemetry connection, do not enable and set TX_POWER_GENERAL, TX_POWER_ON_TLM nor USE_ALL_BLE_CHANNELS
@@ -646,7 +646,7 @@ extern int random_seed;
 #ifdef MY_QUAD_ID
 random_seed = MY_QUAD_ID;
 #else
-#warning WARNING!!! USING RANDOM MAC ADDRESS! PLEASE READ COMMENT INSIDE rx_bayang_ble_app.h REGARDING POSSIBLE PROBLEMS WITH BLUETOOTH DUE TO ANDROID BUG!
+#warning WARNING!!! USING RANDOM MAC ADDRESS! PLEASE READ COMMENT INSIDE rx_bayang_ble_app.c REGARDING POSSIBLE PROBLEMS WITH BLUETOOTH DUE TO ANDROID BUG!
 #endif
 // SilverVISE - end
 
