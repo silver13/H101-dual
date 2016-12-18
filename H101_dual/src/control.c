@@ -149,6 +149,12 @@ aux[TOGGLE_OUT]=!aux[TOGGLE_OUT];
 #ifdef STICKS_DEADBAND
 		if ( fabsf( rxcopy[ i ] ) <= STICKS_DEADBAND ) {
 			rxcopy[ i ] = 0.0f;
+		} else {
+			if ( rxcopy[ i ] >= 0 ) {
+				rxcopy[ i ] = mapf( rxcopy[ i ], STICKS_DEADBAND, 1, 0, 1 );
+			} else {
+				rxcopy[ i ] = mapf( rxcopy[ i ], -STICKS_DEADBAND, -1, 0, -1 );
+			}
 		}
 #endif
 	  }
