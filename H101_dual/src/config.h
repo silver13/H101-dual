@@ -322,6 +322,9 @@
 #define ENABLESTIX_TRESHOLD 0.3
 #define ENABLESTIX_TIMEOUT 1e6
 
+// A deadband can be used to eliminate stick center jitter and non-returning to exactly 0.
+//#define STICKS_DEADBAND 0.02f
+
 // old calibration flash
 //#define OLD_LED_FLASH
 

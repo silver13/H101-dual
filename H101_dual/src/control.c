@@ -103,10 +103,10 @@ void control(void)
 if ( auxchange[TOGGLE_IN] && !aux[TOGGLE_IN] )
 {
    ledcommand = 1;
-aux[TOGGLE_OUT]=!aux[TOGGLE_OUT];    
+aux[TOGGLE_OUT]=!aux[TOGGLE_OUT];
 }
 #endif
-    
+
 #ifndef THREE_D_THROTTLE
 	if ( aux[INVERTEDMODE] )
 	{
@@ -145,6 +145,18 @@ aux[TOGGLE_OUT]=!aux[TOGGLE_OUT];
 		#else
 		rxcopy[i] = rx[i];
 		#endif
+
+#ifdef STICKS_DEADBAND
+		if ( fabsf( rxcopy[ i ] ) <= STICKS_DEADBAND ) {
+			rxcopy[ i ] = 0.0f;
+		} else {
+			if ( rxcopy[ i ] >= 0 ) {
+				rxcopy[ i ] = mapf( rxcopy[ i ], STICKS_DEADBAND, 1, 0, 1 );
+			} else {
+				rxcopy[ i ] = mapf( rxcopy[ i ], -STICKS_DEADBAND, -1, 0, -1 );
+			}
+		}
+#endif
 	  }
 
 
