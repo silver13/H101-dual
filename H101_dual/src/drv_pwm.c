@@ -3,6 +3,9 @@
 #include "drv_pwm.h"
 #include "defines.h"
 #include "config.h"
+#include "hardware.h"
+
+#ifdef USE_PWM_DRIVER
 
 TIMER_OCInitPara TIM_OCInitStructure;
 
@@ -463,3 +466,5 @@ void pwm_dir(int dir)
 	  }
 
 }
+
+#endif
