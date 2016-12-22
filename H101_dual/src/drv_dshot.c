@@ -1,8 +1,8 @@
 // CHANGING THE H-BRIDGE CODE CAN RESULT IN CONNECTING THE FETs ACROSS THE
-// BATTERY AND AS SUCH BRAKING THE BOARD.
+// BATTERY AND AS SUCH BREAKING THE BOARD.
 
 // Dshot driver for H101_dual firmware. Written by Markus Gritsch.
-// No throttle jitter, not min/max calibration, just pure digital goodness :)
+// No throttle jitter, no min/max calibration, just pure digital goodness :)
 
 // Dshot150 would be fast enough for up to 8 kHz main loop frequency. But
 // since this implementation does simple bit banging, Dshot150 takes a lot of
