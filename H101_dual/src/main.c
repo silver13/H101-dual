@@ -110,10 +110,10 @@ int main(void)
 	
 //	bridge_sequencer(DIR1);
 
-	pwm_set(MOTOR_FL, 0);	// FL
-	pwm_set(MOTOR_FR, 0);
-	pwm_set(MOTOR_BL, 0);	// BL
-	pwm_set(MOTOR_BR, 0);	// FR
+	for (int i = 0; i <= 3; i++)
+	  {
+		  pwm_set(i, 0);
+	  }
 
 	time_init();
 
