@@ -190,7 +190,7 @@ static void bitbang_data()
 		const uint8_t data = motor_data[ i ];
 		motor_data[ i ] = 0;
 
-		if ( data & 0x01 ) {
+		if ( data & ( 0x01 << MOTOR_FL ) ) {
 			__asm{NOP}
 			gpioset( GPIOA, GPIO_PIN_1 ); // FL
 		} else {
@@ -198,7 +198,7 @@ static void bitbang_data()
 			gpioreset( GPIOA, GPIO_PIN_1 );
 		}
 
-		if ( data & 0x02 ) {
+		if ( data & ( 0x01 << MOTOR_BL ) ) {
 			__asm{NOP}
 			gpioset( GPIOA, GPIO_PIN_3 ); // BL
 		} else {
@@ -206,7 +206,7 @@ static void bitbang_data()
 			gpioreset( GPIOA, GPIO_PIN_3 );
 		}
 
-		if ( data & 0x04 ) {
+		if ( data & ( 0x01 << MOTOR_FR ) ) {
 			__asm{NOP}
 			gpioset( GPIOA, GPIO_PIN_10 ); // FR
 		} else {
@@ -214,7 +214,7 @@ static void bitbang_data()
 			gpioreset( GPIOA, GPIO_PIN_10 );
 		}
 
-		if ( data & 0x08 ) {
+		if ( data & ( 0x01 << MOTOR_BR ) ) {
 			__asm{NOP}
 			gpioset( GPIOA, GPIO_PIN_8 ); // BR
 		} else {
