@@ -525,7 +525,7 @@ if (vbatt < (float) LVC_PREVENT_RESET_VOLTAGE) throttle = 0;
 		  for (int i = 0; i < 4; i++)
 		    {
 			    if (mix[i] > overthrottle)
-				    overthrottle = mix[i];
+				    overthrottle = mix[i];               
 					if (mix[i] < underthrottle)
 						underthrottle = mix[i];
 		    }
@@ -597,6 +597,8 @@ if (vbatt < (float) LVC_PREVENT_RESET_VOLTAGE) throttle = 0;
 
 			underthrottle *= ((float)MIX_THROTTLE_REDUCTION_PERCENT / 100.0f);
 
+#else
+    underthrottle = 0.001f;        
 #endif
 
 
