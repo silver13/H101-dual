@@ -152,7 +152,7 @@ int main(void)
 
 	while (count < 64)
 	  {
-		  vbattfilt += adc_read(1);
+		  vbattfilt += adc_read(ADC_ID_VOLTAGE);
 		  count++;
 	  }
        // for randomising MAC adddress of ble app - this will make the int = raw float value        
@@ -241,7 +241,7 @@ int main(void)
 // battery low logic
 				
 		float hyst;
-		float battadc = adc_read(1);
+		float battadc = adc_read(ADC_ID_VOLTAGE);
 vbatt = battadc;
 		// average of all 4 motor thrusts
 		// should be proportional with battery current			
@@ -298,7 +298,7 @@ float min = score[0];
 		if ( lowbatt ) hyst = HYST;
 		else hyst = 0.0f;
 
-vbatt_comp = vbattfilt + (float) VDROP_FACTOR * thrfilt;
+		vbatt_comp = vbattfilt + (float) VDROP_FACTOR * thrfilt;
 
 		if ( vbatt_comp <(float) VBATTLOW + hyst ) lowbatt = 1;
 		else lowbatt = 0;
