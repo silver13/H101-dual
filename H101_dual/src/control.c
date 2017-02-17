@@ -695,8 +695,14 @@ if ( excess_ratio < 0.0f ) excess_ratio = 0.0;
 					test = throttle;
 					// flash leds in valid throttle range
 					ledcommand = 1;
+					// Spin all motors if the roll/pitch stick is centered.
+					// Otherwise select the motors to test by deflecting the roll/pitch stick.
+					if ( i == MOTOR_FL && ( rx[ROLL] > 0.5f || rx[PITCH] < -0.5f ) ) { test = 0; }
+					if ( i == MOTOR_BL && ( rx[ROLL] > 0.5f || rx[PITCH] > 0.5f ) ) { test = 0; }
+					if ( i == MOTOR_FR && ( rx[ROLL] < -0.5f || rx[PITCH] < -0.5f ) ) { test = 0; }
+					if ( i == MOTOR_BR && ( rx[ROLL] < -0.5f || rx[PITCH] > 0.5f ) ) { test = 0; }
 					// for battery estimation
-					mix[i] = throttle;
+					mix[i] = test;
 					#warning "MOTORS TEST MODE"
 					#endif
 
