@@ -867,6 +867,28 @@ float motormap(float input)
 }
 #endif
 
+#ifdef CUSTOM_MOTOR_CURVE
+
+float motormap(float in)
+{
+    
+float exp = CUSTOM_MOTOR_CURVE;
+	if ( exp > 1 ) exp = 1;
+	if ( exp < -1 ) exp = -1;
+ 
+if (in > 1.0f) in = 1.0f;
+if (in < 0) in = 0;
+    
+	float ans = in * (in*in * exp +  ( 1 - exp ));
+
+if (ans > 1.0f) ans = 1.0f;
+if (ans < 0) ans = 0;
+    
+	return ans;
+}
+#endif
+
+
 float hann_lastsample[4];
 float hann_lastsample2[4];
 

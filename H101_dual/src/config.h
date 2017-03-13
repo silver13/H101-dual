@@ -240,6 +240,7 @@
 //#define MOTOR_CURVE_85MM_8KHZ
 //#define MOTOR_CURVE_85MM_8KHZ_OLD
 //#define MOTOR_CURVE_85MM_32KHZ
+//#define CUSTOM_MOTOR_CURVE 0.3
 
 // pwm frequency for motor control
 // a higher frequency makes the motors more linear
