@@ -36,7 +36,7 @@ THE SOFTWARE.
 #include "pid.h"
 #include "util.h"
 #include "config.h"
-
+#include <stdlib.h>
 #include "defines.h"
 #include <stdbool.h>
 
