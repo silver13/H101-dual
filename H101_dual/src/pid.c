@@ -55,7 +55,7 @@ float pidkd[PIDNUMBER] = { 6.05e-1, 6.05e-1, 4e-1 };
 // PID_GESTURES modifications
 int number_of_increments[3][3] = {{0, 0, 0}, {0, 0, 0}, {0, 0, 0}};
 int current_pid_axis = 0;
-int current_pid_term = 1;
+int current_pid_term = 0;
 float * current_pid_term_pointer = pidkp;
 // PID_GESTURES modifications - End
 
