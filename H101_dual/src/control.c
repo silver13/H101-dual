@@ -77,6 +77,8 @@ void bridge_sequencer(int dir);
 int bridge_stage = BRIDGE_WAIT;
 
 int currentdir;
+extern int ledcommand;
+extern int ledblink;
 
 // for 3d throttle
 #ifdef THREE_D_THROTTLE
@@ -211,20 +213,52 @@ if (currentdir == REVERSE)
 		    }
 		  else
 		    {
-			    ledcommand = 1;
+					// PID_GESTURES modifications - Removed ledcommand = 1 for all cases, and added it just for command == 1 or 2
 			    if (command == 2)
 			      {
+							ledcommand = 1;
 				      aux[CH_AUX1] = 1;
 
 			      }
 			    if (command == 1)
 			      {
+							ledcommand = 1;
 				      aux[CH_AUX1] = 0;
 			      }
-					if (command == 4)
+			     if (command == 4)
 			      {
+							ledcommand = 1;
 				      aux[CH_AUX2] = !aux[CH_AUX2];
 			      }
+			#ifdef PID_GESTURE_TUNING
+			  int blink = 0;
+			    if (command == 5)
+			      {
+							// Cycle to next pid term (P I D)
+							blink = next_pid_term();
+			      }
+			    if (command == 6)
+			      {
+							// Cycle to next axis (Roll Pitch Yaw)
+							blink = next_pid_axis();
+			      }
+			    if (command == 7)
+			      {
+				      // Increase by 10%
+							blink = increase_pid();
+			      }
+			    if (command == 8)
+			      {
+					// Descrease by 10%
+				      			blink = decrease_pid();
+			      }
+					// U D U - Next PID term
+					// U D D - Next PID Axis
+					// U D R - Increase value
+					// U D L - Descrease value
+					ledblink = blink; //Will cause led logic to blink the number of times ledblink has stored in it.
+					// PID_GESTURES modifications - End
+			  #endif
 		    }
 	  }
 

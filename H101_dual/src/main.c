@@ -46,6 +46,7 @@ THE SOFTWARE.
 #include "rx_bayang.h"
 #include "drv_spi.h"
 #include "control.h"
+#include "pid.h"
 #include "defines.h"
 #include "drv_i2c.h"
 #include "buzzer.h"
@@ -78,6 +79,8 @@ unsigned long maintime;
 unsigned long lastlooptime;
 
 int ledcommand = 0;
+int ledblink = 0; // PID_GESTURES modification
+
 unsigned long ledcommandtime = 0;
 
 
@@ -342,6 +345,19 @@ float min = score[0];
 							    }
 							  ledflash(100000, 8);
 						  }
+							// PID_GESTURES modifications
+						else if (ledblink)
+						{
+							if (!ledcommandtime)
+								  ledcommandtime = gettime();
+							if (gettime() - ledcommandtime > 500000)
+							    {
+								    ledblink--;
+								    ledcommandtime = 0;
+							    }
+							ledflash(500000, 1);
+						} // PID_GESTURES modifications - End
+						
 						else
 						{
 							if ( aux[LEDS_ON] )

@@ -269,7 +269,9 @@
 //#define RX_BAYANG_BLE_APP
 
 
-
+// Comment out to disable pid tuning gestures
+#define PID_GESTURE_TUNING
+#define COMBINE_PITCH_ROLL_PID_TUNING
 
 
 
