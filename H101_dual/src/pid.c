@@ -41,16 +41,14 @@ THE SOFTWARE.
 #include <stdbool.h>
 
 
-
 // Kp                                                                                   ROLL       PITCH     YAW
-float pidkp[PIDNUMBER] = { 12.0e-2, 12.0e-2, 4e-1 };
+float pidkp_flash[PIDNUMBER] = { 12.0e-2, 12.0e-2, 4e-1 };
 
 // Ki                                                                                   ROLL       PITCH     YAW
-float pidki[PIDNUMBER] = { 6.5e-1, 6.5e-1, 50e-1 };
+float pidki_flash[PIDNUMBER] = { 6.5e-1, 6.5e-1, 50e-1 };
 
 // Kd                                                                                   ROLL       PITCH     YAW
-float pidkd[PIDNUMBER] = { 6.05e-1, 6.05e-1, 4e-1 };
-
+float pidkd_flash[PIDNUMBER] = { 6.05e-1, 6.05e-1, 4e-1 };
 
 
 // output limit
@@ -63,6 +61,11 @@ const float integrallimit[PIDNUMBER] = { 0.8, 0.8, 0.4 };
 
 // multiplier for pids at 3V - for PID_VOLTAGE_COMPENSATION - default 1.33f H101
 #define PID_VC_FACTOR 1.33f
+
+// working pids loaded from flash / above automatically
+float pidkp[PIDNUMBER] = { 0, 0, 0 };
+float pidki[PIDNUMBER] = { 0, 0, 0 };
+float pidkd[PIDNUMBER] = { 0, 0, 0 };
 
 
 int number_of_increments[3][3] = {{0, 0, 0}, {0, 0, 0}, {0, 0, 0}};
