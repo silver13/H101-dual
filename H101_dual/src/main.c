@@ -79,7 +79,7 @@ unsigned long maintime;
 unsigned long lastlooptime;
 
 int ledcommand = 0;
-int ledblink = 0; // PID_GESTURES modification
+int ledblink = 0;
 
 unsigned long ledcommandtime = 0;
 
@@ -345,7 +345,7 @@ float min = score[0];
 							    }
 							  ledflash(100000, 8);
 						  }
-							// PID_GESTURES modifications
+
 						else if (ledblink)
 						{
 							if (!ledcommandtime)
@@ -356,7 +356,7 @@ float min = score[0];
 								    ledcommandtime = 0;
 							    }
 							ledflash(500000, 1);
-						} // PID_GESTURES modifications - End
+						}
 						
 						else
 						{

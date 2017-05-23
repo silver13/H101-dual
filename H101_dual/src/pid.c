@@ -52,12 +52,6 @@ float pidki[PIDNUMBER] = { 6.5e-1, 6.5e-1, 50e-1 };
 float pidkd[PIDNUMBER] = { 6.05e-1, 6.05e-1, 4e-1 };
 
 
-// PID_GESTURES modifications
-int number_of_increments[3][3] = {{0, 0, 0}, {0, 0, 0}, {0, 0, 0}};
-int current_pid_axis = 0;
-int current_pid_term = 0;
-float * current_pid_term_pointer = pidkp;
-// PID_GESTURES modifications - End
 
 // output limit
 const float outlimit[PIDNUMBER] = { 0.8, 0.8, 0.4 };
@@ -69,6 +63,13 @@ const float integrallimit[PIDNUMBER] = { 0.8, 0.8, 0.4 };
 
 // multiplier for pids at 3V - for PID_VOLTAGE_COMPENSATION - default 1.33f H101
 #define PID_VC_FACTOR 1.33f
+
+
+int number_of_increments[3][3] = {{0, 0, 0}, {0, 0, 0}, {0, 0, 0}};
+int current_pid_axis = 0;
+int current_pid_term = 0;
+float * current_pid_term_pointer = pidkp;
+
 
 #ifdef NORMAL_DTERM
 static float lastrate[PIDNUMBER];
@@ -116,7 +117,6 @@ void pid_precalc()
 
 
 
-// PID_GESTURES modifications
 
 // Cycle through P / I / D - The initial value is P
 // The return value is the currently selected TERM (after setting the next one)
@@ -217,7 +217,7 @@ int decrease_pid()
 {
 	return change_pid_value(0);
 }
-// PID_GESTURES modifications - End
+
 
 
 

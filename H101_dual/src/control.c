@@ -213,7 +213,6 @@ if (currentdir == REVERSE)
 		    }
 		  else
 		    {
-					// PID_GESTURES modifications - Removed ledcommand = 1 for all cases, and added it just for command == 1 or 2
 			    if (command == 2)
 			      {
 							ledcommand = 1;
@@ -257,7 +256,6 @@ if (currentdir == REVERSE)
 					// U D R - Increase value
 					// U D L - Descrease value
 					ledblink = blink; //Will cause led logic to blink the number of times ledblink has stored in it.
-					// PID_GESTURES modifications - End
 			  #endif
 		    }
 	  }

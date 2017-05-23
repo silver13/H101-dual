@@ -227,7 +227,6 @@ int gesture_sequence(int currentgesture)
 			    gbuffer[1] = GESTURE_OTHER;
 			    return 4;
 		    }
-			// PID_GESTURES modifications
 			#ifdef PID_GESTURE_TUNING
 			if (check_command ( &gbuffer[0] , &command5[0] ))
 		    {
@@ -264,7 +263,7 @@ int gesture_sequence(int currentgesture)
 			    return 8;
 		    }
 			#endif
-			// PID_GESTURES modifications - End
+
 
 
 				
