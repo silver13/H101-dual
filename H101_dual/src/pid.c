@@ -129,8 +129,6 @@ void pid_precalc()
 // The return value is used to blink the leds in main.c
 int next_pid_term()
 {
-	current_pid_axis = 0;
-	
 	switch (current_pid_term)
 	{
 		case 0:
