@@ -214,6 +214,12 @@
 //#define LVC_PREVENT_RESET
 #define LVC_PREVENT_RESET_VOLTAGE 2.85
 
+// lower throttle when battery below treshold
+//#define LVC_LOWER_THROTTLE
+#define LVC_LOWER_THROTTLE_VOLTAGE 3.30
+#define LVC_LOWER_THROTTLE_VOLTAGE_RAW 2.70
+#define LVC_LOWER_THROTTLE_KP 3.0
+
 //#define PID_VOLTAGE_COMPENSATION
 
 // enable motor filter
