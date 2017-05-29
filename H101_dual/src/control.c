@@ -496,12 +496,12 @@ static float throttle_i = 0.0f;
 
 // can be made into a function
 if (vbattfilt < (float) LVC_LOWER_THROTTLE_VOLTAGE_RAW ) 
-   throttle_p = ((float) LVC_LOWER_THROTTLE_VOLTAGE_RAW - vbattfilt) *(float) LVC_LOWER_THROTTLE_KP;
+   throttle_p = ((float) LVC_LOWER_THROTTLE_VOLTAGE_RAW - vbattfilt);
 // can be made into a function
 if (vbatt_comp < (float) LVC_LOWER_THROTTLE_VOLTAGE) 
-   throttle_p = ((float) LVC_LOWER_THROTTLE_VOLTAGE - vbatt_comp) *(float) LVC_LOWER_THROTTLE_KP;	
+   throttle_p = ((float) LVC_LOWER_THROTTLE_VOLTAGE - vbatt_comp) ;	
 
-if ( throttle_p > 1.0f ) throttle_p = 1.0f;
+
 
 if ( throttle_p > 0 ) 
 {
@@ -512,7 +512,12 @@ else throttle_i -= 0.001f;// ki on release
 if ( throttle_i > 0.5f) throttle_i = 0.5f;
 if ( throttle_i < 0.0f) throttle_i = 0.0f;
 
+throttle_p *= (float) LVC_LOWER_THROTTLE_KP;
+if ( throttle_p > 1.0f ) throttle_p = 1.0f;
+
 throttle -= throttle_p + throttle_i;
+
+if ( throttle < 0 ) throttle = 0;
 #endif
             
             
