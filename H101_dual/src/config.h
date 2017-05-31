@@ -171,14 +171,17 @@
 
 
 // throttle angle compensation in level mode
-// comment out to disable
 //#define AUTO_THROTTLE
 
 
 // enable auto lower throttle near max throttle to keep control
-// comment out to disable
+// comment out to disable 
 //#define MIX_LOWER_THROTTLE
 #define MIX_INCREASE_THROTTLE
+
+// brushless lower throttle type 3 - use only 1 lower throttle method
+// fast acting
+//#define MIX_LOWER_THROTTLE_3
 
 // lowers the rates when motor limits exceeded
 //#define RATELIMITER_ENABLE
