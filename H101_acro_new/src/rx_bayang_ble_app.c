@@ -693,7 +693,7 @@ else
 unsigned int total_time_in_air_time = total_time_in_air>>20;
 total_time_in_air_time = total_time_in_air_time *10;
 
-int rate_and_mode_value = (aux[RATES]<<1) + !!(aux[LEVELMODE]);
+int rate_and_mode_value = (aux[RATES]<<1);
 
 extern int bound_for_BLE_packet;
 extern int failsafe;
