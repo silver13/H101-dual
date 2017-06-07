@@ -562,6 +562,10 @@ if ( throttle < 0 ) throttle = 0;
 
 #ifdef MIX_LOWER_THROTTLE_3
 {
+#ifndef MIX_THROTTLE_REDUCTION_MAX
+#define MIX_THROTTLE_REDUCTION_MAX 0.5f
+#endif
+    
 float overthrottle = 0;
 
 for (int i = 0; i < 4; i++)
@@ -573,18 +577,50 @@ for (int i = 0; i < 4; i++)
 
 overthrottle -=1.0f;
 // limit to half throttle max reduction            
-if ( overthrottle > 0.5f)  overthrottle = 0.5f;     
+if ( overthrottle > (float) MIX_THROTTLE_REDUCTION_MAX)  overthrottle = (float) MIX_THROTTLE_REDUCTION_MAX;     
             
 if ( overthrottle > 0.0f)
 {    
     for ( int i = 0 ; i < 4 ; i++)
         mix[i] -= overthrottle;
 }
-#ifdef MIX_LOWER_THROTTLE_3_FLASHLED
+#ifdef MIX_THROTTLE_FLASHLED
 if ( overthrottle > 0.1f) ledcommand = 1;
 #endif
 }
 #endif
+
+
+#ifdef MIX_INCREASE_THROTTLE_3
+{
+#ifndef MIX_THROTTLE_INCREASE_MAX
+#define MIX_THROTTLE_INCREASE_MAX 0.2f
+#endif
+    
+float underthrottle = 0;
+
+for (int i = 0; i < 4; i++)
+    {
+        if (mix[i] < underthrottle)
+            underthrottle = mix[i]; 
+    }                
+
+
+// limit to half throttle max reduction            
+if ( underthrottle < -(float) MIX_THROTTLE_INCREASE_MAX)  underthrottle = -(float) MIX_THROTTLE_INCREASE_MAX;     
+            
+if ( underthrottle < 0.0f)
+    {    
+        for ( int i = 0 ; i < 4 ; i++)
+            mix[i] -= underthrottle;
+    }
+#ifdef MIX_THROTTLE_FLASHLED
+if ( underthrottle < -0.01f) ledcommand = 1;
+#endif
+}
+#endif
+
+
         
 #if ( defined MIX_LOWER_THROTTLE || defined MIX_INCREASE_THROTTLE)
 
@@ -700,7 +736,11 @@ if ( overthrottle > 0.1f) ledcommand = 1;
 
 		  if (overthrottle > 0 || underthrottle < 0 )
 		    {		// exceeding max motor thrust
-					float temp = overthrottle + underthrottle;
+				float temp = overthrottle + underthrottle;
+                
+                #ifdef MIX_THROTTLE_FLASHLED
+                ledcommand = 1;
+                #endif
 			    for (int i = 0; i < 4; i++)
 			      {
 				      mix[i] -= temp;

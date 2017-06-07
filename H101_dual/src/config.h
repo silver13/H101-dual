@@ -179,9 +179,19 @@
 //#define MIX_LOWER_THROTTLE
 #define MIX_INCREASE_THROTTLE
 
-// brushless lower throttle type 3 - use only 1 lower throttle method
+// brushless lower throttle type 3
 // fast acting
 //#define MIX_LOWER_THROTTLE_3
+//#define MIX_INCREASE_THROTTLE_3
+
+// mix throttle options for all types
+// flash led when function is active
+//#define MIX_THROTTLE_FLASHLED
+
+// limits of increase / decrase
+//#define MIX_THROTTLE_REDUCTION_MAX 0.5f
+//#define MIX_THROTTLE_INCREASE_MAX 0.2f
+
 
 // lowers the rates when motor limits exceeded
 //#define RATELIMITER_ENABLE
