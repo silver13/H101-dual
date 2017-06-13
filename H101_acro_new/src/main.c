@@ -187,18 +187,15 @@ int main(void)
 
 	rgb_init();
 	
-#ifdef SERIAL_DRV
-	serial_init();
-#endif
+
+//	serial_init();
+
 	
-	imu_init();
+//	imu_init();
 	
 	extern unsigned int liberror;
 	if (liberror)
 	  {
-#ifdef SERIAL
-		  printf("ERROR: I2C \n");
-#endif
 		  failloop(7);
 	  }
 
@@ -239,8 +236,9 @@ int main(void)
 			    // endless loop
 		    }
 
-		  sixaxis_read();
-
+//		  sixaxis_read();
+        gyro_read();
+            
 		  control();
 
 // battery low logic			

@@ -19,15 +19,11 @@
 
 */
 
+//  ACRO ONLY //  ACRO ONLY //  ACRO ONLY
+//  ACRO ONLY //  ACRO ONLY //  ACRO ONLY
+//  ACRO ONLY //  ACRO ONLY //  ACRO ONLY
+
 // rate pids in pid.c ( for acro mode)
-// angle pids in apid.h ( for level mode )
-// level mode also dependent on acro pids
-
-// yaw is the same for both modes
-
-// not including the "f" after float numbers will give a warning
-// it will still work
-
 
 
 // rate in deg/sec
@@ -40,16 +36,6 @@
 #define HIRATEMULTI 2.0f
 #define HIRATEMULTIYAW 2.0f
 
-// max angle for level mode (in degrees)
-// low and high rates(angle?)
-#define MAX_ANGLE_LO 35.0f
-#define MAX_ANGLE_HI 55.0f
-
-
-// max rate for rate pid in level mode
-// this should usually not change unless faster / slower response is desired.
-#define LEVEL_MAX_RATE_LO 360.0f
-#define LEVEL_MAX_RATE_HI 360.0f
 
 
 // this make the controls mirrored in inverted mode
@@ -125,14 +111,10 @@
 // devo can use DEVO_CHAN_5 - DEVO_CHAN_10
 // Multiprotocol can use MULTI_CHAN_5 - MULTI_CHAN_10
 
-// Headless mode
-#define HEADLESSMODE CH_OFF
 
 // rates / expert mode
 #define RATES CH_EXPERT
 
-// level / acro mode switch
-#define LEVELMODE CH_AUX1
 
 // channel for inverted mode ( default - CH_AUX3 - gravity based)
 #define INVERTEDMODE CH_AUX3
@@ -179,19 +161,9 @@
 //#define MIX_LOWER_THROTTLE
 #define MIX_INCREASE_THROTTLE
 
-// brushless lower throttle type 3
+// brushless lower throttle type 3 - use only 1 lower throttle method
 // fast acting
 //#define MIX_LOWER_THROTTLE_3
-//#define MIX_INCREASE_THROTTLE_3
-
-// mix throttle options for all types
-// flash led when function is active
-//#define MIX_THROTTLE_FLASHLED
-
-// limits of increase / decrase
-//#define MIX_THROTTLE_REDUCTION_MAX 0.5f
-//#define MIX_THROTTLE_INCREASE_MAX 0.2f
-
 
 // lowers the rates when motor limits exceeded
 //#define RATELIMITER_ENABLE

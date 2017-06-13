@@ -109,12 +109,13 @@
 #include "drv_pwm.h"
 #include "defines.h"
 #include "config.h"
-
+#include "hardware.h"
 #include "drv_time.h"
 
 #include <math.h>
 #include "util.h"
 
+#ifdef USE_ESC_DRIVER
 
 extern int failsafe;
 extern int onground;
@@ -550,47 +551,7 @@ void pwm_dir(int dir)
 {
 	pwmdir = dir;
 
-/*	
-	if (dir == DIR2)
-	  {
-		  pwmdir = DIR2;
-		  for (int i = 0; i <= 3; i++)
-	//		  pwm_set_forward(i, 0.0f);
-	//	  GPIO_WriteBit(GPIOF, GPIO_PIN_1, Bit_SET);	// bridge dir 1      
-	//	  GPIO_WriteBit(GPIOA, GPIO_PIN_4, Bit_RESET);	// bridge dir 2
 
-	  }
-
-	if (dir == DIR1)
-	  {
-		  pwmdir = DIR1;
-		  for (int i = 0; i <= 3; i++)
-	//		  pwm_set_reverse(i, 0.0f);
-	//	  GPIO_WriteBit(GPIOF, GPIO_PIN_1, Bit_RESET);	// bridge dir 1
-	//	  GPIO_WriteBit(GPIOA, GPIO_PIN_4, Bit_SET);	// bridge dir 2
-	  }
-	if (dir == FREE)
-	  {
-		  for (int i = 0; i <= 3; i++)
-		    {
-			 //   pwm_set_forward(i, 0.0f);
-			 //   pwm_set_reverse(i, 0.0f);
-		    }
-		//  GPIO_WriteBit(GPIOF, GPIO_PIN_1, Bit_RESET);	// bridge dir 1    
-		//  GPIO_WriteBit(GPIOA, GPIO_PIN_4, Bit_RESET);	// bridge dir 2
-	  }
-	if (dir == BRAKE)
-	  {
-
-//		     for ( int i = 0 ; i <= 3; i++)
-//		     {
-//		     pwm_set_forward( i , 0.0f );
-//		     pwm_set_reverse( i , 0.0f );
-//		     }
-//		     delay(100);
-//		     GPIO_WriteBit(GPIOF, GPIO_PIN_1, Bit_SET); // bridge dir 1   
-//		     GPIO_WriteBit(GPIOA, GPIO_PIN_4, Bit_SET); // bridge dir 2
-//		   
-//	  }
-*/
 }
+
+#endif

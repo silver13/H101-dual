@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/silver13/H101-acro.png)](https://travis-ci.org/silver13/H101-acro)
+[![Build Status](https://travis-ci.org/silver13/H101-dual.png)](https://travis-ci.org/silver13/H101-dual)
 
 # Floureon H101 and Eachine H8S acro firmware ( red board )
 
@@ -36,7 +36,7 @@ The firmware flash procedure is the same as the H8.
 Firmware thread featuring flashing info : [rcgroups.com](http://www.rcgroups.com/forums/showthread.php?t=2512604)
 
 
-###Changing settings
+### Changing settings
 
 __config.h__ - all settings: rates, switches/buttons config, other options
 
@@ -47,15 +47,15 @@ __angle_pid.c__ (*dual mode only*) level mode pid, also uses acro pids in level 
 
 After changing settings, remember to click compile first, not just upload.
 
-#####Stock tx:
+##### Stock tx:
 On the stock tx only the rate (expert) button works. Trims are not functional on the stock tx, but the buttons can be used for controlling functions such as acro / level switch.
 
-#####Devo tx:
+##### Devo tx:
 Channels work as intended except the rate/expert channel which is always on. Dynamic trims are not used, and trims should not be required.
 
 Assign the extra channels to the desired functions in config.h. A setting such as "#define LEVELMODE DEVO_CHAN_9" could be used, for example.
 
-#####Gyro calibration
+##### Gyro calibration
 Gyro calibration runs automatically after power up, and usually completes within 2-4 seconds. If for some reason the calibration fails to complete, such as if there is movement, it will eventually time out in 15 seconds.
 
 During calibration the leds glow from low brightness to high brightness. If movement is detected the flashing stops. The flashing resumes when movement stops.
@@ -63,19 +63,19 @@ During calibration the leds glow from low brightness to high brightness. If move
 *The quad should be standing still during gyro calibration for best results*
 
 
-#####Accelerometer calibration ***(level mode only)***
+##### Accelerometer calibration ***(level mode only)***
 For accelerometer calibration move the pitch stick down 3 times within about 1- 2 seconds. Wait a couple of seconds after a failed attempt. Throttle has to be low, and roll centered. Flashing lights indicate the calibration process. This is saved so it has to be done only once.
 
 Note, the acc calibration also saves gyro biases which are used in some cases. The flash pattern is similar to the gyro calibration pattern.
 
 *Calibration has to be done on a horizontal surface*
 
-#####Led error codes
+##### Led error codes
 In some cases the leds are used to indicate error conditions, and as such they flash a number of times, then a brake occurs, then the pattern repeats. In all such cases the quadcopter will not respond to commands, a power cycle will be required.
 
 The most common of this is 2 flashes = low battery, usually caused by an in-flight reset due to low battery. All other flashes are non user serviceable. The description is in main.c.
 
-#####Led flash patterns
+##### Led flash patterns
 At startup the leds should flash a gyro calibration pattern for 2 - 15 seconds, with a glow like pattern. Movement stops the flashing while it occurs.
 
 Following should be a fast (20 times/sec) flash indicating that the quad is waiting for bind. 
@@ -84,13 +84,13 @@ If binding is completed the leds should light up continuously, while if tx conne
 
 Overriding all this patterns except gyro calibration, is the low battery flash which is a slow, equally spaced on and off flash. 
 
-###Linux support
+### Linux support
 See post by :
 http://www.rcgroups.com/forums/showpost.php?p=34293596&postcount=1248
 
 Read [INSTALL.md](INSTALL.md) for more information.
 
-###Wiki
+### Wiki
 http://sirdomsen.diskstation.me/dokuwiki/doku.php?id=start
 
 ### 01.12.16
@@ -110,28 +110,28 @@ http://sirdomsen.diskstation.me/dokuwiki/doku.php?id=start
 * serial "out" can be used on one of the programming pins
 * pwm deadtime bug fix when toggling direction
 
-###14.08.16
+### 14.08.16
 * bluetooth beacon added
 * flips
 * other code changes from H8
 
-###14.07.16
+### 14.07.16
 * some rx changes (hopping code)
 * motor curve default changed
 * pids changed to version by SirDomsen
 
-###19.05.16
+### 19.05.16
 * added 3d throttle option to dual mode
 * (older) added "native inverted mode" to dual mode code
 
-###15.02.16
+### 15.02.16
 * added inverted flight to dual mode
 
-###15.02.16
+### 15.02.16
 * added dual mode
 * fixed calibration bug introduced yesterday
 
-###update 1: 6.12.15
+### update 1: 6.12.15
 * added stock tx support
 
 

@@ -97,8 +97,7 @@ void control(void)
 	// hi rates
 	float ratemulti;
 	float ratemultiyaw;
-	float maxangle;
-	float anglerate;
+
 
 
 #ifdef TOGGLE_IN
@@ -128,15 +127,12 @@ aux[TOGGLE_OUT]=!aux[TOGGLE_OUT];
 	  {
 		  ratemulti = HIRATEMULTI;
 		  ratemultiyaw = HIRATEMULTIYAW;
-		  maxangle = MAX_ANGLE_HI;
-		  anglerate = LEVEL_MAX_RATE_HI * DEGTORAD;
 	  }
 	else
 	  {
 		  ratemulti = 1.0f;
 		  ratemultiyaw = 1.0f;
-		  maxangle = MAX_ANGLE_LO;
-		  anglerate = LEVEL_MAX_RATE_LO * DEGTORAD;
+
 	  }
 
 
@@ -172,32 +168,8 @@ if (currentdir == REVERSE)
 		#endif
 		}
 
-	if (auxchange[HEADLESSMODE])
-	  {
-		  yawangle = 0;
-	  }
-
-	if ((aux[HEADLESSMODE]) )
-	  {
-		yawangle = yawangle + gyro[2] * looptime;
-
-		while (yawangle < -3.14159265f)
-    yawangle += 6.28318531f;
-
-    while (yawangle >  3.14159265f)
-    yawangle -= 6.28318531f;
-
-		float temp = rxcopy[0];
-		rxcopy[0] = rxcopy[0] * fastcos( yawangle) - rxcopy[1] * fastsin(yawangle );
-		rxcopy[1] = rxcopy[1] * fastcos( yawangle) + temp * fastsin(yawangle ) ;
-	  }
-	else
-	  {
-		  yawangle = 0;
-	  }
 
 // check for acc calibration
-
 	int command = gestures2();
 
 	if (command)
@@ -205,7 +177,7 @@ if (currentdir == REVERSE)
 		  if (command == 3)
 		    {
 			    gyro_cal();	// for flashing lights
-			    acc_cal();
+			    //acc_cal();
 			    savecal();
 			    // reset loop time
 			    extern unsigned lastlooptime;
@@ -262,54 +234,18 @@ if (currentdir == REVERSE)
 
 	pid_precalc();
 
-
-	if ( aux[LEVELMODE] )
-	  {// level mode
-
-		extern void stick_vector( float , int);
-		extern float errorvect[];
-		float yawerror[3];
-		extern float GEstG[3];
-
-		stick_vector( maxangle , currentdir == REVERSE );
-
-		float yawrate = rxcopy[2] * (float) MAX_RATEYAW * DEGTORAD * ratemultiyaw  * ( 1/2048.0f);
-
-		yawerror[0] = GEstG[1]  * yawrate;
-		yawerror[1] = - GEstG[0]  * yawrate;
-		yawerror[2] = GEstG[2]  * yawrate;
-
-		if (currentdir == REVERSE)
-		{
-			yawerror[0] = - yawerror[0];
-			yawerror[1] = - yawerror[1];
-			yawerror[2] = - yawerror[2];
-		}
-
-
-		for ( int i = 0 ; i <2; i++)
-			{
-			angleerror[i] = errorvect[i] * RADTODEG;
-			error[i] = apid(i) * anglerate + yawerror[i] - gyro[i];
-			}
-
-		error[2] = yawerror[2]  - gyro[2];
-
-	  }
-	else
-	  {			// rate mode
+		// rate mode
 
 		  error[0] = rxcopy[0] * MAX_RATE * DEGTORAD * ratemulti * feedback[0] - gyro[0];
 		  error[1] = rxcopy[1] * MAX_RATE * DEGTORAD * ratemulti * feedback[1] - gyro[1];
 
 		  // reduce angle Iterm towards zero
-		  extern float aierror[3];
+		//  extern float aierror[3];
 
-		  aierror[0] = 0.0f;
-			aierror[1] = 0.0f;
+		//  aierror[0] = 0.0f;
+		//	aierror[1] = 0.0f;
 
 		error[2] = rxcopy[2] * MAX_RATEYAW * DEGTORAD * ratemultiyaw * feedback[2] - gyro[2];
-	  }
 
 
 
@@ -368,7 +304,7 @@ limitf(&throttle, 1.0);
 		onground_long = 0;
 #else
 // turn motors off if throttle is off and pitch / roll sticks are centered
-	if (failsafe || (throttle < 0.001f && ( !ENABLESTIX || !onground_long || aux[LEVELMODE] || (fabsf(rx[0]) < (float) ENABLESTIX_TRESHOLD && fabsf(rx[1]) < (float) ENABLESTIX_TRESHOLD && fabsf(rx[2]) < (float) ENABLESTIX_TRESHOLD ))))
+	if (failsafe || (throttle < 0.001f && ( !ENABLESTIX || !onground_long || (fabsf(rx[0]) < (float) ENABLESTIX_TRESHOLD && fabsf(rx[1]) < (float) ENABLESTIX_TRESHOLD && fabsf(rx[2]) < (float) ENABLESTIX_TRESHOLD ))))
 	  {			// motors off
 #endif
 
@@ -562,10 +498,6 @@ if ( throttle < 0 ) throttle = 0;
 
 #ifdef MIX_LOWER_THROTTLE_3
 {
-#ifndef MIX_THROTTLE_REDUCTION_MAX
-#define MIX_THROTTLE_REDUCTION_MAX 0.5f
-#endif
-    
 float overthrottle = 0;
 
 for (int i = 0; i < 4; i++)
@@ -577,50 +509,18 @@ for (int i = 0; i < 4; i++)
 
 overthrottle -=1.0f;
 // limit to half throttle max reduction            
-if ( overthrottle > (float) MIX_THROTTLE_REDUCTION_MAX)  overthrottle = (float) MIX_THROTTLE_REDUCTION_MAX;     
+if ( overthrottle > 0.5f)  overthrottle = 0.5f;     
             
 if ( overthrottle > 0.0f)
 {    
     for ( int i = 0 ; i < 4 ; i++)
         mix[i] -= overthrottle;
 }
-#ifdef MIX_THROTTLE_FLASHLED
+#ifdef MIX_LOWER_THROTTLE_3_FLASHLED
 if ( overthrottle > 0.1f) ledcommand = 1;
 #endif
 }
 #endif
-
-
-#ifdef MIX_INCREASE_THROTTLE_3
-{
-#ifndef MIX_THROTTLE_INCREASE_MAX
-#define MIX_THROTTLE_INCREASE_MAX 0.2f
-#endif
-    
-float underthrottle = 0;
-
-for (int i = 0; i < 4; i++)
-    {
-        if (mix[i] < underthrottle)
-            underthrottle = mix[i]; 
-    }                
-
-
-// limit to half throttle max reduction            
-if ( underthrottle < -(float) MIX_THROTTLE_INCREASE_MAX)  underthrottle = -(float) MIX_THROTTLE_INCREASE_MAX;     
-            
-if ( underthrottle < 0.0f)
-    {    
-        for ( int i = 0 ; i < 4 ; i++)
-            mix[i] -= underthrottle;
-    }
-#ifdef MIX_THROTTLE_FLASHLED
-if ( underthrottle < -0.01f) ledcommand = 1;
-#endif
-}
-#endif
-
-
         
 #if ( defined MIX_LOWER_THROTTLE || defined MIX_INCREASE_THROTTLE)
 
@@ -736,11 +636,7 @@ if ( underthrottle < -0.01f) ledcommand = 1;
 
 		  if (overthrottle > 0 || underthrottle < 0 )
 		    {		// exceeding max motor thrust
-				float temp = overthrottle + underthrottle;
-                
-                #ifdef MIX_THROTTLE_FLASHLED
-                ledcommand = 1;
-                #endif
+					float temp = overthrottle + underthrottle;
 			    for (int i = 0; i < 4; i++)
 			      {
 				      mix[i] -= temp;
@@ -837,7 +733,7 @@ if ( excess_ratio < 0.0f ) excess_ratio = 0.0;
 					if ( i == MOTOR_BL && ( rx[ROLL] > 0.5f || rx[PITCH] > 0.5f ) ) { test = 0; }
 					if ( i == MOTOR_FR && ( rx[ROLL] < -0.5f || rx[PITCH] < -0.5f ) ) { test = 0; }
 					if ( i == MOTOR_BR && ( rx[ROLL] < -0.5f || rx[PITCH] > 0.5f ) ) { test = 0; }
-					// for battery estimation
+					// for battery lvc
 					mix[i] = test;
 					#warning "MOTORS TEST MODE"
 					#endif
@@ -883,7 +779,7 @@ if ( excess_ratio < 0.0f ) excess_ratio = 0.0;
 	  }			// end motors on
 
 
-	imu_calc();
+//	imu_calc();
 
 }
 

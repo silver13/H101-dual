@@ -1,28 +1,25 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
-<Project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="project_projx.xsd">
+<Project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="project_proj.xsd">
 
-  <SchemaVersion>2.1</SchemaVersion>
+  <SchemaVersion>1.1</SchemaVersion>
 
   <Header>### uVision Project, (C) Keil Software</Header>
 
   <Targets>
     <Target>
-      <TargetName>H101_dual</TargetName>
+      <TargetName>Target 1</TargetName>
       <ToolsetNumber>0x4</ToolsetNumber>
       <ToolsetName>ARM-ADS</ToolsetName>
-      <pCCUsed>5060422::V5.06 update 4 (build 422)::ARMCC</pCCUsed>
       <TargetOption>
         <TargetCommonOption>
-          <Device>GD32F130G6</Device>
+          <Device>GD32F1x0</Device>
           <Vendor>GigaDevice</Vendor>
-          <PackID>GigaDevice.GD32F1x0_DFP.3.0.2</PackID>
-          <PackURL>http://gd32mcu.21ic.com/data/documents/yingyongruanjian/</PackURL>
-          <Cpu>IROM(0x08000000,0x00008000) IRAM(0x20000000,0x00001000) CPUTYPE("Cortex-M3") CLOCK(12000000) ELITTLE</Cpu>
+          <Cpu>IRAM(0x20000000-0x20001FFF) IROM(0x8000000-0x800FFFF) CLOCK(8000000) CPUTYPE("Cortex-M3")</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
-          <StartupFile></StartupFile>
-          <FlashDriverDll>UL2CM3(-S0 -C0 -P0 -FD20000000 -FC1000 -FN2 -FF0GD32F1x0_32 -FS08000000 -FL08000 -FF1GD32F1x0_OB -FS11FFFF800 -FL110 -FP0($$Device:GD32F130G6$Flash\GD32F1x0_32.FLM) -FP1($$Device:GD32F130G6$Flash\GD32F1x0_OB.FLM))</FlashDriverDll>
+          <StartupFile>"STARTUP\GD\GD32F1x0\startup_gd32f1x0_md.s" ("GD32F1x0 Startup Code")</StartupFile>
+          <FlashDriverDll>UL2CM3(-O14 -S0 -C0 -N00("ARM Cortex-M3") -D00(1BA00477) -L00(4) -FO7 -FD20000000 -FC800 -FN1 -FF0GD32F1x0_64 -FS08000000 -FL010000)</FlashDriverDll>
           <DeviceId>0</DeviceId>
-          <RegisterFile>$$Device:GD32F130G6$Device\GD32F1x0\Include\gd32f1x0.h</RegisterFile>
+          <RegisterFile>gd32f1x0.h</RegisterFile>
           <MemoryEnv></MemoryEnv>
           <Cmp></Cmp>
           <Asm></Asm>
@@ -32,14 +29,13 @@
           <SLE66CMisc></SLE66CMisc>
           <SLE66AMisc></SLE66AMisc>
           <SLE66LinkerMisc></SLE66LinkerMisc>
-          <SFDFile>$$Device:GD32F130G6$SVD\GD32F1x0\GD32F1x0.svd</SFDFile>
-          <bCustSvd>0</bCustSvd>
+          <SFDFile>SFD\GD\GD32F1x0\GD32F1x0.sfr</SFDFile>
           <UseEnv>0</UseEnv>
           <BinPath></BinPath>
           <IncludePath></IncludePath>
           <LibPath></LibPath>
-          <RegisterFilePath></RegisterFilePath>
-          <DBRegisterFilePath></DBRegisterFilePath>
+          <RegisterFilePath>GD\GD32F1x0\</RegisterFilePath>
+          <DBRegisterFilePath>GD\GD32F1x0\</DBRegisterFilePath>
           <TargetStatus>
             <Error>0</Error>
             <ExitCodeStop>0</ExitCodeStop>
@@ -65,8 +61,6 @@
             <UserProg2Name></UserProg2Name>
             <UserProg1Dos16Mode>0</UserProg1Dos16Mode>
             <UserProg2Dos16Mode>0</UserProg2Dos16Mode>
-            <nStopU1X>0</nStopU1X>
-            <nStopU2X>0</nStopU2X>
           </BeforeCompile>
           <BeforeMake>
             <RunUserProg1>0</RunUserProg1>
@@ -75,8 +69,6 @@
             <UserProg2Name></UserProg2Name>
             <UserProg1Dos16Mode>0</UserProg1Dos16Mode>
             <UserProg2Dos16Mode>0</UserProg2Dos16Mode>
-            <nStopB1X>0</nStopB1X>
-            <nStopB2X>0</nStopB2X>
           </BeforeMake>
           <AfterMake>
             <RunUserProg1>0</RunUserProg1>
@@ -85,8 +77,6 @@
             <UserProg2Name></UserProg2Name>
             <UserProg1Dos16Mode>0</UserProg1Dos16Mode>
             <UserProg2Dos16Mode>0</UserProg2Dos16Mode>
-            <nStopA1X>0</nStopA1X>
-            <nStopA2X>0</nStopA2X>
           </AfterMake>
           <SelectedForBatchBuild>0</SelectedForBatchBuild>
           <SVCSIdString></SVCSIdString>
@@ -105,16 +95,15 @@
           <StopOnExitCode>3</StopOnExitCode>
           <CustomArgument></CustomArgument>
           <IncludeLibraryModules></IncludeLibraryModules>
-          <ComprImg>1</ComprImg>
         </CommonProperty>
         <DllOption>
           <SimDllName>SARMCM3.DLL</SimDllName>
-          <SimDllArguments> -REMAP</SimDllArguments>
-          <SimDlgDll>DCM.DLL</SimDlgDll>
+          <SimDllArguments></SimDllArguments>
+          <SimDlgDll>DARMSTM.DLL</SimDlgDll>
           <SimDlgDllArguments>-pCM3</SimDlgDllArguments>
           <TargetDllName>SARMCM3.DLL</TargetDllName>
           <TargetDllArguments></TargetDllArguments>
-          <TargetDlgDll>TCM.DLL</TargetDlgDll>
+          <TargetDlgDll>TARMSTM.DLL</TargetDlgDll>
           <TargetDlgDllArguments>-pCM3</TargetDlgDllArguments>
         </DllOption>
         <DebugOption>
@@ -125,6 +114,44 @@
             <HexOffset>0</HexOffset>
             <Oh166RecLen>16</Oh166RecLen>
           </OPTHX>
+          <Simulator>
+            <UseSimulator>0</UseSimulator>
+            <LoadApplicationAtStartup>1</LoadApplicationAtStartup>
+            <RunToMain>1</RunToMain>
+            <RestoreBreakpoints>1</RestoreBreakpoints>
+            <RestoreWatchpoints>1</RestoreWatchpoints>
+            <RestoreMemoryDisplay>1</RestoreMemoryDisplay>
+            <RestoreFunctions>1</RestoreFunctions>
+            <RestoreToolbox>1</RestoreToolbox>
+            <LimitSpeedToRealTime>0</LimitSpeedToRealTime>
+          </Simulator>
+          <Target>
+            <UseTarget>1</UseTarget>
+            <LoadApplicationAtStartup>1</LoadApplicationAtStartup>
+            <RunToMain>1</RunToMain>
+            <RestoreBreakpoints>1</RestoreBreakpoints>
+            <RestoreWatchpoints>1</RestoreWatchpoints>
+            <RestoreMemoryDisplay>1</RestoreMemoryDisplay>
+            <RestoreFunctions>0</RestoreFunctions>
+            <RestoreToolbox>1</RestoreToolbox>
+          </Target>
+          <RunDebugAfterBuild>0</RunDebugAfterBuild>
+          <TargetSelection>7</TargetSelection>
+          <SimDlls>
+            <CpuDll></CpuDll>
+            <CpuDllArguments></CpuDllArguments>
+            <PeripheralDll></PeripheralDll>
+            <PeripheralDllArguments></PeripheralDllArguments>
+            <InitializationFile></InitializationFile>
+          </SimDlls>
+          <TargetDlls>
+            <CpuDll></CpuDll>
+            <CpuDllArguments></CpuDllArguments>
+            <PeripheralDll></PeripheralDll>
+            <PeripheralDllArguments></PeripheralDllArguments>
+            <InitializationFile></InitializationFile>
+            <Driver>Segger\JL2CM3.dll</Driver>
+          </TargetDlls>
         </DebugOption>
         <Utilities>
           <Flash1>
@@ -133,16 +160,11 @@
             <RunIndependent>0</RunIndependent>
             <UpdateFlashBeforeDebugging>1</UpdateFlashBeforeDebugging>
             <Capability>1</Capability>
-            <DriverSelection>4100</DriverSelection>
+            <DriverSelection>4099</DriverSelection>
           </Flash1>
-          <bUseTDR>1</bUseTDR>
-          <Flash2>STLink\ST-LINKIII-KEIL_SWO.dll</Flash2>
+          <Flash2>Segger\JL2CM3.dll</Flash2>
           <Flash3>"" ()</Flash3>
           <Flash4></Flash4>
-          <pFcarmOut></pFcarmOut>
-          <pFcarmGrp></pFcarmGrp>
-          <pFcArmRoot></pFcArmRoot>
-          <FcArmLst>0</FcArmLst>
         </Utilities>
         <TargetArmAds>
           <ArmAdsMisc>
@@ -189,7 +211,6 @@
             <useUlib>1</useUlib>
             <EndSel>0</EndSel>
             <uLtcg>0</uLtcg>
-            <nSecure>0</nSecure>
             <RoSelD>3</RoSelD>
             <RwSelD>3</RwSelD>
             <CodeSel>0</CodeSel>
@@ -243,12 +264,12 @@
               <IRAM>
                 <Type>0</Type>
                 <StartAddress>0x20000000</StartAddress>
-                <Size>0x1000</Size>
+                <Size>0x2000</Size>
               </IRAM>
               <IROM>
                 <Type>1</Type>
                 <StartAddress>0x8000000</StartAddress>
-                <Size>0x8000</Size>
+                <Size>0x10000</Size>
               </IROM>
               <XRAM>
                 <Type>0</Type>
@@ -273,7 +294,7 @@
               <OCR_RVCT4>
                 <Type>1</Type>
                 <StartAddress>0x8000000</StartAddress>
-                <Size>0x8000</Size>
+                <Size>0x10000</Size>
               </OCR_RVCT4>
               <OCR_RVCT5>
                 <Type>1</Type>
@@ -298,7 +319,7 @@
               <OCR_RVCT9>
                 <Type>0</Type>
                 <StartAddress>0x20000000</StartAddress>
-                <Size>0x1000</Size>
+                <Size>0x2000</Size>
               </OCR_RVCT9>
               <OCR_RVCT10>
                 <Type>0</Type>
@@ -310,7 +331,7 @@
           </ArmAdsMisc>
           <Cads>
             <interw>1</interw>
-            <Optim>3</Optim>
+            <Optim>1</Optim>
             <oTime>0</oTime>
             <SplitLS>0</SplitLS>
             <OneElfS>1</OneElfS>
@@ -321,21 +342,11 @@
             <Rwpi>0</Rwpi>
             <wLevel>2</wLevel>
             <uThumb>0</uThumb>
-            <uSurpInc>0</uSurpInc>
-            <uC99>1</uC99>
-            <useXO>0</useXO>
-            <v6Lang>0</v6Lang>
-            <v6LangP>0</v6LangP>
-            <vShortEn>1</vShortEn>
-            <vShortWch>1</vShortWch>
-            <v6Lto>0</v6Lto>
-            <v6WtE>0</v6WtE>
-            <v6Rtti>0</v6Rtti>
             <VariousControls>
-              <MiscControls> --fpmode=fast</MiscControls>
+              <MiscControls></MiscControls>
               <Define>USE_STDPERIPH_DRIVER</Define>
               <Undefine></Undefine>
-              <IncludePath>..\; ..\Peripherals\inc; ..\CMSIS; .\src</IncludePath>
+              <IncludePath>..\;..\..\Firmware\Peripherals\inc;..\..\Firmware\CMSIS</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -346,9 +357,6 @@
             <SplitLS>0</SplitLS>
             <SwStkChk>0</SwStkChk>
             <NoWarn>0</NoWarn>
-            <uSurpInc>0</uSurpInc>
-            <useXO>0</useXO>
-            <uClangAs>0</uClangAs>
             <VariousControls>
               <MiscControls></MiscControls>
               <Define></Define>
@@ -365,7 +373,6 @@
             <useFile>0</useFile>
             <TextAddressRange>0x08000000</TextAddressRange>
             <DataAddressRange>0x20000000</DataAddressRange>
-            <pXoBase></pXoBase>
             <ScatterFile></ScatterFile>
             <IncludeLibs></IncludeLibs>
             <IncludeLibsPath></IncludeLibsPath>
@@ -377,348 +384,167 @@
       </TargetOption>
       <Groups>
         <Group>
+          <GroupName>Application</GroupName>
+          <Files>
+            <File>
+              <FileName>main.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\main.c</FilePath>
+            </File>
+            <File>
+              <FileName>systick.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\systick.c</FilePath>
+            </File>
+            <File>
+              <FileName>gd32f1x0_it.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\gd32f1x0_it.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
           <GroupName>CMSIS</GroupName>
           <Files>
             <File>
               <FileName>core_cm3.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\CMSIS\core_cm3.c</FilePath>
+              <FilePath>..\..\Firmware\CMSIS\core_cm3.c</FilePath>
             </File>
             <File>
               <FileName>system_gd32f1x0.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\CMSIS\system_gd32f1x0.c</FilePath>
+              <FilePath>..\..\Firmware\CMSIS\system_gd32f1x0.c</FilePath>
             </File>
           </Files>
         </Group>
         <Group>
-          <GroupName>Start</GroupName>
-          <Files>
-            <File>
-              <FileName>startup_gd32f1x0.s</FileName>
-              <FileType>2</FileType>
-              <FilePath>..\CMSIS\startup_gd32f1x0.s</FilePath>
-            </File>
-          </Files>
-        </Group>
-        <Group>
-          <GroupName>Peripherals</GroupName>
+          <GroupName>GD32F1x0_Peripherals</GroupName>
           <Files>
             <File>
               <FileName>gd32f1x0_adc.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\Peripherals\src\gd32f1x0_adc.c</FilePath>
+              <FilePath>..\..\Firmware\Peripherals\src\gd32f1x0_adc.c</FilePath>
             </File>
             <File>
               <FileName>gd32f1x0_cec.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\Peripherals\src\gd32f1x0_cec.c</FilePath>
+              <FilePath>..\..\Firmware\Peripherals\src\gd32f1x0_cec.c</FilePath>
             </File>
             <File>
               <FileName>gd32f1x0_cmp.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\Peripherals\src\gd32f1x0_cmp.c</FilePath>
+              <FilePath>..\..\Firmware\Peripherals\src\gd32f1x0_cmp.c</FilePath>
             </File>
             <File>
               <FileName>gd32f1x0_crc.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\Peripherals\src\gd32f1x0_crc.c</FilePath>
+              <FilePath>..\..\Firmware\Peripherals\src\gd32f1x0_crc.c</FilePath>
             </File>
             <File>
               <FileName>gd32f1x0_dac.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\Peripherals\src\gd32f1x0_dac.c</FilePath>
+              <FilePath>..\..\Firmware\Peripherals\src\gd32f1x0_dac.c</FilePath>
             </File>
             <File>
               <FileName>gd32f1x0_dma.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\Peripherals\src\gd32f1x0_dma.c</FilePath>
+              <FilePath>..\..\Firmware\Peripherals\src\gd32f1x0_dma.c</FilePath>
             </File>
             <File>
               <FileName>gd32f1x0_exti.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\Peripherals\src\gd32f1x0_exti.c</FilePath>
+              <FilePath>..\..\Firmware\Peripherals\src\gd32f1x0_exti.c</FilePath>
             </File>
             <File>
               <FileName>gd32f1x0_fmc.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\Peripherals\src\gd32f1x0_fmc.c</FilePath>
+              <FilePath>..\..\Firmware\Peripherals\src\gd32f1x0_fmc.c</FilePath>
             </File>
             <File>
               <FileName>gd32f1x0_gpio.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\Peripherals\src\gd32f1x0_gpio.c</FilePath>
+              <FilePath>..\..\Firmware\Peripherals\src\gd32f1x0_gpio.c</FilePath>
             </File>
             <File>
               <FileName>gd32f1x0_i2c.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\Peripherals\src\gd32f1x0_i2c.c</FilePath>
+              <FilePath>..\..\Firmware\Peripherals\src\gd32f1x0_i2c.c</FilePath>
             </File>
             <File>
               <FileName>gd32f1x0_iwdg.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\Peripherals\src\gd32f1x0_iwdg.c</FilePath>
+              <FilePath>..\..\Firmware\Peripherals\src\gd32f1x0_iwdg.c</FilePath>
             </File>
             <File>
               <FileName>gd32f1x0_mcudbg.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\Peripherals\src\gd32f1x0_mcudbg.c</FilePath>
+              <FilePath>..\..\Firmware\Peripherals\src\gd32f1x0_mcudbg.c</FilePath>
             </File>
             <File>
               <FileName>gd32f1x0_misc.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\Peripherals\src\gd32f1x0_misc.c</FilePath>
+              <FilePath>..\..\Firmware\Peripherals\src\gd32f1x0_misc.c</FilePath>
             </File>
             <File>
               <FileName>gd32f1x0_pwr.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\Peripherals\src\gd32f1x0_pwr.c</FilePath>
+              <FilePath>..\..\Firmware\Peripherals\src\gd32f1x0_pwr.c</FilePath>
             </File>
             <File>
               <FileName>gd32f1x0_rcc.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\Peripherals\src\gd32f1x0_rcc.c</FilePath>
+              <FilePath>..\..\Firmware\Peripherals\src\gd32f1x0_rcc.c</FilePath>
             </File>
             <File>
               <FileName>gd32f1x0_rtc.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\Peripherals\src\gd32f1x0_rtc.c</FilePath>
+              <FilePath>..\..\Firmware\Peripherals\src\gd32f1x0_rtc.c</FilePath>
             </File>
             <File>
               <FileName>gd32f1x0_spi.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\Peripherals\src\gd32f1x0_spi.c</FilePath>
+              <FilePath>..\..\Firmware\Peripherals\src\gd32f1x0_spi.c</FilePath>
             </File>
             <File>
               <FileName>gd32f1x0_syscfg.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\Peripherals\src\gd32f1x0_syscfg.c</FilePath>
+              <FilePath>..\..\Firmware\Peripherals\src\gd32f1x0_syscfg.c</FilePath>
             </File>
             <File>
               <FileName>gd32f1x0_timer.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\Peripherals\src\gd32f1x0_timer.c</FilePath>
+              <FilePath>..\..\Firmware\Peripherals\src\gd32f1x0_timer.c</FilePath>
             </File>
             <File>
               <FileName>gd32f1x0_tsi.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\Peripherals\src\gd32f1x0_tsi.c</FilePath>
+              <FilePath>..\..\Firmware\Peripherals\src\gd32f1x0_tsi.c</FilePath>
             </File>
             <File>
               <FileName>gd32f1x0_usart.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\Peripherals\src\gd32f1x0_usart.c</FilePath>
+              <FilePath>..\..\Firmware\Peripherals\src\gd32f1x0_usart.c</FilePath>
             </File>
             <File>
               <FileName>gd32f1x0_wwdg.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\Peripherals\src\gd32f1x0_wwdg.c</FilePath>
+              <FilePath>..\..\Firmware\Peripherals\src\gd32f1x0_wwdg.c</FilePath>
             </File>
           </Files>
         </Group>
         <Group>
-          <GroupName>src</GroupName>
+          <GroupName>Startup</GroupName>
           <Files>
             <File>
-              <FileName>control.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\src\control.c</FilePath>
-            </File>
-            <File>
-              <FileName>led.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\src\led.c</FilePath>
-            </File>
-            <File>
-              <FileName>rgb_led.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\src\rgb_led.c</FilePath>
-            </File>
-            <File>
-              <FileName>main.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\src\main.c</FilePath>
-            </File>
-            <File>
-              <FileName>rx_bayang_protocol.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\src\rx_bayang_protocol.c</FilePath>
-            </File>
-            <File>
-              <FileName>rx_bayang_ble_app.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\src\rx_bayang_ble_app.c</FilePath>
-            </File>
-            <File>
-              <FileName>rx_bayang_ble.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\src\rx_bayang_ble.c</FilePath>
-            </File>
-            <File>
-              <FileName>sixaxis.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\src\sixaxis.c</FilePath>
-            </File>
-            <File>
-              <FileName>filter.cpp</FileName>
-              <FileType>8</FileType>
-              <FilePath>.\src\filter.cpp</FilePath>
-            </File>
-            <File>
-              <FileName>imu.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\src\imu.c</FilePath>
-            </File>
-            <File>
-              <FileName>gestures.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\src\gestures.c</FilePath>
-            </File>
-            <File>
-              <FileName>flash.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\src\flash.c</FilePath>
-            </File>
-            <File>
-              <FileName>buzzer.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\src\buzzer.c</FilePath>
-            </File>
-            <File>
-              <FileName>stickvector.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\src\stickvector.c</FilePath>
-            </File>
-            <File>
-              <FileName>util.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\src\util.c</FilePath>
-            </File>
-            <File>
-              <FileName>pid.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\src\pid.c</FilePath>
-            </File>
-            <File>
-              <FileName>angle_pid.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\src\angle_pid.c</FilePath>
-            </File>
-            <File>
-              <FileName>defines.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\src\defines.h</FilePath>
-            </File>
-            <File>
-              <FileName>config.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\src\config.h</FilePath>
-            </File>
-            <File>
-              <FileName>hardware.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\src\hardware.h</FilePath>
-            </File>
-          </Files>
-        </Group>
-        <Group>
-          <GroupName>drv</GroupName>
-          <Files>
-            <File>
-              <FileName>drv_adc.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\src\drv_adc.c</FilePath>
-            </File>
-            <File>
-              <FileName>drv_clk.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\src\drv_clk.c</FilePath>
-            </File>
-            <File>
-              <FileName>drv_gpio.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\src\drv_gpio.c</FilePath>
-            </File>
-            <File>
-              <FileName>drv_pwm.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\src\drv_pwm.c</FilePath>
-            </File>
-            <File>
-              <FileName>drv_esc.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\src\drv_esc.c</FilePath>
-            </File>
-            <File>
-              <FileName>drv_dshot.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\src\drv_dshot.c</FilePath>
-            </File>
-            <File>
-              <FileName>drv_serial.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\src\drv_serial.c</FilePath>
-            </File>
-            <File>
-              <FileName>drv_softi2c.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\src\drv_softi2c.c</FilePath>
-            </File>
-            <File>
-              <FileName>drv_spi.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\src\drv_spi.c</FilePath>
-            </File>
-            <File>
-              <FileName>drv_time.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\src\drv_time.c</FilePath>
-            </File>
-            <File>
-              <FileName>drv_xn297.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\src\drv_xn297.c</FilePath>
-            </File>
-            <File>
-              <FileName>drv_i2c.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\src\drv_i2c.c</FilePath>
-            </File>
-            <File>
-              <FileName>drv_fmc1.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\src\drv_fmc1.c</FilePath>
-            </File>
-            <File>
-              <FileName>drv_rgb.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\src\drv_rgb.c</FilePath>
-            </File>
-          </Files>
-        </Group>
-        <Group>
-          <GroupName>misc</GroupName>
-          <Files>
-            <File>
-              <FileName>binary.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\src\binary.h</FilePath>
-            </File>
-            <File>
-              <FileName>macros.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\src\macros.h</FilePath>
+              <FileName>startup_gd32f1x0.s</FileName>
+              <FileType>2</FileType>
+              <FilePath>..\..\Firmware\CMSIS\startup_gd32f1x0.s</FilePath>
             </File>
           </Files>
         </Group>
       </Groups>
     </Target>
   </Targets>
-
-  <RTE>
-    <apis/>
-    <components/>
-    <files/>
-  </RTE>
 
 </Project>
