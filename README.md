@@ -8,8 +8,9 @@ __DO NOT ACCIDENTALLY FLASH THE H8MINI FIRMWARE TO THE H101__ (it may break it)
 
 
 Select folder for the correct firmware:
-* __H101_Acro__: Acro only, inverted flight possible (manual on a switch)
-* __H101_dual__: either/both modes, inverted flight possible (manual on a switch)
+* __H101_Acro__: Acro only - outdated
+* __H101_Acro_New__: Acro only, newer code with more features
+* __H101_dual__: Dual mode, latest code
 
 Note for H101_dual code: By default motor direction is automatically set at takeoff / zero-throttle, based on orientation.
 
@@ -120,8 +121,11 @@ Read [INSTALL.md](INSTALL.md) for more information.
 http://sirdomsen.diskstation.me/dokuwiki/doku.php?id=start
 
 ### 2017
-* pid gestures
+* pid gestures by Eitama
 * pid save
+* autovdrop improved
+* brushless lower / increase throttle options ( lower_throttle_type3 )
+* Android app can show pids for tuning, app by SilverAG
 
 ### 01.12.16
 * added telemetry for devo tx
