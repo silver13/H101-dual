@@ -41,14 +41,14 @@ THE SOFTWARE.
 #include <stdbool.h>
 
 
-// Kp                                                                                   ROLL       PITCH     YAW
-float pidkp_flash[PIDNUMBER] = { 12.0e-2, 12.0e-2, 4e-1 };
+// Kp                            ROLL, PITCH, YAW
+float pidkp_flash[PIDNUMBER] = { 0.12, 0.12, 0.4 };
 
-// Ki                                                                                   ROLL       PITCH     YAW
-float pidki_flash[PIDNUMBER] = { 6.5e-1, 6.5e-1, 50e-1 };
+// Ki                            ROLL, PITCH, YAW
+float pidki_flash[PIDNUMBER] = { 0.65, 0.65, 5.0 };
 
-// Kd                                                                                   ROLL       PITCH     YAW
-float pidkd_flash[PIDNUMBER] = { 6.05e-1, 6.05e-1, 4e-1 };
+// Kd                            ROLL, PITCH, YAW
+float pidkd_flash[PIDNUMBER] = { 0.61, 0.61, 0.0 };
 
 
 // output limit
@@ -62,11 +62,22 @@ const float integrallimit[PIDNUMBER] = { 0.8, 0.8, 0.4 };
 // multiplier for pids at 3V - for PID_VOLTAGE_COMPENSATION - default 1.33f H101
 #define PID_VC_FACTOR 1.33f
 
-// working pids loaded from flash / above automatically
-float pidkp[PIDNUMBER] = { 0, 0, 0 };
-float pidki[PIDNUMBER] = { 0, 0, 0 };
-float pidkd[PIDNUMBER] = { 0, 0, 0 };
 
+// PID rates can be switched to the second set found below by using the following channel:
+// #define DUAL_PID_RATES CH_VID
+
+// Tuning PIDs with gestures only changes the first set though.
+
+// working pids loaded from flash / above automatically
+float pidkp[6] = { 0, 0, 0,  0.12, 0.12, 0.4 };
+float pidki[6] = { 0, 0, 0,  0.65, 0.65, 5.0 };
+float pidkd[6] = { 0, 0, 0,  0.61, 0.61, 0.0 };
+//                           ^-- second PID set starts here
+
+
+#ifdef DUAL_PID_RATES
+extern char aux[AUXNUMBER];
+#endif
 
 int number_of_increments[3][3] = {{0, 0, 0}, {0, 0, 0}, {0, 0, 0}};
 int current_pid_axis = 0;
@@ -144,7 +155,7 @@ int next_pid_term()
 			current_pid_term = 0;
 			break;
 	}
-	
+
 	return current_pid_term+1;
 }
 
@@ -161,7 +172,7 @@ int next_pid_axis()
 		current_pid_axis = 0;
 	}
 	else {
-				#ifdef COMBINE_PITCH_ROLL_PID_TUNING	
+				#ifdef COMBINE_PITCH_ROLL_PID_TUNING
 				if (current_pid_axis == 0) {
 					current_pid_axis = 2;
 				}
@@ -169,7 +180,7 @@ int next_pid_axis()
 				current_pid_axis++;
 			 #endif
 	}
-	
+
 	return current_pid_axis + 1;
 }
 
@@ -225,6 +236,12 @@ int decrease_pid()
 
 float pid(int x)
 {
+	int pidindex = x;
+#ifdef DUAL_PID_RATES
+	if ( aux[DUAL_PID_RATES]) {
+		pidindex += 3;
+	}
+#endif
 
 	if (onground)
 	  {
@@ -244,18 +261,18 @@ float pid(int x)
 	  {
 #ifdef MIDPOINT_RULE_INTEGRAL
 		  // trapezoidal rule instead of rectangular
-		  ierror[x] = ierror[x] + (error[x] + lasterror[x]) * 0.5f * pidki[x] * looptime;
+		  ierror[x] = ierror[x] + (error[x] + lasterror[x]) * 0.5f * pidki[pidindex] * looptime;
 		  lasterror[x] = error[x];
 #endif
 
 #ifdef RECTANGULAR_RULE_INTEGRAL
-		  ierror[x] = ierror[x] + error[x] * pidki[x] * looptime;
+		  ierror[x] = ierror[x] + error[x] * pidki[pidindex] * looptime;
 		  lasterror[x] = error[x];
 #endif
 
 #ifdef SIMPSON_RULE_INTEGRAL
 		  // assuming similar time intervals
-		  ierror[x] = ierror[x] + 0.166666f * (lasterror2[x] + 4 * lasterror[x] + error[x]) * pidki[x] * looptime;
+		  ierror[x] = ierror[x] + 0.166666f * (lasterror2[x] + 4 * lasterror[x] + error[x]) * pidki[pidindex] * looptime;
 		  lasterror2[x] = lasterror[x];
 		  lasterror[x] = error[x];
 #endif
@@ -265,7 +282,7 @@ float pid(int x)
 	limitf(&ierror[x], integrallimit[x]);
 
 	// P term
-	pidoutput[x] = error[x] * pidkp[x];
+	pidoutput[x] = error[x] * pidkp[pidindex];
 
 	// I term
 	pidoutput[x] += ierror[x];
@@ -273,12 +290,12 @@ float pid(int x)
 	// D term
 
 #ifdef NORMAL_DTERM
-	pidoutput[x] = pidoutput[x] - (gyro[x] - lastrate[x]) * pidkd[x] * timefactor;
+	pidoutput[x] = pidoutput[x] - (gyro[x] - lastrate[x]) * pidkd[pidindex] * timefactor;
 	lastrate[x] = gyro[x];
 #endif
 
 #ifdef SECOND_ORDER_DTERM
-	pidoutput[x] = pidoutput[x] - (-(0.083333333f) * gyro[x] + (0.666666f) * lastratexx[x][0] - (0.666666f) * lastratexx[x][2] + (0.083333333f) * lastratexx[x][3]) * pidkd[x] * timefactor;
+	pidoutput[x] = pidoutput[x] - (-(0.083333333f) * gyro[x] + (0.666666f) * lastratexx[x][0] - (0.666666f) * lastratexx[x][2] + (0.083333333f) * lastratexx[x][3]) * pidkd[pidindex] * timefactor;
 
 	lastratexx[x][3] = lastratexx[x][2];
 	lastratexx[x][2] = lastratexx[x][1];
@@ -286,7 +303,7 @@ float pid(int x)
 	lastratexx[x][0] = gyro[x];
 #endif
 #ifdef NEW_DTERM
-	pidoutput[x] = pidoutput[x] - ((0.5f) * gyro[x] - (0.5f) * lastratexx[x][1]) * pidkd[x] * timefactor;
+	pidoutput[x] = pidoutput[x] - ((0.5f) * gyro[x] - (0.5f) * lastratexx[x][1]) * pidkd[pidindex] * timefactor;
 
 	lastratexx[x][1] = lastratexx[x][0];
 	lastratexx[x][0] = gyro[x];
