@@ -112,21 +112,6 @@ void buzzer()
 
 }
 
-void buzzer_on()
-{
-    for( int i = 0 ; i < 100;i++)
-    {
-       PIN_ON( BUZZER_PIN_PORT, BUZZER_PIN); // on 
-       delay(500);
-       PIN_OFF( BUZZER_PIN_PORT, BUZZER_PIN); // off 
-       delay(500);
-    }
-}
-
-void buzzer_off()
-{
-   PIN_OFF( BUZZER_PIN_PORT, BUZZER_PIN); // off
-}
 
 
 

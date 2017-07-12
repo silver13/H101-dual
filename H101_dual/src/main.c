@@ -94,6 +94,9 @@ float vreffilt = 1.0;
 
 extern char aux[AUXNUMBER];
 
+extern int rxmode;
+extern int failsafe;
+
 extern void loadcal(void);
 extern void imu_init(void);
 
@@ -204,8 +207,7 @@ int main(void)
 
 
 	lastlooptime = gettime();
-	extern int rxmode;
-	extern int failsafe;
+
 
 	float thrfilt;
 
@@ -442,6 +444,19 @@ if( thrfilt > 0.1f )
 // 7 - i2c error 
 // 8 - i2c error main loop
 
+void delay3( int x)
+{
+  x>>=8;
+    for( ; x> 0 ; x--)
+    {
+      #ifdef BUZZER_ENABLE
+      failsafe = 1;
+      buzzer();
+      #endif
+      delay(256);  
+    }
+}
+
 void failloop(int val)
 {
 	for (int i = 0; i <= 3; i++)
@@ -453,19 +468,17 @@ void failloop(int val)
 	  {
 		  for (int i = 0; i < val; i++)
 		    {
-                #ifdef BUZZER_ENABLE
-               // buzzer_on();
-                #endif
-                
+               
 			    ledon(255);
-			    delay(200000);
+			    delay3(200000);
 			    ledoff(255);
-			    delay(200000);
+			    delay3(200000);
 		    }
-		  delay(800000);
+		  delay3(800000);
 	  }
 
 }
+
 
 
 void HardFault_Handler(void)
