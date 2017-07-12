@@ -453,10 +453,6 @@ void failloop(int val)
 	  {
 		  for (int i = 0; i < val; i++)
 		    {
-                #ifdef BUZZER_ENABLE
-                buzzer();
-                #endif
-                
 			    ledon(255);
 			    delay(200000);
 			    ledoff(255);
