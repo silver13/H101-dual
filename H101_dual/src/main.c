@@ -454,7 +454,7 @@ void failloop(int val)
 		  for (int i = 0; i < val; i++)
 		    {
                 #ifdef BUZZER_ENABLE
-                buzzer();
+               // buzzer_on();
                 #endif
                 
 			    ledon(255);
