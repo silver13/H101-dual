@@ -108,6 +108,8 @@ int main(void)
 
 	gpio_init();
 
+	time_init();
+    
 	i2c_init();
 
 	spi_init();
@@ -123,7 +125,6 @@ int main(void)
 		  pwm_set(i, 0);
 	  }
 
-	time_init();
 
 
 	if (RCC_GetCK_SYSSource() == 8)
@@ -463,7 +464,9 @@ void failloop(int val)
 	  {
 		  pwm_set(i, 0);
 	  }
-
+      
+    delay(1000000);
+      
 	while (1)
 	  {
 		  for (int i = 0; i < val; i++)
