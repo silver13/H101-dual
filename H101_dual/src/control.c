@@ -63,7 +63,6 @@ int lastchange;
 float yawangle;
 float overthrottlefilt;
 float underthrottlefilt;
-float feedback[3] = {1.0 , 1.0 , 1.0};
 
 #ifdef STOCK_TX_AUTOCENTER
 float autocenter[3];
@@ -309,8 +308,8 @@ if (currentdir == REVERSE)
 	else
 	  {			// rate mode
 
-		  error[0] = rxcopy[0] * MAX_RATE * DEGTORAD * ratemulti * feedback[0] - gyro[0];
-		  error[1] = rxcopy[1] * MAX_RATE * DEGTORAD * ratemulti * feedback[1] - gyro[1];
+		  error[0] = rxcopy[0] * MAX_RATE * DEGTORAD * ratemulti  - gyro[0];
+		  error[1] = rxcopy[1] * MAX_RATE * DEGTORAD * ratemulti  - gyro[1];
 
 		  // reduce angle Iterm towards zero
 		  extern float aierror[3];
@@ -318,7 +317,7 @@ if (currentdir == REVERSE)
 		  aierror[0] = 0.0f;
 			aierror[1] = 0.0f;
 
-		error[2] = rxcopy[2] * MAX_RATEYAW * DEGTORAD * ratemultiyaw * feedback[2] - gyro[2];
+		error[2] = rxcopy[2] * MAX_RATEYAW * DEGTORAD * ratemultiyaw  - gyro[2];
 	  }
 
 
@@ -327,9 +326,6 @@ if (currentdir == REVERSE)
 	pid(1);
 	pid(2);
 
-	feedback[0] = 1.0f;
-	feedback[1] = 1.0f;
-	feedback[2] = 1.0f;
 
 #ifndef THREE_D_THROTTLE
 // map throttle so under 10% it is zero
@@ -760,58 +756,6 @@ if ( underthrottle < -0.01f) ledcommand = 1;
 #endif
 
 
-
-#ifdef RATELIMITER_ENABLE
-// rate limiter if motors limit exceeded
-
-// 50mS lpf to remove vibrations
-#define RATELIMITER_FILT_TIME_US 50e3
-// reduce rates by half maximum 0.0 - 1.0 higher = more action
-#define RATELIMITER_MULTIPLIER_LIMIT 0.5f
-// at 1mS loop time 0.01 step takes 50mS to reach 0.5 reduction
-#define RATELIMITER_P_TERM 1.0f
-
-// variable for low pass filter
-static float feedbackfilt =  1.0f ;
-// limit exceeded by this amount
-float excess = 0;
-// motor thrust used by controls ( for one motor )
-float range = (fabsf(pidoutput[0]) + fabsf(pidoutput[1]) +fabsf(pidoutput[2]));
-{
-		float overthrottle =  0.0f;
-		float underthrottle = 0.01f;
-
-				for (int i = 0; i < 4; i++)
-					{
-						if (mix[i] > overthrottle)
-							overthrottle = mix[i];
-						if (mix[i] < underthrottle)
-							underthrottle = mix[i];
-					}
-
-				overthrottle -= 1.0f ;
-
-	if ( overthrottle > 0 )
-		excess = overthrottle;
-	if (underthrottle < 0)
-		excess += underthrottle;
-}
-
-
-float excess_ratio = RATELIMITER_P_TERM * (fabs(excess)) / range ;
-
-
-if ( excess_ratio > (float) RATELIMITER_MULTIPLIER_LIMIT ) excess_ratio = (float) RATELIMITER_MULTIPLIER_LIMIT;
-if ( excess_ratio < 0.0f ) excess_ratio = 0.0;
-
-	lpf( &feedbackfilt , excess_ratio , FILTERCALC( 1e3, RATELIMITER_FILT_TIME_US ) );
-
-	for ( int i = 0 ; i < 3 ; i++)
-		{
-			feedback[i] =  1.0f - feedbackfilt;
-		}
-// end RATELIMITER_ENABLE
-#endif
 
 
 #ifdef MOTOR_FILTER

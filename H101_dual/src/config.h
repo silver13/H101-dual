@@ -193,9 +193,6 @@
 //#define MIX_THROTTLE_INCREASE_MAX 0.2f
 
 
-// lowers the rates when motor limits exceeded
-//#define RATELIMITER_ENABLE
-
 // options for mix throttle lowering if enabled
 // 0 - 100 range ( 100 = full reduction / 0 = no reduction )
 #define MIX_THROTTLE_REDUCTION_PERCENT 100
