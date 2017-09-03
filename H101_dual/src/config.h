@@ -141,10 +141,6 @@
 #define LEDS_ON CH_ON
 
 
-// toggle is a block with an input and an output
-// uncomment input to enable ( aux 2 is gesture up - up - up )
-//#define TOGGLE_IN CH_AUX2
-#define TOGGLE_OUT CH_AUX4
 
 // Channel to turn a GPIO pin on/off. Can be used to switch
 // a FPV camera on/off . Select the FPV_PIN in hardware.h

@@ -101,13 +101,6 @@ void control(void)
 	float anglerate;
 
 
-#ifdef TOGGLE_IN
-if ( auxchange[TOGGLE_IN] && !aux[TOGGLE_IN] )
-{
-   ledcommand = 1;
-aux[TOGGLE_OUT]=!aux[TOGGLE_OUT];
-}
-#endif
 
 #ifndef THREE_D_THROTTLE
 	if ( aux[INVERTEDMODE] )
