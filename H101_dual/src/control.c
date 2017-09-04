@@ -558,6 +558,18 @@ if ( throttle < 0 ) throttle = 0;
 		}
 
 
+		for ( int i = 0 ; i <= 3 ; i++)
+		{			
+		#ifdef MOTOR_FILTER		
+		mix[i] = motorfilter(  mix[i] , i);
+		#endif	
+		
+        #ifdef MOTOR_FILTER2_ALPHA	
+        float motorlpf( float in , int x) ;           
+		mix[i] = motorlpf(  mix[i] , i);
+		#endif	
+        }
+
 
 #ifdef MIX_LOWER_THROTTLE_3
 {
@@ -747,18 +759,6 @@ if ( underthrottle < -0.01f) ledcommand = 1;
 		    }
 // end MIX_LOWER_THROTTLE
 #endif
-
-
-
-
-#ifdef MOTOR_FILTER
-
-		  for (int i = 0; i < 4; i++)
-		    {
-			    mix[i] = motorfilter(mix[i], i);
-		    }
-#endif
-
 
 
 
@@ -970,6 +970,25 @@ if (ans < 0) ans = 0;
 	return ans;
 }
 #endif
+
+
+
+#ifndef MOTOR_FILTER2_ALPHA
+#define MOTOR_FILTER2_ALPHA 0.3
+#endif
+
+
+float motor_filt[4];
+// this was supposed to be alpha-beta filter
+// but the beta parameter was always better off
+// hence it's an "alpha filter" aka 1st order lpf
+float motorlpf( float in , int x)
+{
+    
+    lpf(&motor_filt[x] , in , 1 - MOTOR_FILTER2_ALPHA);
+       
+    return motor_filt[x];
+}
 
 
 float hann_lastsample[4];

@@ -93,12 +93,9 @@
 //#define SOFT_LPF_4TH_088HZ
 //#define SOFT_LPF_4TH_160HZ
 //#define SOFT_LPF_4TH_250HZ
+//#define SOFT_LPF_1ST_HZ 100
+//#define SOFT_LPF_2ST_HZ 100
 //#define SOFT_LPF_NONE
-
-// this works only on newer boards (non mpu-6050)
-// on older boards the hw gyro setting controls the acc as well
-#define ACC_LOW_PASS_FILTER 5
-
 
 
 // Channel assignments
@@ -228,9 +225,13 @@
 
 //#define PID_VOLTAGE_COMPENSATION
 
-// enable motor filter
-// hanning 3 sample fir filter
+
+// enable motor filter - select one
+// motorfilter1: hanning 3 sample fir filter
+// motorfilter2: 1st lpf, 0.2 - 0.6 , 0.6 = less filtering
 #define MOTOR_FILTER
+//#define MOTOR_FILTER2_ALPHA 0.3
+
 
 // lost quad beeps using motors
 //#define MOTOR_BEEPS
