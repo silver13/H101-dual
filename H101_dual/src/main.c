@@ -210,7 +210,7 @@ int main(void)
 	lastlooptime = gettime();
 
 
-	float thrfilt;
+	float thrfilt = 0;
 
 //
 //
