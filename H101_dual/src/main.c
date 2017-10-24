@@ -108,7 +108,7 @@ extern void imu_init(void);
 
 #ifdef USE_SERIAL_4WAY_BLHELI_INTERFACE
 volatile int switch_to_4way = 0;
-static void setup_4way_external_interrupt();
+static void setup_4way_external_interrupt(void);
 #endif
 
 int main(void)
@@ -561,7 +561,7 @@ void UsageFault_Handler(void)
 
 // set up external interrupt to check 
 // for 4way serial start byte
-static void setup_4way_external_interrupt()
+static void setup_4way_external_interrupt(void)
 {
 	SYSCFG->EXTISS[3] &= ~(0x000F) ; //clear bits 3:0 in the SYSCFG_EXTICR1 reg
 	EXTI->FTE |= EXTI_FTE_FTE14;

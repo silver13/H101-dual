@@ -444,7 +444,7 @@ static void WriteByteCrc(uint8_t b)
 
 
 //void esc4wayProcess(serialPort_t *mspPort)
-void esc4wayProcess()
+void esc4wayProcess(void)
 {
 
     uint8_t ParamBuf[256];

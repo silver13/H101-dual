@@ -10,12 +10,12 @@
       <TargetName>H101_dual</TargetName>
       <ToolsetNumber>0x4</ToolsetNumber>
       <ToolsetName>ARM-ADS</ToolsetName>
-      <pCCUsed>5060422::V5.06 update 4 (build 422)::ARMCC</pCCUsed>
+      <pCCUsed>5060183::V5.06 update 2 (build 183)::ARMCC</pCCUsed>
       <TargetOption>
         <TargetCommonOption>
           <Device>GD32F130G6</Device>
           <Vendor>GigaDevice</Vendor>
-          <PackID>GigaDevice.GD32F1x0_DFP.3.0.2</PackID>
+          <PackID>GigaDevice.GD32F1x0_DFP.2.0.1</PackID>
           <PackURL>http://gd32mcu.21ic.com/data/documents/yingyongruanjian/</PackURL>
           <Cpu>IROM(0x08000000,0x00008000) IRAM(0x20000000,0x00001000) CPUTYPE("Cortex-M3") CLOCK(12000000) ELITTLE</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
@@ -330,7 +330,6 @@
             <vShortWch>1</vShortWch>
             <v6Lto>0</v6Lto>
             <v6WtE>0</v6WtE>
-            <v6Rtti>0</v6Rtti>
             <VariousControls>
               <MiscControls> --fpmode=fast</MiscControls>
               <Define>USE_STDPERIPH_DRIVER</Define>
@@ -348,7 +347,6 @@
             <NoWarn>0</NoWarn>
             <uSurpInc>0</uSurpInc>
             <useXO>0</useXO>
-            <uClangAs>0</uClangAs>
             <VariousControls>
               <MiscControls></MiscControls>
               <Define></Define>
@@ -619,6 +617,26 @@
               <FileType>5</FileType>
               <FilePath>.\src\hardware.h</FilePath>
             </File>
+            <File>
+              <FileName>drv_softserial.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\src\drv_softserial.c</FilePath>
+            </File>
+            <File>
+              <FileName>serial_4way.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\src\serial_4way.c</FilePath>
+            </File>
+            <File>
+              <FileName>serial_4way_avrootloader.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\src\serial_4way_avrootloader.c</FilePath>
+            </File>
+            <File>
+              <FileName>serial_4way_stk500v2.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\src\serial_4way_stk500v2.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -714,11 +732,5 @@
       </Groups>
     </Target>
   </Targets>
-
-  <RTE>
-    <apis/>
-    <components/>
-    <files/>
-  </RTE>
 
 </Project>
