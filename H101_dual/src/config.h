@@ -181,7 +181,7 @@
 // flash led when function is active
 //#define MIX_THROTTLE_FLASHLED
 
-// limits of increase / decrase
+// limits of increase / decrease
 //#define MIX_THROTTLE_REDUCTION_MAX 0.5f
 //#define MIX_THROTTLE_INCREASE_MAX 0.2f
 

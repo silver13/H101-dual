@@ -22,7 +22,7 @@
   </DaveTm>
 
   <Target>
-    <TargetName>H101_dual</TargetName>
+    <TargetName>H101_acro</TargetName>
     <ToolsetNumber>0x4</ToolsetNumber>
     <ToolsetName>ARM-ADS</ToolsetName>
     <TargetOption>
