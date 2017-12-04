@@ -5,7 +5,7 @@
 #include "drv_time.h"
 #include "buzzer.h"
 
-#ifdef BUZZER_ENABLE
+
 
 // output polarity
 // BIT_SET = HIGH
@@ -68,7 +68,8 @@ void buzzer()
 				pulse_rate = 600000; // 3/5ths second
 
 			// start the buzzer if timeout has elapsed
-			if ( time - buzzertime > BUZZER_DELAY || lowbatt)
+			const unsigned long delta_time = time - buzzertime;
+			if ( delta_time > BUZZER_DELAY || lowbatt)
 			{
 				// initialize pin only after minimum 10 seconds from powerup
 				if ( !buzzer_init && time >  10e6)
@@ -81,7 +82,7 @@ void buzzer()
 
 
 				// enable buzzer
-				if (time%pulse_rate>pulse_rate/2)
+				if (delta_time % pulse_rate < pulse_rate / 2)
 				{
 					if ( toggle  ) // cycle the buzzer
 					{
@@ -111,8 +112,6 @@ void buzzer()
 	}
 
 }
-
-#endif
 
 
 

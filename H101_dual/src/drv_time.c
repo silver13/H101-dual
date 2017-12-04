@@ -41,23 +41,27 @@ void time_init()
 	// NVIC_SetPriority(SysTick_IRQn, 0x00);     
 }
 
-// called at least once per second or time will overflow
-unsigned long time_update(void)
+// must be called at least once per second or time will overflow
+unsigned long time_update()
 {
-	unsigned long maxticks = SysTick->LOAD;
-	unsigned long ticks = SysTick->VAL;
+	const unsigned long maxticks = SysTick->LOAD;
+	const unsigned long ticks = SysTick->VAL;
 	unsigned long elapsedticks;
+	static unsigned long remainder = 0; // carry forward the remainder ticks;
 
-	if (ticks < lastticks)
+	if (ticks < lastticks) {
 		elapsedticks = lastticks - ticks;
-	else
-	  {	// overflow ( underflow really)
-		  elapsedticks = lastticks + (maxticks - ticks);
-	  }
+	} else { // overflow ( underflow really)
+		elapsedticks = lastticks + (maxticks - ticks);
+	}
 
 	lastticks = ticks;
+	elapsedticks += remainder;
 
-	globalticks = globalticks + elapsedticks / 6;
+	const unsigned long quotient = elapsedticks / 6;
+	remainder = elapsedticks - quotient * 6;
+
+	globalticks += quotient;
 	return globalticks;
 }
 

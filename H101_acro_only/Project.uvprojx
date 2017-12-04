@@ -10,12 +10,12 @@
       <TargetName>H101_acro</TargetName>
       <ToolsetNumber>0x4</ToolsetNumber>
       <ToolsetName>ARM-ADS</ToolsetName>
-      <pCCUsed>5060183::V5.06 update 2 (build 183)::ARMCC</pCCUsed>
+      <pCCUsed>5060422::V5.06 update 4 (build 422)::ARMCC</pCCUsed>
       <TargetOption>
         <TargetCommonOption>
           <Device>GD32F130G6</Device>
           <Vendor>GigaDevice</Vendor>
-          <PackID>GigaDevice.GD32F1x0_DFP.2.0.1</PackID>
+          <PackID>GigaDevice.GD32F1x0_DFP.3.0.2</PackID>
           <PackURL>http://gd32mcu.21ic.com/data/documents/yingyongruanjian/</PackURL>
           <Cpu>IROM(0x08000000,0x00008000) IRAM(0x20000000,0x00001000) CPUTYPE("Cortex-M3") CLOCK(12000000) ELITTLE</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
@@ -133,7 +133,7 @@
             <RunIndependent>0</RunIndependent>
             <UpdateFlashBeforeDebugging>1</UpdateFlashBeforeDebugging>
             <Capability>1</Capability>
-            <DriverSelection>4103</DriverSelection>
+            <DriverSelection>4100</DriverSelection>
           </Flash1>
           <bUseTDR>1</bUseTDR>
           <Flash2>STLink\ST-LINKIII-KEIL_SWO.dll</Flash2>
@@ -330,8 +330,9 @@
             <vShortWch>1</vShortWch>
             <v6Lto>0</v6Lto>
             <v6WtE>0</v6WtE>
+            <v6Rtti>0</v6Rtti>
             <VariousControls>
-              <MiscControls>--fpmode=fast</MiscControls>
+              <MiscControls> --fpmode=fast</MiscControls>
               <Define>USE_STDPERIPH_DRIVER</Define>
               <Undefine></Undefine>
               <IncludePath>..\; ..\Peripherals\inc; ..\CMSIS; .\src</IncludePath>
@@ -347,6 +348,7 @@
             <NoWarn>0</NoWarn>
             <uSurpInc>0</uSurpInc>
             <useXO>0</useXO>
+            <uClangAs>0</uClangAs>
             <VariousControls>
               <MiscControls></MiscControls>
               <Define></Define>
@@ -523,6 +525,16 @@
               <FilePath>.\src\control.c</FilePath>
             </File>
             <File>
+              <FileName>led.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\src\led.c</FilePath>
+            </File>
+            <File>
+              <FileName>rgb_led.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\src\rgb_led.c</FilePath>
+            </File>
+            <File>
               <FileName>main.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\src\main.c</FilePath>
@@ -533,14 +545,49 @@
               <FilePath>.\src\rx_bayang_protocol.c</FilePath>
             </File>
             <File>
+              <FileName>rx_bayang_ble_app.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\src\rx_bayang_ble_app.c</FilePath>
+            </File>
+            <File>
+              <FileName>rx_bayang_ble.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\src\rx_bayang_ble.c</FilePath>
+            </File>
+            <File>
               <FileName>sixaxis.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\src\sixaxis.c</FilePath>
             </File>
             <File>
-              <FileName>led.c</FileName>
+              <FileName>filter.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>.\src\filter.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>imu.c</FileName>
               <FileType>1</FileType>
-              <FilePath>.\src\led.c</FilePath>
+              <FilePath>.\src\imu.c</FilePath>
+            </File>
+            <File>
+              <FileName>gestures.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\src\gestures.c</FilePath>
+            </File>
+            <File>
+              <FileName>flash.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\src\flash.c</FilePath>
+            </File>
+            <File>
+              <FileName>buzzer.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\src\buzzer.c</FilePath>
+            </File>
+            <File>
+              <FileName>stickvector.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\src\stickvector.c</FilePath>
             </File>
             <File>
               <FileName>util.c</FileName>
@@ -553,9 +600,14 @@
               <FilePath>.\src\pid.c</FilePath>
             </File>
             <File>
-              <FileName>filter.cpp</FileName>
-              <FileType>8</FileType>
-              <FilePath>.\src\filter.cpp</FilePath>
+              <FileName>angle_pid.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\src\angle_pid.c</FilePath>
+            </File>
+            <File>
+              <FileName>defines.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\src\defines.h</FilePath>
             </File>
             <File>
               <FileName>config.h</FileName>
@@ -563,9 +615,9 @@
               <FilePath>.\src\config.h</FilePath>
             </File>
             <File>
-              <FileName>defines.h</FileName>
+              <FileName>hardware.h</FileName>
               <FileType>5</FileType>
-              <FilePath>.\src\defines.h</FilePath>
+              <FilePath>.\src\hardware.h</FilePath>
             </File>
           </Files>
         </Group>
@@ -591,6 +643,16 @@
               <FileName>drv_pwm.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\src\drv_pwm.c</FilePath>
+            </File>
+            <File>
+              <FileName>drv_esc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\src\drv_esc.c</FilePath>
+            </File>
+            <File>
+              <FileName>drv_dshot.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\src\drv_dshot.c</FilePath>
             </File>
             <File>
               <FileName>drv_serial.c</FileName>
@@ -622,6 +684,16 @@
               <FileType>1</FileType>
               <FilePath>.\src\drv_i2c.c</FilePath>
             </File>
+            <File>
+              <FileName>drv_fmc1.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\src\drv_fmc1.c</FilePath>
+            </File>
+            <File>
+              <FileName>drv_rgb.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\src\drv_rgb.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -632,10 +704,21 @@
               <FileType>5</FileType>
               <FilePath>.\src\binary.h</FilePath>
             </File>
+            <File>
+              <FileName>macros.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\src\macros.h</FilePath>
+            </File>
           </Files>
         </Group>
       </Groups>
     </Target>
   </Targets>
+
+  <RTE>
+    <apis/>
+    <components/>
+    <files/>
+  </RTE>
 
 </Project>

@@ -40,6 +40,14 @@ THE SOFTWARE.
 #include <inttypes.h>
 
 
+
+// this works only on newer boards (non mpu-6050)
+// on older boards the hw gyro setting controls the acc as well
+#ifndef ACC_LOW_PASS_FILTER
+#define ACC_LOW_PASS_FILTER 5
+#endif
+
+
 // gyro orientation
 // the expected orientation is with the gyro dot in the front-left corner
 // use this to rotate to the correct orientation 
