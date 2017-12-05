@@ -14,7 +14,7 @@
 
 #define FILTERCALC( sampleperiod, filtertime) (1.0f - ((float)sampleperiod) / ((float)filtertime))
 
-#define PI  3.14159265358979323846f 
+#define PI  3.14159265358979323846f
 
 
 #define AUXNUMBER 16
@@ -28,17 +28,20 @@
 #define CH_RTH 3
 #define CH_AUX1 4
 #define CH_AUX2 5
+#define CH_EMG 10
+#define CH_TO 11
 // trims numbers have to be sequential, atart at CH_PIT_TRIM
 #define CH_PIT_TRIM 6
 #define CH_RLL_TRIM 7
 #define CH_THR_TRIM 8
 #define CH_YAW_TRIM 9
-
-#define CH_INV 10
+// next 3 channels only when *not* using USE_STOCK_TX
+#define CH_INV 6
 #define CH_VID 7
 #define CH_PIC 8
-#define CH_AUX3 11
-#define CH_AUX4 12
+
+#define CH_AUX3 12
+#define CH_AUX4 13
 
 #define DEVO_CHAN_5 CH_INV
 #define DEVO_CHAN_6 CH_FLIP
@@ -46,6 +49,8 @@
 #define DEVO_CHAN_8 CH_VID
 #define DEVO_CHAN_9 CH_HEADFREE
 #define DEVO_CHAN_10 CH_RTH
+#define DEVO_CHAN_11 CH_TO
+#define DEVO_CHAN_12 CH_EMG
 
 #define MULTI_CHAN_5 CH_FLIP
 #define MULTI_CHAN_6 CH_RTH
@@ -75,13 +80,3 @@
 #define ROLL 0
 #define PITCH 1
 #define YAW 2
-
-
-
-
-
-
-
-
-
-
