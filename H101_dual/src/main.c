@@ -375,14 +375,21 @@ if( thrfilt > 0.1f )
 
 						else if (ledblink)
 						{
+							unsigned long time = gettime();
 							if (!ledcommandtime)
-								  ledcommandtime = gettime();
-							if (gettime() - ledcommandtime > 500000)
+							{
+								  ledcommandtime = time;
+								  ledoff( 255);
+							}
+							if (time - ledcommandtime > 500000)
 							    {
 								    ledblink--;
 								    ledcommandtime = 0;
 							    }
-							ledflash(500000, 1);
+							if ( time - ledcommandtime > 300000)
+							{
+								ledon( 255);
+							}
 						}
 						
 						else
