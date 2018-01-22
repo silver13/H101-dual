@@ -443,7 +443,11 @@ limitf(&throttle, 1.0);
 		onground_long = gettime();
 
 #ifdef 	THROTTLE_TRANSIENT_COMPENSATION
-		  throttle += 7.0f * throttlehpf(throttle);
+
+#ifndef THROTTLE_TRANSIENT_COMPENSATION_FACTOR
+ #define THROTTLE_TRANSIENT_COMPENSATION_FACTOR 7.0
+#endif
+		  throttle += (float)THROTTLE_TRANSIENT_COMPENSATION_FACTOR * throttlehpf(throttle);
 		  if (throttle < 0)
 			  throttle = 0;
 		  if (throttle > 1.0f)
