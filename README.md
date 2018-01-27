@@ -8,9 +8,8 @@ __DO NOT ACCIDENTALLY FLASH THE H8MINI FIRMWARE TO THE H101__ (it may break it)
 
 
 Select folder for the correct firmware:
-* __H101_Acro__: Acro only - outdated
-* __H101_Acro_New__: Acro only, newer code with more features
-* __H101_dual__: Dual mode, latest code
+* __H101_Acro__: Acro mode
+* __H101_dual__: Acro + Level mode
 
 Note for H101_dual code: By default motor direction is automatically set at takeoff / zero-throttle, based on orientation.
 
