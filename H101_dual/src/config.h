@@ -241,7 +241,7 @@
 
 // motor transient correction applied	to throttle stick
 //#define THROTTLE_TRANSIENT_COMPENSATION
-
+#define THROTTLE_TRANSIENT_COMPENSATION_FACTOR 7.0
 
 
 // motor curve to use
