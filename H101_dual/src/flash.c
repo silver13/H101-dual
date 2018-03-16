@@ -2,7 +2,7 @@
 
 #include "drv_fmc.h"
 #include "defines.h"
-
+#include "config.h"
 
 void loadcal_old(void);
 void fmc_write_inc(unsigned int * address, int data);
@@ -37,6 +37,9 @@ float saved_pidkd_flash[PIDNUMBER];
 // 1 - normal
 // 2 - mismatch
 // 3 - checksum error
+
+#define bindoffset 100
+#define writeword fmc_write
 
 void savecal()
 {
@@ -92,6 +95,27 @@ void savecal()
             addresscount++;  
          
         }
+
+  
+#ifdef RX_BAYANG_PROTOCOL_TELEMETRY
+// autobind info     
+extern char rfchannel[4];
+extern char rxaddress[5];
+extern int telemetry_enabled;
+extern int rx_bind_enable;
+    
+ // save radio bind info  
+    if ( rx_bind_enable )
+    {
+    writeword( bindoffset, rxaddress[4]|telemetry_enabled<<8);
+    writeword( bindoffset +1, rxaddress[0]|(rxaddress[1]<<8)|(rxaddress[2]<<16)|(rxaddress[3]<<24));
+    writeword( bindoffset + 2, rfchannel[0]|(rfchannel[1]<<8)|(rfchannel[2]<<16)|(rfchannel[3]<<24));
+    }
+    else
+    {
+      // this will leave 255's so it will be picked up as disabled  
+    }
+#endif    
         
        // checksum       
         fmc_write( 255, checksum() );
@@ -198,6 +222,47 @@ void loadcal(void)
 			    pidkd[x] = *(float *)&result;
 			    addresscount++;
             }
+
+      
+ #ifdef RX_BAYANG_PROTOCOL_TELEMETRY  
+extern char rfchannel[4];
+extern char rxaddress[5];
+extern int telemetry_enabled;
+extern int rx_bind_load;
+extern int rx_bind_enable;
+     
+ // save radio bind info   
+
+    int temp = fmc_read( bindoffset + 2);
+    int error = 0;
+    for ( int i = 0 ; i < 4; i++)
+    {
+        if ( ((temp>>(i*8))&0xff  ) > 127)
+        {
+            error = 1;
+        }   
+    }
+    
+    if( !error )   
+    {
+        rx_bind_load = rx_bind_enable = 1; 
+        
+        rxaddress[4] = fmc_read(  bindoffset );
+
+        telemetry_enabled = fmc_read( bindoffset )>>8;
+        int temp = fmc_read( bindoffset + 1);
+        for ( int i = 0 ; i < 4; i++)
+        {
+            rxaddress[i] =  temp>>(i*8);        
+        }
+        
+        temp = fmc_read( bindoffset + 2);  
+        for ( int i = 0 ; i < 4; i++)
+        {
+            rfchannel[i] =  temp>>(i*8);  
+        }
+    }
+#endif
             
             if ( checksum() != fmc_read(255) )
             {

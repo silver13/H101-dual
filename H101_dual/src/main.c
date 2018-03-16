@@ -154,6 +154,11 @@ int main(void)
 
 	adc_init();
 
+    
+// loads acc calibration and gyro dafaults
+// also autobind , pids
+	loadcal();
+      
 	rx_init();
 
 	int count = 0;
@@ -184,8 +189,6 @@ int main(void)
 		failloop(2);
 #endif
 
-// loads acc calibration and gyro dafaults
-	loadcal();
 
 	gyro_cal();
 

@@ -197,15 +197,20 @@ if (currentdir == REVERSE)
 	  {
 		  if (command == GESTURE_DDD)
 		    {
-			    gyro_cal();	// for flashing lights
+			    
 
 			    //skip accel calibration if pid gestures used
 			    if ( !pid_gestures_used )
 			    {
-				    acc_cal();
-				    pid_gestures_used = 0;
+                    gyro_cal();	// for flashing lights
+				    acc_cal();    
 			    }
-
+                else
+                {
+                    ledcommand = 1;
+                    pid_gestures_used = 0;   
+                }
+                
 			    savecal();
 			    // reset loop time
 			    extern unsigned lastlooptime;
@@ -213,6 +218,16 @@ if (currentdir == REVERSE)
 		    }
 		  else
 		    {
+                if (command == GESTURE_UUU)
+              {
+                 #ifdef RX_BAYANG_PROTOCOL_TELEMETRY                  
+                 extern int rx_bind_enable;
+                 rx_bind_enable=!rx_bind_enable;
+                 ledblink = 2 - rx_bind_enable;
+                 pid_gestures_used = 1;  
+                 #endif
+              }
+                
 			    if (command == GESTURE_RRD)
 			      {
 							ledcommand = 1;
@@ -224,11 +239,7 @@ if (currentdir == REVERSE)
 							ledcommand = 1;
 				      aux[CH_AUX1] = 0;
 			      }
-			     if (command == GESTURE_UUU)
-			      {
-							ledcommand = 1;
-				      aux[CH_AUX2] = !aux[CH_AUX2];
-			      }
+
 			#ifdef PID_GESTURE_TUNING
 			      if ( command == GESTURE_UDR || command == GESTURE_UDL ) pid_gestures_used = 1;
 
