@@ -29,8 +29,10 @@ THE SOFTWARE.
 
 
 //#define NORMAL_DTERM
-//#define SECOND_ORDER_DTERM
 #define NEW_DTERM
+//#define MAX_FLAT_LPF_DIFF_DTERM
+//#define DTERM_LPF_1ST_HZ 100
+//#define  DTERM_LPF_2ND_HZ 120
 
 
 #include "pid.h"
@@ -110,7 +112,8 @@ static float lastrate[PIDNUMBER];
 static float lastratexx[PIDNUMBER][2];
 #endif
 
-#ifdef SECOND_ORDER_DTERM
+
+#ifdef MAX_FLAT_LPF_DIFF_DTERM
 static float lastratexx[PIDNUMBER][4];
 #endif
 
@@ -119,6 +122,9 @@ static float lasterror2[PIDNUMBER];
 #endif
 
 
+// calculate change from ideal loop time
+// 0.0032f is there for legacy purposes, should be 0.001f = looptime
+// this is called in advance as an optimization because it has division
 void pid_precalc()
 {
 	timefactor = 0.0032f / looptime;
@@ -129,8 +135,26 @@ void pid_precalc()
 #endif
 }
 
+#ifdef DTERM_LPF_2ND_HZ 
+//the compiler calculates these
+static float two_one_minus_alpha = 2*FILTERCALC_NEW( 0.001 , (1.0f/DTERM_LPF_2ND_HZ) );
+static float one_minus_alpha_sqr = (FILTERCALC_NEW( 0.001 , (1.0f/DTERM_LPF_2ND_HZ) ) )*(FILTERCALC_NEW( 0.001 , (1.0f/DTERM_LPF_2ND_HZ) ));
+static float alpha_sqr = (1 - FILTERCALC_NEW( 0.001 , (1.0f/DTERM_LPF_2ND_HZ) ))*(1 - FILTERCALC_NEW( 0.001 , (1.0f/DTERM_LPF_2ND_HZ) ));
 
+static float last_out[3], last_out2[3];
 
+float lpf2( float in, int num)
+ {
+
+  float ans = in * alpha_sqr + two_one_minus_alpha * last_out[num]
+      - one_minus_alpha_sqr * last_out2[num];   
+
+  last_out2[num] = last_out[num];
+  last_out[num] = ans;
+  
+  return ans;
+ }
+#endif
 
 // Cycle through P / I / D - The initial value is P
 // The return value is the currently selected TERM (after setting the next one)
@@ -155,8 +179,8 @@ int next_pid_term()
 			current_pid_term = 0;
 			break;
 	}
-
-	return current_pid_term+1;
+	
+	return current_pid_term + 1;
 }
 
 // Cycle through the axis - Initial is Roll
@@ -167,20 +191,21 @@ int next_pid_term()
 // The return value is used to blink the leds in main.c
 int next_pid_axis()
 {
-	int size = 3;
+	const int size = 3;
 	if (current_pid_axis == size - 1) {
 		current_pid_axis = 0;
 	}
 	else {
-				#ifdef COMBINE_PITCH_ROLL_PID_TUNING
-				if (current_pid_axis == 0) {
-					current_pid_axis = 2;
-				}
-			 #else
-				current_pid_axis++;
-			 #endif
+		#ifdef COMBINE_PITCH_ROLL_PID_TUNING
+		if (current_pid_axis <2 ) {
+			// Skip axis == 1 which is roll, and go directly to 2 (Yaw)
+			current_pid_axis = 2;
+		}
+		#else
+		current_pid_axis++;
+		#endif
 	}
-
+	
 	return current_pid_axis + 1;
 }
 
@@ -192,26 +217,19 @@ int change_pid_value(int increase)
 	if (increase) {
 		multiplier = (float)PID_GESTURES_MULTI;
 		number_of_increments[current_pid_term][current_pid_axis]++;
-		#ifdef COMBINE_PITCH_ROLL_PID_TUNING
-			if (current_pid_axis == 0) {
-				number_of_increments[current_pid_term][current_pid_axis+1]++;
-			}
-		#endif
 	}
 	else {
 		number_of_increments[current_pid_term][current_pid_axis]--;
-		#ifdef COMBINE_PITCH_ROLL_PID_TUNING
-			if (current_pid_axis == 0) {
-				number_of_increments[current_pid_term][current_pid_axis+1]--;
-			}
-		#endif
 	}
+    
 	current_pid_term_pointer[current_pid_axis] = current_pid_term_pointer[current_pid_axis] * multiplier;
-	#ifdef COMBINE_PITCH_ROLL_PID_TUNING
-		if (current_pid_axis == 0) {
-			current_pid_term_pointer[current_pid_axis+1] = current_pid_term_pointer[current_pid_axis+1] * multiplier;
-		}
+	
+    #ifdef COMBINE_PITCH_ROLL_PID_TUNING
+	if (current_pid_axis == 0) {
+		current_pid_term_pointer[current_pid_axis+1] = current_pid_term_pointer[current_pid_axis+1] * multiplier;
+	}
 	#endif
+	
 	return abs(number_of_increments[current_pid_term][current_pid_axis]);
 }
 
@@ -289,25 +307,54 @@ float pid(int x)
 
 	// D term
 
-#ifdef NORMAL_DTERM
-	pidoutput[x] = pidoutput[x] - (gyro[x] - lastrate[x]) * pidkd[pidindex] * timefactor;
+    #ifdef NORMAL_DTERM
+    pidoutput[x] = pidoutput[x] - (gyro[x] - lastrate[x]) * pidkd[pidindex] * timefactor;
+    lastrate[x] = gyro[x];
+    #endif
+
+    #ifdef NEW_DTERM
+    pidoutput[x] = pidoutput[x] - ((0.5f) * gyro[x] - (0.5f) * lastratexx[x][1]) * pidkd[pidindex] * timefactor;
+
+    lastratexx[x][1] = lastratexx[x][0];
+    lastratexx[x][0] = gyro[x];
+    #endif
+ 
+    #ifdef MAX_FLAT_LPF_DIFF_DTERM 
+    pidoutput[x] = pidoutput[x] - ( + 0.125f *gyro[x] + 0.250f * lastratexx[x][0]
+                - 0.250f * lastratexx[x][2] - ( 0.125f) * lastratexx[x][3]) * pidkd[x] * timefactor 						;
+
+    lastratexx[x][3] = lastratexx[x][2];
+    lastratexx[x][2] = lastratexx[x][1];
+    lastratexx[x][1] = lastratexx[x][0];
+    lastratexx[x][0] = gyro[x];
+    #endif 
+
+	
+	#ifdef DTERM_LPF_1ST_HZ
+	float dterm;
+	static float lastrate[3];
+	static float dlpf[3] = {0};
+	
+	dterm = - (gyro[x] - lastrate[x]) * pidkd[x] * timefactor;
 	lastrate[x] = gyro[x];
-#endif
-
-#ifdef SECOND_ORDER_DTERM
-	pidoutput[x] = pidoutput[x] - (-(0.083333333f) * gyro[x] + (0.666666f) * lastratexx[x][0] - (0.666666f) * lastratexx[x][2] + (0.083333333f) * lastratexx[x][3]) * pidkd[pidindex] * timefactor;
-
-	lastratexx[x][3] = lastratexx[x][2];
-	lastratexx[x][2] = lastratexx[x][1];
-	lastratexx[x][1] = lastratexx[x][0];
-	lastratexx[x][0] = gyro[x];
-#endif
-#ifdef NEW_DTERM
-	pidoutput[x] = pidoutput[x] - ((0.5f) * gyro[x] - (0.5f) * lastratexx[x][1]) * pidkd[pidindex] * timefactor;
-
-	lastratexx[x][1] = lastratexx[x][0];
-	lastratexx[x][0] = gyro[x];
-#endif
+	
+	lpf( &dlpf[x], dterm, FILTERCALC_NEW( 0.001 , 1.0f/DTERM_LPF_1ST_HZ ) );
+	
+	pidoutput[x] += dlpf[x];                   
+	#endif
+	
+	#ifdef DTERM_LPF_2ND_HZ
+	float dterm;
+	static float lastrate[3];       
+	float lpf2( float in, int num);
+	if ( pidkd[x] > 0)
+	{
+	    dterm = - (gyro[x] - lastrate[x]) * pidkd[x] * timefactor;
+	    lastrate[x] = gyro[x];
+	    dterm = lpf2(  dterm, x );
+	    pidoutput[x] += dterm;
+	}                       
+	#endif
 
 #ifdef PID_VOLTAGE_COMPENSATION
 	pidoutput[x] *= v_compensation;

@@ -197,15 +197,20 @@ if (currentdir == REVERSE)
 	  {
 		  if (command == GESTURE_DDD)
 		    {
-			    gyro_cal();	// for flashing lights
+			    
 
 			    //skip accel calibration if pid gestures used
 			    if ( !pid_gestures_used )
 			    {
-				    acc_cal();
-				    pid_gestures_used = 0;
+                    gyro_cal();	// for flashing lights
+				    acc_cal();    
 			    }
-
+                else
+                {
+                    ledcommand = 1;
+                    pid_gestures_used = 0;   
+                }
+                
 			    savecal();
 			    // reset loop time
 			    extern unsigned lastlooptime;
@@ -213,6 +218,16 @@ if (currentdir == REVERSE)
 		    }
 		  else
 		    {
+                if (command == GESTURE_UUU)
+              {
+                 #ifdef RX_BAYANG_PROTOCOL_TELEMETRY                  
+                 extern int rx_bind_enable;
+                 rx_bind_enable=!rx_bind_enable;
+                 ledblink = 2 - rx_bind_enable;
+                 pid_gestures_used = 1;  
+                 #endif
+              }
+                
 			    if (command == GESTURE_RRD)
 			      {
 							ledcommand = 1;
@@ -224,40 +239,37 @@ if (currentdir == REVERSE)
 							ledcommand = 1;
 				      aux[CH_AUX1] = 0;
 			      }
-			     if (command == GESTURE_UUU)
-			      {
-							ledcommand = 1;
-				      aux[CH_AUX2] = !aux[CH_AUX2];
-			      }
+
 			#ifdef PID_GESTURE_TUNING
 			      if ( command == GESTURE_UDR || command == GESTURE_UDL ) pid_gestures_used = 1;
 
-			  int blink = 0;
 			    if (command == GESTURE_UDU)
 			      {
 							// Cycle to next pid term (P I D)
-							blink = next_pid_term();
+							ledblink = next_pid_term();
 			      }
 			    if (command == GESTURE_UDD)
 			      {
 							// Cycle to next axis (Roll Pitch Yaw)
-							blink = next_pid_axis();
+							ledblink = next_pid_axis();
 			      }
 			    if (command == GESTURE_UDR)
 			      {
 				      // Increase by 10%
-							blink = increase_pid();
+							ledblink = increase_pid();
 			      }
 			    if (command == GESTURE_UDL)
 			      {
 					// Descrease by 10%
-				      			blink = decrease_pid();
+				      			ledblink = decrease_pid();
 			      }
+				// flash long on zero
+				if ( pid_gestures_used && ledblink == 0) ledcommand = 1;
+
 					// U D U - Next PID term
 					// U D D - Next PID Axis
 					// U D R - Increase value
 					// U D L - Descrease value
-					ledblink = blink; //Will cause led logic to blink the number of times ledblink has stored in it.
 			  #endif
 		    }
 	  }
@@ -442,7 +454,11 @@ limitf(&throttle, 1.0);
 		onground_long = gettime();
 
 #ifdef 	THROTTLE_TRANSIENT_COMPENSATION
-		  throttle += 7.0f * throttlehpf(throttle);
+
+#ifndef THROTTLE_TRANSIENT_COMPENSATION_FACTOR
+ #define THROTTLE_TRANSIENT_COMPENSATION_FACTOR 7.0
+#endif
+		  throttle += (float)THROTTLE_TRANSIENT_COMPENSATION_FACTOR * throttlehpf(throttle);
 		  if (throttle < 0)
 			  throttle = 0;
 		  if (throttle > 1.0f)

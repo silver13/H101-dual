@@ -107,7 +107,6 @@
 // CH_HEADFREE - 2 - headfree
 // CH_RTH - 3 - headingreturn
 // CH_AUX1 - 4 - AUX1 ( gestures <<v and >>v)
-// CH_AUX2 - 5 - AUX2+ (  up - up - up    )
 // CH_AUX3 - gravity channel ( on if inverted , updated at zero throttle)
 // CH_PIT_TRIM - 6 - Pitch trims
 // CH_RLL_TRIM - 7 - Roll trims
@@ -150,7 +149,6 @@
 
 // aux1 channel starts on if this is defined, otherwise off.
 #define AUX1_START_ON
-//#define AUX4_START_ON
 
 // use yaw/pitch instead of roll/pitch for gestures
 //#define GESTURES_USE_YAW
@@ -277,7 +275,7 @@
 #define TX_POWER_TELEMETRY 1
 
 // rx protocol selection
-#define RX_BAYANG_TELEMETRY
+#define RX_BAYANG_PROTOCOL_TELEMETRY 
 //#define RX_BAYANG_BLE
 //#define RX_BAYANG_BLE_APP
 

@@ -47,3 +47,5 @@
 #define USE_PWM_DRIVER
 //#define USE_ESC_DRIVER
 //#define USE_DSHOT_DRIVER
+
+#define RADIO_XN297
