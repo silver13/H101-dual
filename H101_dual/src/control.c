@@ -326,7 +326,7 @@ if (currentdir == REVERSE)
 	  }
 
 
-
+	rotateErrors();
 	pid(0);
 	pid(1);
 	pid(2);
