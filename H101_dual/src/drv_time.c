@@ -58,7 +58,12 @@ unsigned long time_update()
 	lastticks = ticks;
 	elapsedticks += remainder;
 
+#define FAST_DIVIDE
+#ifdef FAST_DIVIDE
+	const unsigned long quotient = elapsedticks*43691>>18;
+#else
 	const unsigned long quotient = elapsedticks / 6;
+#endif
 	remainder = elapsedticks - quotient * 6;
 
 	globalticks += quotient;

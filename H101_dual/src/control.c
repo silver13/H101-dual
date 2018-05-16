@@ -212,6 +212,13 @@ if (currentdir == REVERSE)
                 }
                 
 			    savecal();
+
+                // reset flash numbers
+                extern int number_of_increments[3][3];
+                for( int i = 0 ; i < 3 ; i++)
+                    for( int j = 0 ; j < 3 ; j++)
+                        number_of_increments[i][j] = 0;
+			  
 			    // reset loop time
 			    extern unsigned lastlooptime;
 			    lastlooptime = gettime();

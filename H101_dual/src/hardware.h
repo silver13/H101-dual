@@ -48,4 +48,7 @@
 //#define USE_ESC_DRIVER
 //#define USE_DSHOT_DRIVER
 
+//#define USE_SERIAL_4WAY_BLHELI_INTERFACE
+
 #define RADIO_XN297
+

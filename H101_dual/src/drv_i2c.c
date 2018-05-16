@@ -113,8 +113,10 @@ void i2c_init(void)
 
 	I2C_InitPara I2C_InitStructure;
 	I2C_InitStructure.I2C_Protocol = I2C_PROTOCOL_I2C;
-	I2C_InitStructure.I2C_DutyCycle = I2C_DUTYCYCLE_2;
-	I2C_InitStructure.I2C_BitRate = 400000;
+	// I2C_InitStructure.I2C_DutyCycle = I2C_DUTYCYCLE_2;
+	// I2C_InitStructure.I2C_BitRate = 400000;
+	I2C_InitStructure.I2C_DutyCycle = I2C_DUTYCYCLE_16_9;
+	I2C_InitStructure.I2C_BitRate = 1000000;
 	I2C_InitStructure.I2C_AddressingMode = I2C_ADDRESSING_MODE_7BIT;
 	I2C_InitStructure.I2C_DeviceAddress = 0x24;
 
