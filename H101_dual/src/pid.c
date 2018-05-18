@@ -249,7 +249,6 @@ int decrease_pid()
 }
 
 // https://www.rcgroups.com/forums/showthread.php?2512604-Eachine-H8-mini-acro-firmware/page898#post39354943
-#ifdef PID_ROTATE_ERRORS
 void rotateErrors()
 {
 	// rotation around x axis:
@@ -267,7 +266,6 @@ void rotateErrors()
 	ierror[0] -= ierror[1] * temp;
 	ierror[1] += ierror[0] * temp;
 }
-#endif
 
 float pid(int x)
 {
