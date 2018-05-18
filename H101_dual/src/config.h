@@ -166,7 +166,7 @@
 
 
 // enable auto lower throttle near max throttle to keep control
-// comment out to disable 
+// comment out to disable
 //#define MIX_LOWER_THROTTLE
 #define MIX_INCREASE_THROTTLE
 
@@ -275,7 +275,7 @@
 #define TX_POWER_TELEMETRY 1
 
 // rx protocol selection
-#define RX_BAYANG_PROTOCOL_TELEMETRY 
+#define RX_BAYANG_PROTOCOL_TELEMETRY
 //#define RX_BAYANG_BLE
 //#define RX_BAYANG_BLE_APP
 
@@ -284,7 +284,8 @@
 #define PID_GESTURE_TUNING
 #define COMBINE_PITCH_ROLL_PID_TUNING
 
-
+// Rotate I-term vecor for a stable yaw axis
+#define PID_ROTATE_ERRORS
 
 
 

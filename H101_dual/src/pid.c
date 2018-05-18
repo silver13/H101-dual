@@ -135,7 +135,7 @@ void pid_precalc()
 #endif
 }
 
-#ifdef DTERM_LPF_2ND_HZ 
+#ifdef DTERM_LPF_2ND_HZ
 //the compiler calculates these
 static float two_one_minus_alpha = 2*FILTERCALC_NEW( 0.001 , (1.0f/DTERM_LPF_2ND_HZ) );
 static float one_minus_alpha_sqr = (FILTERCALC_NEW( 0.001 , (1.0f/DTERM_LPF_2ND_HZ) ) )*(FILTERCALC_NEW( 0.001 , (1.0f/DTERM_LPF_2ND_HZ) ));
@@ -147,11 +147,11 @@ float lpf2( float in, int num)
  {
 
   float ans = in * alpha_sqr + two_one_minus_alpha * last_out[num]
-      - one_minus_alpha_sqr * last_out2[num];   
+      - one_minus_alpha_sqr * last_out2[num];
 
   last_out2[num] = last_out[num];
   last_out[num] = ans;
-  
+
   return ans;
  }
 #endif
@@ -179,7 +179,7 @@ int next_pid_term()
 			current_pid_term = 0;
 			break;
 	}
-	
+
 	return current_pid_term + 1;
 }
 
@@ -205,7 +205,7 @@ int next_pid_axis()
 		current_pid_axis++;
 		#endif
 	}
-	
+
 	return current_pid_axis + 1;
 }
 
@@ -221,15 +221,15 @@ int change_pid_value(int increase)
 	else {
 		number_of_increments[current_pid_term][current_pid_axis]--;
 	}
-    
+
 	current_pid_term_pointer[current_pid_axis] = current_pid_term_pointer[current_pid_axis] * multiplier;
-	
+
     #ifdef COMBINE_PITCH_ROLL_PID_TUNING
 	if (current_pid_axis == 0) {
 		current_pid_term_pointer[current_pid_axis+1] = current_pid_term_pointer[current_pid_axis+1] * multiplier;
 	}
 	#endif
-	
+
 	return abs(number_of_increments[current_pid_term][current_pid_axis]);
 }
 
@@ -248,21 +248,26 @@ int decrease_pid()
 	return change_pid_value(0);
 }
 
-
+// https://www.rcgroups.com/forums/showthread.php?2512604-Eachine-H8-mini-acro-firmware/page898#post39354943
+#ifdef PID_ROTATE_ERRORS
 void rotateErrors()
 {
 	// rotation around x axis:
-	ierror[1] -= ierror[2] * gyro[0] * looptime;
-	ierror[2] += ierror[1] * gyro[0] * looptime;
+	float temp = gyro[0] * looptime;
+	ierror[1] -= ierror[2] * temp;
+	ierror[2] += ierror[1] * temp;
 
 	// rotation around y axis:
-	ierror[2] -= ierror[0] * gyro[1] * looptime;
-	ierror[0] += ierror[2] * gyro[1] * looptime;
+	temp = gyro[1] * looptime;
+	ierror[2] -= ierror[0] * temp;
+	ierror[0] += ierror[2] * temp;
 
 	// rotation around z axis:
-	ierror[0] -= ierror[1] * gyro[2] * looptime;
-	ierror[1] += ierror[0] * gyro[2] * looptime;
+	temp = gyro[2] * looptime;
+	ierror[0] -= ierror[1] * temp;
+	ierror[1] += ierror[0] * temp;
 }
+#endif
 
 float pid(int x)
 {
@@ -330,8 +335,8 @@ float pid(int x)
     lastratexx[x][1] = lastratexx[x][0];
     lastratexx[x][0] = gyro[x];
     #endif
- 
-    #ifdef MAX_FLAT_LPF_DIFF_DTERM 
+
+    #ifdef MAX_FLAT_LPF_DIFF_DTERM
     pidoutput[x] = pidoutput[x] - ( + 0.125f *gyro[x] + 0.250f * lastratexx[x][0]
                 - 0.250f * lastratexx[x][2] - ( 0.125f) * lastratexx[x][3]) * pidkd[x] * timefactor 						;
 
@@ -339,25 +344,25 @@ float pid(int x)
     lastratexx[x][2] = lastratexx[x][1];
     lastratexx[x][1] = lastratexx[x][0];
     lastratexx[x][0] = gyro[x];
-    #endif 
+    #endif
 
-	
+
 	#ifdef DTERM_LPF_1ST_HZ
 	float dterm;
 	static float lastrate[3];
 	static float dlpf[3] = {0};
-	
+
 	dterm = - (gyro[x] - lastrate[x]) * pidkd[x] * timefactor;
 	lastrate[x] = gyro[x];
-	
+
 	lpf( &dlpf[x], dterm, FILTERCALC_NEW( 0.001 , 1.0f/DTERM_LPF_1ST_HZ ) );
-	
-	pidoutput[x] += dlpf[x];                   
+
+	pidoutput[x] += dlpf[x];
 	#endif
-	
+
 	#ifdef DTERM_LPF_2ND_HZ
 	float dterm;
-	static float lastrate[3];       
+	static float lastrate[3];
 	float lpf2( float in, int num);
 	if ( pidkd[x] > 0)
 	{
@@ -365,7 +370,7 @@ float pid(int x)
 	    lastrate[x] = gyro[x];
 	    dterm = lpf2(  dterm, x );
 	    pidoutput[x] += dterm;
-	}                       
+	}
 	#endif
 
 #ifdef PID_VOLTAGE_COMPENSATION
