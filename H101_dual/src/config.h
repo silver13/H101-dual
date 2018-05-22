@@ -284,9 +284,11 @@
 #define PID_GESTURE_TUNING
 #define COMBINE_PITCH_ROLL_PID_TUNING
 
-// Rotate I-term vecor for a stable yaw axis
+// Rotate I-term vector for a stable yaw axis
 #define PID_ROTATE_ERRORS
 
+// Removes roll and pitch bounce back after flips
+#define TRANSIENT_WINDUP_PROTECTION
 
 
 

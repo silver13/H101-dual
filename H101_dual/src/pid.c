@@ -39,6 +39,7 @@ THE SOFTWARE.
 #include "util.h"
 #include "config.h"
 #include <stdlib.h>
+#include <math.h>
 #include "defines.h"
 #include <stdbool.h>
 
@@ -93,6 +94,7 @@ static float lastrate[PIDNUMBER];
 float pidoutput[PIDNUMBER];
 
 float error[PIDNUMBER];
+extern float setpoint[PIDNUMBER];
 extern float looptime;
 extern float gyro[3];
 extern int onground;
@@ -248,7 +250,7 @@ int decrease_pid()
 	return change_pid_value(0);
 }
 
-// https://www.rcgroups.com/forums/showthread.php?2512604-Eachine-H8-mini-acro-firmware/page898#post39354943
+// https://www.rcgroups.com/forums/showpost.php?p=39354943&postcount=13468
 void rotateErrors()
 {
 	// rotation around x axis:
@@ -267,6 +269,8 @@ void rotateErrors()
 	ierror[1] += ierror[0] * temp;
 }
 
+extern float splpf( float in,int num );
+
 float pid(int x)
 {
 	int pidindex = x;
@@ -280,7 +284,13 @@ float pid(int x)
 	  {
 		  ierror[x] *= 0.98f; // 50 ms time-constant
 	  }
-
+#ifdef TRANSIENT_WINDUP_PROTECTION
+    static float avgSetpoint[3];
+    static int count[3];
+    if ( x < 2 && (count[x]++ % 2) == 0 ) {
+        avgSetpoint[x] = splpf( setpoint[x], x );
+    }
+#endif
 	int iwindup = 0;
 	if ((pidoutput[x] == outlimit[x]) && (error[x] > 0))
 	  {
@@ -290,6 +300,12 @@ float pid(int x)
 	  {
 		  iwindup = 1;
 	  }
+#ifdef TRANSIENT_WINDUP_PROTECTION
+	if ( x < 2 && fabsf( setpoint[x] - avgSetpoint[x] ) > 0.1f ) {
+		iwindup = 1;
+	}
+#endif
+
 	if (!iwindup)
 	  {
 #ifdef MIDPOINT_RULE_INTEGRAL

@@ -49,6 +49,7 @@ extern float looptime;
 extern float angleerror[3];
 extern float error[PIDNUMBER];
 extern float pidoutput[PIDNUMBER];
+float setpoint[PIDNUMBER];
 
 int onground = 1;
 int onground_long = 1;
@@ -320,16 +321,18 @@ if (currentdir == REVERSE)
 	else
 	  {			// rate mode
 
-		  error[0] = rxcopy[0] * MAX_RATE * DEGTORAD * ratemulti  - gyro[0];
-		  error[1] = rxcopy[1] * MAX_RATE * DEGTORAD * ratemulti  - gyro[1];
+		setpoint[0] = rxcopy[0] * (float) MAX_RATE * DEGTORAD * ratemulti;
+		setpoint[1] = rxcopy[1] * (float) MAX_RATE * DEGTORAD * ratemulti;
+		setpoint[2] = rxcopy[2] * (float) MAX_RATEYAW * DEGTORAD * ratemultiyaw;
+		for ( int i = 0; i < 3; i++ ) {
+			error[i] = setpoint[i] - gyro[i];
+		}
 
 		  // reduce angle Iterm towards zero
 		  extern float aierror[3];
 
 		  aierror[0] = 0.0f;
 			aierror[1] = 0.0f;
-
-		error[2] = rxcopy[2] * MAX_RATEYAW * DEGTORAD * ratemultiyaw  - gyro[2];
 	  }
 
 #ifdef PID_ROTATE_ERRORS
