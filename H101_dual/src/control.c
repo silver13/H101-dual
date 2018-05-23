@@ -49,6 +49,7 @@ extern float looptime;
 extern float angleerror[3];
 extern float error[PIDNUMBER];
 extern float pidoutput[PIDNUMBER];
+float setpoint[PIDNUMBER];
 
 int onground = 1;
 int onground_long = 1;
@@ -197,20 +198,20 @@ if (currentdir == REVERSE)
 	  {
 		  if (command == GESTURE_DDD)
 		    {
-			    
+
 
 			    //skip accel calibration if pid gestures used
 			    if ( !pid_gestures_used )
 			    {
                     gyro_cal();	// for flashing lights
-				    acc_cal();    
+				    acc_cal();
 			    }
                 else
                 {
                     ledcommand = 1;
-                    pid_gestures_used = 0;   
+                    pid_gestures_used = 0;
                 }
-                
+
 			    savecal();
 
                 // reset flash numbers
@@ -218,7 +219,7 @@ if (currentdir == REVERSE)
                 for( int i = 0 ; i < 3 ; i++)
                     for( int j = 0 ; j < 3 ; j++)
                         number_of_increments[i][j] = 0;
-			  
+
 			    // reset loop time
 			    extern unsigned lastlooptime;
 			    lastlooptime = gettime();
@@ -227,14 +228,14 @@ if (currentdir == REVERSE)
 		    {
                 if (command == GESTURE_UUU)
               {
-                 #ifdef RX_BAYANG_PROTOCOL_TELEMETRY                  
+                 #ifdef RX_BAYANG_PROTOCOL_TELEMETRY
                  extern int rx_bind_enable;
                  rx_bind_enable=!rx_bind_enable;
                  ledblink = 2 - rx_bind_enable;
-                 pid_gestures_used = 1;  
+                 pid_gestures_used = 1;
                  #endif
               }
-                
+
 			    if (command == GESTURE_RRD)
 			      {
 							ledcommand = 1;
@@ -320,20 +321,23 @@ if (currentdir == REVERSE)
 	else
 	  {			// rate mode
 
-		  error[0] = rxcopy[0] * MAX_RATE * DEGTORAD * ratemulti  - gyro[0];
-		  error[1] = rxcopy[1] * MAX_RATE * DEGTORAD * ratemulti  - gyro[1];
+		setpoint[0] = rxcopy[0] * (float) MAX_RATE * DEGTORAD * ratemulti;
+		setpoint[1] = rxcopy[1] * (float) MAX_RATE * DEGTORAD * ratemulti;
+		setpoint[2] = rxcopy[2] * (float) MAX_RATEYAW * DEGTORAD * ratemultiyaw;
+		for ( int i = 0; i < 3; i++ ) {
+			error[i] = setpoint[i] - gyro[i];
+		}
 
 		  // reduce angle Iterm towards zero
 		  extern float aierror[3];
 
 		  aierror[0] = 0.0f;
 			aierror[1] = 0.0f;
-
-		error[2] = rxcopy[2] * MAX_RATEYAW * DEGTORAD * ratemultiyaw  - gyro[2];
 	  }
 
-
+#ifdef PID_ROTATE_ERRORS
 	rotateErrors();
+#endif
 	pid(0);
 	pid(1);
 	pid(2);
@@ -582,15 +586,15 @@ if ( throttle < 0 ) throttle = 0;
 
 
 		for ( int i = 0 ; i <= 3 ; i++)
-		{			
-		#ifdef MOTOR_FILTER		
+		{
+		#ifdef MOTOR_FILTER
 		mix[i] = motorfilter(  mix[i] , i);
-		#endif	
-		
-        #ifdef MOTOR_FILTER2_ALPHA	
-        float motorlpf( float in , int x) ;           
+		#endif
+
+        #ifdef MOTOR_FILTER2_ALPHA
+        float motorlpf( float in , int x) ;
 		mix[i] = motorlpf(  mix[i] , i);
-		#endif	
+		#endif
         }
 
 
@@ -1007,9 +1011,9 @@ float motor_filt[4];
 // hence it's an "alpha filter" aka 1st order lpf
 float motorlpf( float in , int x)
 {
-    
+
     lpf(&motor_filt[x] , in , 1 - MOTOR_FILTER2_ALPHA);
-       
+
     return motor_filt[x];
 }
 
