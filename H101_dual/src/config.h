@@ -290,6 +290,8 @@
 // Removes roll and pitch bounce back after flips
 #define TRANSIENT_WINDUP_PROTECTION
 
+// Feed fast roll/pitch-stick changes directly to the motors
+//#define FEED_FORWARD_STRENGTH 1.5f
 
 
 // ########################################

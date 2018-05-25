@@ -49,7 +49,7 @@ extern float looptime;
 extern float angleerror[3];
 extern float error[PIDNUMBER];
 extern float pidoutput[PIDNUMBER];
-float setpoint[PIDNUMBER];
+extern float setpoint[PIDNUMBER];
 
 int onground = 1;
 int onground_long = 1;
