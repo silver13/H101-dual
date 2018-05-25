@@ -94,7 +94,7 @@ static float lastrate[PIDNUMBER];
 float pidoutput[PIDNUMBER];
 
 float error[PIDNUMBER];
-extern float setpoint[PIDNUMBER];
+float setpoint[PIDNUMBER];
 extern float looptime;
 extern float gyro[3];
 extern int onground;
@@ -269,8 +269,6 @@ void rotateErrors()
 	ierror[1] += ierror[0] * temp;
 }
 
-extern float splpf( float in,int num );
-
 float pid(int x)
 {
 	int pidindex = x;
@@ -285,11 +283,12 @@ float pid(int x)
 		  ierror[x] *= 0.98f; // 50 ms time-constant
 	  }
 #ifdef TRANSIENT_WINDUP_PROTECTION
-    static float avgSetpoint[3];
-    static int count[3];
-    if ( x < 2 && (count[x]++ % 2) == 0 ) {
-        avgSetpoint[x] = splpf( setpoint[x], x );
-    }
+	static float avgSetpoint[3];
+	static int count[3];
+	extern float splpf( float in,int num );
+	if ( x < 2 && (count[x]++ % 2) == 0 ) {
+		avgSetpoint[x] = splpf( setpoint[x], x );
+	}
 #endif
 	int iwindup = 0;
 	if ((pidoutput[x] == outlimit[x]) && (error[x] > 0))
@@ -332,6 +331,33 @@ float pid(int x)
 
 	// P term
 	pidoutput[x] = error[x] * pidkp[pidindex];
+
+// https://www.rcgroups.com/forums/showpost.php?p=39606684&postcount=13846
+// https://www.rcgroups.com/forums/showpost.php?p=39667667&postcount=13956
+#ifdef FEED_FORWARD_STRENGTH
+	if ( x < 2 ) {
+		static float lastSetpoint[2];
+		static float bucket[2];
+		static float buckettake[2];
+		if ( setpoint[x] != lastSetpoint[x] ) {
+			bucket[x] += setpoint[x] - lastSetpoint[x];
+			buckettake[x] = bucket[x] * 0.2f; // Spread it evenly over 5 ms (PACKET_PERIOD)
+		}
+		if ( fabsf( bucket[x] ) > 0.0f ) {
+			float take = buckettake[x];
+			if ( bucket[x] < 0.0f != take < 0.0f || fabsf( take ) > fabsf( bucket[x] ) ) {
+				take = bucket[x];
+			}
+			bucket[x] -= take;
+
+			float ff = take * timefactor * FEED_FORWARD_STRENGTH * pidkd[x];
+			if ( ff < 0.0f == pidoutput[x] < 0.0f && fabsf( ff ) > fabsf( pidoutput[x] ) ) {
+				pidoutput[x] = ff;
+			}
+		}
+		lastSetpoint[x] = setpoint[x];
+	}
+#endif
 
 	// I term
 	pidoutput[x] += ierror[x];
