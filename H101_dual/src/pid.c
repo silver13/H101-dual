@@ -343,6 +343,8 @@ float pid(int x)
 			bucket[x] += setpoint[x] - lastSetpoint[x];
 			buckettake[x] = bucket[x] * 0.2f; // Spread it evenly over 5 ms (PACKET_PERIOD)
 		}
+		lastSetpoint[x] = setpoint[x];
+
 		if ( fabsf( bucket[x] ) > 0.0f ) {
 			float take = buckettake[x];
 			if ( bucket[x] < 0.0f != take < 0.0f || fabsf( take ) > fabsf( bucket[x] ) ) {
@@ -351,11 +353,26 @@ float pid(int x)
 			bucket[x] -= take;
 
 			float ff = take * timefactor * FEED_FORWARD_STRENGTH * pidkd[x];
+
+			// 4 point moving average filter to smooth out the 5 ms steps:
+			#define POT 2 // power of two
+			static float ma_value = 0;
+			static float ma_array[ 1 << POT ] = { 0 };
+			static int ma_index = 0;
+			ma_value -= ma_array[ ma_index ];
+			ma_value += ff;
+			ma_array[ ma_index ] = ff;
+			++ma_index;
+			if ( ma_index >= ( 1 << POT ) ) {
+				ma_index = 0;
+			}
+			ff = ma_value / ( 1 << POT ); // dividing by a power of two is handled efficiently by the compiler (__ARM_scalbnf)
+
+			// replace output if larger:
 			if ( ff < 0.0f == pidoutput[x] < 0.0f && fabsf( ff ) > fabsf( pidoutput[x] ) ) {
 				pidoutput[x] = ff;
 			}
 		}
-		lastSetpoint[x] = setpoint[x];
 	}
 #endif
 
