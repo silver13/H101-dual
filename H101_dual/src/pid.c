@@ -341,7 +341,7 @@ float pid(int x)
 		static float buckettake[2];
 		if ( setpoint[x] != lastSetpoint[x] ) {
 			bucket[x] += setpoint[x] - lastSetpoint[x];
-			buckettake[x] = bucket[x] * 0.2f; // Spread it evenly over 5 ms (PACKET_PERIOD)
+			buckettake[x] = bucket[x] * 0.1f; // Spread it evenly over 10 ms (two PACKET_PERIODs)
 		}
 		lastSetpoint[x] = setpoint[x];
 
