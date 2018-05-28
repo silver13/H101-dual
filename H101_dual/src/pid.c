@@ -368,9 +368,12 @@ float pid(int x)
 			}
 			ff = ma_value / ( 1 << POT ); // dividing by a power of two is handled efficiently by the compiler (__ARM_scalbnf)
 
-			// replace output if larger:
-			if ( ff < 0.0f == pidoutput[x] < 0.0f && fabsf( ff ) > fabsf( pidoutput[x] ) ) {
-				pidoutput[x] = ff;
+			if ( ff < 0.0f == pidoutput[x] < 0.0f ) {
+				if ( fabsf( ff ) > fabsf( pidoutput[x] ) ) {
+					pidoutput[x] = ff; // Take the larger of P or FF as long as P and FF have the same sign.
+				}
+			} else {
+				pidoutput[x] += ff; // Always add FF if the signs are opposite.
 			}
 		}
 	}
