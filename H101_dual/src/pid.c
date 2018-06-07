@@ -42,6 +42,7 @@ THE SOFTWARE.
 #include <math.h>
 #include "defines.h"
 #include <stdbool.h>
+#include <stdint.h>
 
 
 // Kp                            ROLL, PITCH, YAW
