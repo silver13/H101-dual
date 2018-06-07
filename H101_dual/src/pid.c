@@ -337,25 +337,20 @@ float pid(int x)
 #ifdef FEED_FORWARD_STRENGTH
 	if ( x < 2 ) {
 		static float lastSetpoint[2];
-		static float bucket[2];
-		static float buckettake[2];
+		static float setpointDiff[2];
+		static int ffCount[2];
 		if ( setpoint[x] != lastSetpoint[x] ) {
-			bucket[x] += setpoint[x] - lastSetpoint[x];
-			buckettake[x] = bucket[x] * 0.1f; // Spread it evenly over 10 ms (two PACKET_PERIODs)
+			setpointDiff[x] = ( setpoint[x] - lastSetpoint[x] ) / 5; // Spread it evenly over 5 ms (PACKET_PERIOD)
+			ffCount[x] = 5;
+			lastSetpoint[x] = setpoint[x];
 		}
-		lastSetpoint[x] = setpoint[x];
 
-		if ( fabsf( bucket[x] ) > 0.0f ) {
-			float take = buckettake[x];
-			if ( bucket[x] < 0.0f != take < 0.0f || fabsf( take ) > fabsf( bucket[x] ) ) {
-				take = bucket[x];
-			}
-			bucket[x] -= take;
+		if ( ffCount[x] > 0 ) {
+			--ffCount[x];
+			float ff = setpointDiff[x] * timefactor * FEED_FORWARD_STRENGTH * pidkd[x];
 
-			float ff = take * timefactor * FEED_FORWARD_STRENGTH * pidkd[x];
-
-			// 4 point moving average filter to smooth out the 5 ms steps:
-			#define POT 2 // power of two
+			// 8 point moving average filter to smooth out the 5 ms steps:
+			#define POT 3 // power of two
 			static float ma_value = 0;
 			static float ma_array[ 1 << POT ] = { 0 };
 			static int ma_index = 0;
@@ -368,13 +363,7 @@ float pid(int x)
 			}
 			ff = ma_value / ( 1 << POT ); // dividing by a power of two is handled efficiently by the compiler (__ARM_scalbnf)
 
-			if ( ff < 0.0f == pidoutput[x] < 0.0f ) {
-				if ( fabsf( ff ) > fabsf( pidoutput[x] ) ) {
-					pidoutput[x] = ff; // Take the larger of P or FF as long as P and FF have the same sign.
-				}
-			} else {
-				pidoutput[x] += ff; // Always add FF if the signs are opposite.
-			}
+			pidoutput[x] += ff;
 		}
 	}
 #endif
