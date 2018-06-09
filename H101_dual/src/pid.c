@@ -42,6 +42,7 @@ THE SOFTWARE.
 #include <math.h>
 #include "defines.h"
 #include <stdbool.h>
+#include <stdint.h>
 
 
 // Kp                            ROLL, PITCH, YAW
@@ -351,8 +352,8 @@ float pid(int x)
 			ff = setpointDiff[x] * timefactor * FEED_FORWARD_STRENGTH * pidkd[x];
 		}
 
-		// 4 point moving average filter to smooth out the 5 ms steps:
-		#define MA_SIZE ( 1 << 2 ) // power of two
+		// 8 point moving average filter to smooth out the 5 ms steps:
+		#define MA_SIZE ( 1 << 3 ) // power of two
 		static float ma_value[2];
 		static float ma_array[2][ MA_SIZE ];
 		static uint8_t ma_index[2];
