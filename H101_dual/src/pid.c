@@ -42,6 +42,7 @@ THE SOFTWARE.
 #include <math.h>
 #include "defines.h"
 #include <stdbool.h>
+#include <stdint.h>
 
 
 // Kp                            ROLL, PITCH, YAW
@@ -345,26 +346,25 @@ float pid(int x)
 			lastSetpoint[x] = setpoint[x];
 		}
 
+		float ff = 0.0f;
 		if ( ffCount[x] > 0 ) {
 			--ffCount[x];
-			float ff = setpointDiff[x] * timefactor * FEED_FORWARD_STRENGTH * pidkd[x];
-
-			// 8 point moving average filter to smooth out the 5 ms steps:
-			#define POT 3 // power of two
-			static float ma_value = 0;
-			static float ma_array[ 1 << POT ] = { 0 };
-			static int ma_index = 0;
-			ma_value -= ma_array[ ma_index ];
-			ma_value += ff;
-			ma_array[ ma_index ] = ff;
-			++ma_index;
-			if ( ma_index >= ( 1 << POT ) ) {
-				ma_index = 0;
-			}
-			ff = ma_value / ( 1 << POT ); // dividing by a power of two is handled efficiently by the compiler (__ARM_scalbnf)
-
-			pidoutput[x] += ff;
+			ff = setpointDiff[x] * timefactor * FEED_FORWARD_STRENGTH * pidkd[x];
 		}
+
+		// 8 point moving average filter to smooth out the 5 ms steps:
+		#define MA_SIZE ( 1 << 3 ) // power of two
+		static float ma_value[2];
+		static float ma_array[2][ MA_SIZE ];
+		static uint8_t ma_index[2];
+		ma_value[x] -= ma_array[x][ ma_index[x] ];
+		ma_value[x] += ff;
+		ma_array[x][ ma_index[x] ] = ff;
+		++ma_index[x];
+		ma_index[x] &= MA_SIZE - 1;
+		ff = ma_value[x] / MA_SIZE; // dividing by a power of two is handled efficiently by the compiler (__ARM_scalbnf)
+
+		pidoutput[x] += ff;
 	}
 #endif
 
