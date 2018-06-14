@@ -971,7 +971,7 @@ int rxdata[15];
 
 float packettodata( int *  data)
 {
-	return ( ( ( data[0]&0x0003) * 256 + data[1] ) - 512 ) * 0.001953125 ;	
+	return (((data[0] & 0x0003) * 256 + data[1]) / 1023.0 * 2.0) - 1.0;
 }
 
 
@@ -990,7 +990,7 @@ static int decodepacket( void)
 			rx[1] = packettodata( &rxdata[6] );
 			rx[2] = packettodata( &rxdata[10] );
 		// throttle		
-			rx[3] = ( (rxdata[8]&0x0003) * 256 + rxdata[9] ) * 0.000976562f;
+			rx[3] = ( (rxdata[8]&0x0003) * 256 + rxdata[9] ) / 1023.0;
 		
 #ifndef DISABLE_EXPO
 	rx[0] = rcexpo ( rx[0] , EXPO_XY );
