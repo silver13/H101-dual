@@ -337,6 +337,12 @@ float pid(int x)
 // https://www.rcgroups.com/forums/showpost.php?p=39667667&postcount=13956
 #ifdef FEED_FORWARD_STRENGTH
 	if ( x < 2 ) {
+
+#ifdef RX_SMOOTHING
+		static float lastSetpoint[2];
+		float ff = ( setpoint[x] - lastSetpoint[x] ) * timefactor * FEED_FORWARD_STRENGTH * pidkd[x];
+		lastSetpoint[x] = setpoint[x];
+#else
 		static float lastSetpoint[2];
 		static float setpointDiff[2];
 		static int ffCount[2];
@@ -351,6 +357,7 @@ float pid(int x)
 			--ffCount[x];
 			ff = setpointDiff[x] * timefactor * FEED_FORWARD_STRENGTH * pidkd[x];
 		}
+#endif
 
 		// 8 point moving average filter to smooth out the 5 ms steps:
 		#define MA_SIZE ( 1 << 3 ) // power of two
