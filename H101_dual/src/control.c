@@ -155,6 +155,28 @@ void control(void)
 #endif
 	  }
 
+	rxcopy[3] = rx[3];
+
+#ifdef RX_SMOOTHING
+	static float rxsmooth[4];
+	static float lastRXcopy[4];
+	static float stepRX[4];
+	static int countRX[4];
+	for ( int i = 0; i < 4; ++i ) {
+		if ( rxcopy[i] != lastRXcopy[i] ) {
+			stepRX[i] = ( rxcopy[i] - lastRXcopy[i] ) / 5; // Spread it evenly over 5 ms (PACKET_PERIOD)
+			countRX[i] = 5;
+			lastRXcopy[i] = rxcopy[i];
+		}
+		if ( countRX[i] > 0 ) {
+			--countRX[i];
+			rxsmooth[i] += stepRX[i];
+			rxcopy[i] = rxsmooth[i];
+		} else {
+			rxsmooth[i] = rxcopy[i];
+		}
+	}
+#endif
 
 
 if (currentdir == REVERSE)
@@ -345,7 +367,7 @@ if (currentdir == REVERSE)
 
 #ifndef THREE_D_THROTTLE
 // map throttle so under 10% it is zero
-	float throttle = mapf(rx[3], 0, 1, -0.1, 1);
+	float throttle = mapf(rxcopy[3], 0, 1, -0.1, 1);
 	if (throttle < 0)
 		throttle = 0;
 	if (throttle > 1.0f)
@@ -356,7 +378,7 @@ if (currentdir == REVERSE)
 	// this changes throttle so under center motor direction is reversed
 
 	// map throttle with zero center
-	float throttle = mapf(rx[3], 0, 1, -1, 1);
+	float throttle = mapf(rxcopy[3], 0, 1, -1, 1);
 
 limitf(&throttle, 1.0);
 

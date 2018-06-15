@@ -284,16 +284,18 @@
 #define PID_GESTURE_TUNING
 #define COMBINE_PITCH_ROLL_PID_TUNING
 
-// Rotate I-term vector for a stable yaw axis
+// Rotate I-term vector for a stable yaw axis (aka iTerm Rotation)
 #define PID_ROTATE_ERRORS
 
-// Removes roll and pitch bounce back after flips
+// Removes roll and pitch bounce back after flips (aka iTerm Relax)
 #define TRANSIENT_WINDUP_PROTECTION
 
 // Feed fast roll/pitch-stick changes directly to the motors to give a snappier response
 // 0.0f (or commented out) equates D-term on measurement, 1.0f equates D-term on error.
 //#define FEED_FORWARD_STRENGTH 1.0f
 
+// Add linear interpolation between the otherwise 5 ms staircase steps of the RX signal
+//#define RX_SMOOTHING
 
 // ########################################
 // things that are experimental / old / etc
