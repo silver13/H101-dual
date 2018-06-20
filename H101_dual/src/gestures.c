@@ -179,7 +179,7 @@ int gesture_sequence(int currentgesture)
 	  {			// add to queue
 
 
-		  for (int i = GSIZE; i >= 1; i--)
+		  for (int i = GSIZE - 1; i >= 1; i--)
 		    {
 			    gbuffer[i] = gbuffer[i - 1];
 

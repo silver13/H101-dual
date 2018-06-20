@@ -502,8 +502,8 @@ if( thrfilt > 0.1f )
 
 					
 	// loop time 1ms                
-	while ((gettime() - maintime) < (1000 - 22) )
-			delay(10);
+	while ( gettime() - maintime < 1000 - 1 )
+	{}
 
 
 

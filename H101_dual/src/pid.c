@@ -42,6 +42,7 @@ THE SOFTWARE.
 #include <math.h>
 #include "defines.h"
 #include <stdbool.h>
+#include <stdint.h>
 
 
 // Kp                            ROLL, PITCH, YAW
@@ -94,7 +95,7 @@ static float lastrate[PIDNUMBER];
 float pidoutput[PIDNUMBER];
 
 float error[PIDNUMBER];
-extern float setpoint[PIDNUMBER];
+float setpoint[PIDNUMBER];
 extern float looptime;
 extern float gyro[3];
 extern int onground;
@@ -269,8 +270,6 @@ void rotateErrors()
 	ierror[1] += ierror[0] * temp;
 }
 
-extern float splpf( float in,int num );
-
 float pid(int x)
 {
 	int pidindex = x;
@@ -285,11 +284,12 @@ float pid(int x)
 		  ierror[x] *= 0.98f; // 50 ms time-constant
 	  }
 #ifdef TRANSIENT_WINDUP_PROTECTION
-    static float avgSetpoint[3];
-    static int count[3];
-    if ( x < 2 && (count[x]++ % 2) == 0 ) {
-        avgSetpoint[x] = splpf( setpoint[x], x );
-    }
+	static float avgSetpoint[3];
+	static int count[3];
+	extern float splpf( float in,int num );
+	if ( x < 2 && (count[x]++ % 2) == 0 ) {
+		avgSetpoint[x] = splpf( setpoint[x], x );
+	}
 #endif
 	int iwindup = 0;
 	if ((pidoutput[x] == outlimit[x]) && (error[x] > 0))
@@ -332,6 +332,48 @@ float pid(int x)
 
 	// P term
 	pidoutput[x] = error[x] * pidkp[pidindex];
+
+// https://www.rcgroups.com/forums/showpost.php?p=39606684&postcount=13846
+// https://www.rcgroups.com/forums/showpost.php?p=39667667&postcount=13956
+#ifdef FEED_FORWARD_STRENGTH
+	if ( x < 2 ) {
+
+#ifdef RX_SMOOTHING
+		static float lastSetpoint[2];
+		float ff = ( setpoint[x] - lastSetpoint[x] ) * timefactor * FEED_FORWARD_STRENGTH * pidkd[x];
+		lastSetpoint[x] = setpoint[x];
+#else
+		static float lastSetpoint[2];
+		static float setpointDiff[2];
+		static int ffCount[2];
+		if ( setpoint[x] != lastSetpoint[x] ) {
+			setpointDiff[x] = ( setpoint[x] - lastSetpoint[x] ) / 5; // Spread it evenly over 5 ms (PACKET_PERIOD)
+			ffCount[x] = 5;
+			lastSetpoint[x] = setpoint[x];
+		}
+
+		float ff = 0.0f;
+		if ( ffCount[x] > 0 ) {
+			--ffCount[x];
+			ff = setpointDiff[x] * timefactor * FEED_FORWARD_STRENGTH * pidkd[x];
+		}
+#endif
+
+		// 8 point moving average filter to smooth out the 5 ms steps:
+		#define MA_SIZE ( 1 << 3 ) // power of two
+		static float ma_value[2];
+		static float ma_array[2][ MA_SIZE ];
+		static uint8_t ma_index[2];
+		ma_value[x] -= ma_array[x][ ma_index[x] ];
+		ma_value[x] += ff;
+		ma_array[x][ ma_index[x] ] = ff;
+		++ma_index[x];
+		ma_index[x] &= MA_SIZE - 1;
+		ff = ma_value[x] / MA_SIZE; // dividing by a power of two is handled efficiently by the compiler (__ARM_scalbnf)
+
+		pidoutput[x] += ff;
+	}
+#endif
 
 	// I term
 	pidoutput[x] += ierror[x];
