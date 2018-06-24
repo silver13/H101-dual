@@ -375,18 +375,28 @@ class  FilterBeHp1
 	public:
 		FilterBeHp1()
 		{
-			v[0]=0.0;
+			reset();
 		}
 	private:
 		float v[2];
+		int holdoff;
 	public:
 		float step(float x) //class II
 		{
 			v[0] = v[1];
 			v[1] = (9.521017968695103528e-1f * x)
 				 + (0.90420359373902081668f * v[0]);
+			if ( holdoff > 0 ) {
+				--holdoff;
+				return 0.0;
+			}
 			return
 				 (v[1] - v[0]);
+		}
+		void reset()
+		{
+			v[0] = v[1]	= 0.0;
+			holdoff = 200; // ms
 		}
 };
 
@@ -397,6 +407,10 @@ extern "C" float throttlehpf( float in )
 	return throttlehpf1.step(in );
 }
 
+extern "C" void throttlehpf_reset()
+{
+	throttlehpf1.reset();
+}
 
 
 //Low pass bessel filter order=1 alpha1=0.023
