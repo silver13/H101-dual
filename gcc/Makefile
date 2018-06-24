@@ -38,7 +38,8 @@ SRC = 	$(wildcard $(topdir)/H101_dual/src/*.c) \
 	$(topdir)/Peripherals/src/gd32f1x0_i2c.c \
 	$(topdir)/Peripherals/src/gd32f1x0_rcc.c \
 	$(topdir)/Peripherals/src/gd32f1x0_timer.c \
-	$(topdir)/Peripherals/src/gd32f1x0_usart.c
+	$(topdir)/Peripherals/src/gd32f1x0_usart.c \
+	$(topdir)/Peripherals/src/gd32f1x0_iwdg.c
 
 OBJDIR = .
 OBJ = $(addprefix "$(OBJDIR)/",$(addsuffix .o,$(basename $(SRC))))
