@@ -10,13 +10,13 @@
       <TargetName>H101_dual</TargetName>
       <ToolsetNumber>0x4</ToolsetNumber>
       <ToolsetName>ARM-ADS</ToolsetName>
-      <pCCUsed>5060183::V5.06 update 2 (build 183)::ARMCC</pCCUsed>
+      <pCCUsed>5060061::V5.06 update 1 (build 61)::ARMCC</pCCUsed>
       <TargetOption>
         <TargetCommonOption>
           <Device>GD32F130G6</Device>
           <Vendor>GigaDevice</Vendor>
-          <PackID>GigaDevice.GD32F1x0_DFP.2.0.1</PackID>
-          <PackURL>http://gd32mcu.21ic.com/data/documents/yingyongruanjian/</PackURL>
+          <PackID>Keil.GD32F1xx_DFP.1.1.0</PackID>
+          <PackURL>http://www.keil.com/pack/</PackURL>
           <Cpu>IROM(0x08000000,0x00008000) IRAM(0x20000000,0x00001000) CPUTYPE("Cortex-M3") CLOCK(12000000) ELITTLE</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
           <StartupFile></StartupFile>
@@ -328,8 +328,6 @@
             <v6LangP>0</v6LangP>
             <vShortEn>1</vShortEn>
             <vShortWch>1</vShortWch>
-            <v6Lto>0</v6Lto>
-            <v6WtE>0</v6WtE>
             <VariousControls>
               <MiscControls> --fpmode=fast</MiscControls>
               <Define>USE_STDPERIPH_DRIVER</Define>

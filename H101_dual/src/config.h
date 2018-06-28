@@ -94,7 +94,7 @@
 //#define SOFT_LPF_4TH_160HZ
 //#define SOFT_LPF_4TH_250HZ
 //#define SOFT_LPF_1ST_HZ 100
-//#define SOFT_LPF_2ST_HZ 100
+//#define SOFT_LPF_2ND_HZ 100
 //#define SOFT_LPF_NONE
 
 
