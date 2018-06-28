@@ -119,7 +119,7 @@ int main(void)
 	gpio_init();
 
 	time_init();
-    
+
 	i2c_init();
 
 	spi_init();
@@ -127,7 +127,7 @@ int main(void)
 	pwm_init();
 
   pwm_dir(FREE);
-	
+
 //	bridge_sequencer(DIR1);
 
 	for (int i = 0; i <= 3; i++)
@@ -161,7 +161,7 @@ int main(void)
 
 	if (RCC_GetCK_SYSSource() == 8)
 	  {
-          
+
 	  }
 	else
 	  {
@@ -186,11 +186,11 @@ int main(void)
 
 	adc_init();
 
-    
+
 // loads acc calibration and gyro dafaults
 // also autobind , pids
 	loadcal();
-      
+
 	rx_init();
 
 	int count = 0;
@@ -201,10 +201,10 @@ int main(void)
 		  vbattfilt += adc_read(ADC_ID_VOLTAGE);
 		  count++;
 	  }
-       // for randomising MAC adddress of ble app - this will make the int = raw float value        
-		random_seed =  *(int *)&vbattfilt ; 
+       // for randomising MAC adddress of ble app - this will make the int = raw float value
+		random_seed =  *(int *)&vbattfilt ;
 		random_seed = random_seed&0xff;
-      
+
 	vbattfilt = vbattfilt / 64;
 
 #ifdef SERIAL
@@ -225,13 +225,13 @@ int main(void)
 	gyro_cal();
 
 	rgb_init();
-	
+
 #ifdef SERIAL_DRV
 	serial_init();
 #endif
-	
+
 	imu_init();
-	
+
 	extern unsigned int liberror;
 	if (liberror)
 	  {
@@ -264,7 +264,7 @@ int main(void)
 
 	while (1)
 	  {
-		  // gettime() needs to be called at least once per second 
+		  // gettime() needs to be called at least once per second
 		  maintime = gettime();
 		  looptime = ((uint32_t) (maintime - lastlooptime));
 		  if (looptime <= 0)
@@ -273,7 +273,7 @@ int main(void)
 		  if (looptime > 0.02f)	// max loop 20ms
 		    {
 			    failloop(3);
-			    //endless loop                  
+			    //endless loop
 		    }
 		  lastlooptime = maintime;
 
@@ -287,31 +287,31 @@ int main(void)
 
 		  control();
 
-// battery low logic			
+// battery low logic
         // read battery voltage
         vbatt = adc_read(ADC_ID_VOLTAGE);
-#ifdef ADC_ID_REF  
+#ifdef ADC_ID_REF
         // account for vcc differences
         vbatt = vbatt/vreffilt;
-        // read reference to get vcc difference            
+        // read reference to get vcc difference
         vref = adc_read(ADC_ID_REF);
-        // filter reference   
-        lpf ( &vreffilt , vref , 0.9968f);	
-#endif            
+        // filter reference
+        lpf ( &vreffilt , vref , 0.9968f);
+#endif
 		float hyst;
 
 		// average of all 4 motor thrusts
-		// should be proportional with battery current			
+		// should be proportional with battery current
 		extern float thrsum; // from control.c
-	
+
 		// filter motorpwm so it has the same delay as the filtered voltage
-		// ( or they can use a single filter)		
-		lpf ( &thrfilt , thrsum , 0.9968f);	// 0.5 sec at 1.6ms loop time	
+		// ( or they can use a single filter)
+		lpf ( &thrfilt , thrsum , 0.9968f);	// 0.5 sec at 1.6ms loop time
 
         static float vbattfilt_corr = 4.2;
-        // li-ion battery model compensation time decay ( 3 sec )
-        lpf ( &vbattfilt_corr , vbattfilt , FILTERCALC( 1000 , 3000e3) );
-	
+        // li-ion battery model compensation time decay ( 18 seconds )
+        lpf ( &vbattfilt_corr , vbattfilt , FILTERCALC( 1000 , 18000e3) );
+
         lpf ( &vbattfilt , vbatt , 0.9968f);
 
 
@@ -335,38 +335,38 @@ static int firstrun = 1;
 if( thrfilt > 0.1f )
 {
 	vcomp[z] = tempvolt + (float) z *0.1f * thrfilt;
-		
-	if ( firstrun ) 
+
+	if ( firstrun )
     {
         for (int y = 0 ; y < 12; y++) lastin[y] = vcomp[z];
         firstrun = 0;
     }
 	float ans;
-	//	y(n) = x(n) - x(n-1) + R * y(n-1) 
+	//	y(n) = x(n) - x(n-1) + R * y(n-1)
 	//  out = in - lastin + coeff*lastout
 		// hpf
-	 ans = vcomp[z] - lastin[z] + FILTERCALC( 1000*12 , 1000e3) *lastout[z];
+	 ans = vcomp[z] - lastin[z] + FILTERCALC( 1000*12 , 6000e3) *lastout[z];
 		lastin[z] = vcomp[z];
 		lastout[z] = ans;
-	 lpf ( &score[z] , ans*ans , FILTERCALC( 1000*12 , 10e6 ) );	
+	 lpf ( &score[z] , ans*ans , FILTERCALC( 1000*12 , 60e6 ) );
 	z++;
-    
+
 	if ( z >= 12 ) z = 0;
 
-    float min = score[0]; 
-    
+    float min = score[0];
+
     if (z == 11)
     {
         for ( int i = 0 ; i < 12; i++ )
         {
-         if ( (score[i]) < min )  
+         if ( (score[i]) < min )
             {
                 min = (score[i]);
                 minindex = i;
                 // add an offset because it seems to be usually early
                 minindex++;
             }
-        }   
+        }
     }
 
 }
@@ -382,13 +382,13 @@ if( thrfilt > 0.1f )
             lowbatt = 1;
 		else lowbatt = 0;
 
-        vbatt_comp = tempvolt + (float) VDROP_FACTOR * thrfilt; 	
+        vbatt_comp = tempvolt + (float) VDROP_FACTOR * thrfilt;
 
-// led flash logic              
+// led flash logic
 
 		  if (rxmode != RX_MODE_BIND)
 		    {
-					// non bind                    
+					// non bind
 			    if (failsafe)
 			      {
 				      if (lowbatt)
@@ -432,12 +432,12 @@ if( thrfilt > 0.1f )
 								ledon( 255);
 							}
 						}
-						
+
 						else
 						{
 							if ( aux[LEDS_ON] )
 							ledon( 255);
-							else 
+							else
 							ledoff( 255);
 						}
 					}
@@ -448,12 +448,12 @@ if( thrfilt > 0.1f )
 			    ledflash(100000 + 500000 * (lowbatt), 12);
 		    }
 
-// rgb strip logic   
-#if (RGB_LED_NUMBER > 0)				
+// rgb strip logic
+#if (RGB_LED_NUMBER > 0)
 	extern void rgb_led_lvc( void);
 	rgb_led_lvc( );
 #endif
-				
+
 #ifdef BUZZER_ENABLE
 	buzzer();
 #endif
@@ -473,7 +473,7 @@ if( thrfilt > 0.1f )
 #endif
 
 	checkrx();
-				
+
 #ifdef USE_SERIAL_4WAY_BLHELI_INTERFACE
 	extern int onground;
 	if (onground)
@@ -500,8 +500,8 @@ if( thrfilt > 0.1f )
 	}
 #endif
 
-					
-	// loop time 1ms                
+
+	// loop time 1ms
 	while ( gettime() - maintime < 1000 - 1 )
 	{}
 
@@ -516,7 +516,7 @@ if( thrfilt > 0.1f )
 // 3 - loop time issue
 // 4 - Gyro not found
 // 5 - clock , intterrupts , systick
-// 7 - i2c error 
+// 7 - i2c error
 // 8 - i2c error main loop
 
 void delay3( int x)
@@ -528,7 +528,7 @@ void delay3( int x)
       failsafe = 1;
       buzzer();
       #endif
-      delay(256);  
+      delay(256);
     }
 }
 
@@ -538,14 +538,14 @@ void failloop(int val)
 	  {
 		  pwm_set(i, 0);
 	  }
-      
+
     delay(1000000);
-      
+
 	while (1)
 	  {
 		  for (int i = 0; i < val; i++)
 		    {
-               
+
 			    ledon(255);
 			    delay3(200000);
 			    ledoff(255);
@@ -581,7 +581,7 @@ void UsageFault_Handler(void)
 
 #ifdef USE_SERIAL_4WAY_BLHELI_INTERFACE
 
-// set up external interrupt to check 
+// set up external interrupt to check
 // for 4way serial start byte
 static void setup_4way_external_interrupt(void)
 {
@@ -622,14 +622,14 @@ void EXTI4_15_IRQHandler(void)
 		{
 			time_next += micros_per_bit;
 			delay_until(time_next); // move away from edge
- 
+
 			if (IS_RX_HIGH) // stop bit
 			{
 				// got the start byte
 				switch_to_4way = 1;
 			}
 		}
-			
+
 		// clear pending request
 		EXTI->PD |= EXTI_PD_PD14 ;
 	}

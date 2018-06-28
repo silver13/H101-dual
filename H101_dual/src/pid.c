@@ -140,9 +140,9 @@ void pid_precalc()
 
 #ifdef DTERM_LPF_2ND_HZ
 //the compiler calculates these
-static float two_one_minus_alpha = 2*FILTERCALC_NEW( 0.001 , (1.0f/DTERM_LPF_2ND_HZ) );
-static float one_minus_alpha_sqr = (FILTERCALC_NEW( 0.001 , (1.0f/DTERM_LPF_2ND_HZ) ) )*(FILTERCALC_NEW( 0.001 , (1.0f/DTERM_LPF_2ND_HZ) ));
-static float alpha_sqr = (1 - FILTERCALC_NEW( 0.001 , (1.0f/DTERM_LPF_2ND_HZ) ))*(1 - FILTERCALC_NEW( 0.001 , (1.0f/DTERM_LPF_2ND_HZ) ));
+static float two_one_minus_alpha = 2*FILTERCALC( 0.001 , (1.0f/DTERM_LPF_2ND_HZ) );
+static float one_minus_alpha_sqr = (FILTERCALC( 0.001 , (1.0f/DTERM_LPF_2ND_HZ) ) )*(FILTERCALC( 0.001 , (1.0f/DTERM_LPF_2ND_HZ) ));
+static float alpha_sqr = (1 - FILTERCALC( 0.001 , (1.0f/DTERM_LPF_2ND_HZ) ))*(1 - FILTERCALC( 0.001 , (1.0f/DTERM_LPF_2ND_HZ) ));
 
 static float last_out[3], last_out2[3];
 
@@ -411,7 +411,7 @@ float pid(int x)
 	dterm = - (gyro[x] - lastrate[x]) * pidkd[x] * timefactor;
 	lastrate[x] = gyro[x];
 
-	lpf( &dlpf[x], dterm, FILTERCALC_NEW( 0.001 , 1.0f/DTERM_LPF_1ST_HZ ) );
+	lpf( &dlpf[x], dterm, FILTERCALC( 0.001 , 1.0f/DTERM_LPF_1ST_HZ ) );
 
 	pidoutput[x] += dlpf[x];
 	#endif
