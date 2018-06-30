@@ -38,6 +38,7 @@ THE SOFTWARE.
 
 extern float throttlehpf(float in);
 extern void throttlehpf_reset(void);
+extern void lpf2_reset(void);
 
 extern int ledcommand;
 extern float rx[4];
@@ -1108,6 +1109,7 @@ void bridge_sequencer(int dir)
 			    extern float ierror[3];
 			    ierror[0] = 0.0; ierror[1] = 0.0; ierror[2] = 0.0;
 			    throttlehpf_reset();
+			    lpf2_reset();
 		    }
 		  if (bridge_stage == BRIDGE_WAIT)
 		    {
@@ -1133,6 +1135,7 @@ void bridge_sequencer(int dir)
 			    extern float ierror[3];
 			    ierror[0] = 0.0; ierror[1] = 0.0; ierror[2] = 0.0;
 			    throttlehpf_reset();
+			    lpf2_reset();
 		    }
 		  if (bridge_stage == BRIDGE_WAIT)
 		    {
