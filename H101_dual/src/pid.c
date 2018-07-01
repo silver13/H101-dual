@@ -145,9 +145,14 @@ static float one_minus_alpha_sqr = (FILTERCALC( 0.001 , (1.0f/DTERM_LPF_2ND_HZ) 
 static float alpha_sqr = (1 - FILTERCALC( 0.001 , (1.0f/DTERM_LPF_2ND_HZ) ))*(1 - FILTERCALC( 0.001 , (1.0f/DTERM_LPF_2ND_HZ) ));
 
 static float last_out[3], last_out2[3];
+static int holdoff;
 
 float lpf2( float in, int num)
  {
+  if ( holdoff > 0 ) {
+    --holdoff;
+    return 0.0;
+  }
 
   float ans = in * alpha_sqr + two_one_minus_alpha * last_out[num]
       - one_minus_alpha_sqr * last_out2[num];
@@ -157,6 +162,17 @@ float lpf2( float in, int num)
 
   return ans;
  }
+
+void lpf2_reset()
+{
+	last_out[0] = last_out[1] = last_out[2] = 0.0f;
+	last_out2[0] = last_out2[1] = last_out2[2] = 0.0f;
+	holdoff = 250; // ms
+}
+#else
+void lpf2_reset()
+{
+}
 #endif
 
 // Cycle through P / I / D - The initial value is P
