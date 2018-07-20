@@ -293,6 +293,7 @@
 // Feed fast roll/pitch-stick changes directly to the motors to give a snappier response
 // 0.0f (or commented out) equates D-term on measurement, 1.0f equates D-term on error.
 //#define FEED_FORWARD_STRENGTH 1.0f
+//#define SMART_FF
 
 // Add linear interpolation between the otherwise 5 ms staircase steps of the RX signal
 //#define RX_SMOOTHING
