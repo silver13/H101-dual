@@ -375,8 +375,8 @@ float pid(int x)
 		}
 #endif
 
-		// 8 point moving average filter to smooth out the 5 ms steps:
-		#define MA_SIZE ( 1 << 3 ) // power of two
+		// 16 point moving average filter to smooth out the 5 ms steps:
+		#define MA_SIZE ( 1 << 4 ) // power of two
 		static float ma_value[2];
 		static float ma_array[2][ MA_SIZE ];
 		static uint8_t ma_index[2];
@@ -387,7 +387,17 @@ float pid(int x)
 		ma_index[x] &= MA_SIZE - 1;
 		ff = ma_value[x] / MA_SIZE; // dividing by a power of two is handled efficiently by the compiler (__ARM_scalbnf)
 
+#ifdef SMART_FF
+		if ( ff < 0.0f == pidoutput[x] < 0.0f ) {
+			if ( fabsf( ff ) > fabsf( pidoutput[x] ) ) {
+				pidoutput[x] = ff; // Take the larger of P or FF as long as P and FF have the same sign.
+			}
+		} else {
+			pidoutput[x] += ff; // Always add FF if the signs are opposite.
+		}
+#else
 		pidoutput[x] += ff;
+#endif
 	}
 #endif
 
