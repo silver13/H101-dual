@@ -165,6 +165,10 @@
 //#define AUTO_THROTTLE
 
 
+// Betaflight like mix scaling
+//#define MIX_SCALING
+
+
 // enable auto lower throttle near max throttle to keep control
 // comment out to disable
 //#define MIX_LOWER_THROTTLE
