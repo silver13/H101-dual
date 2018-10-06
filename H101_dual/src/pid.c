@@ -459,7 +459,7 @@ float pid(int x)
 	pidoutput[x] *= v_compensation;
 #endif
 
-	limitf(&pidoutput[x], outlimit[x]);
+	limitf(&pidoutput[x], outlimit[x] * v_compensation);
 
 	return pidoutput[x];
 }
