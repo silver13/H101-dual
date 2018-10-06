@@ -308,11 +308,11 @@ float pid(int x)
 	}
 #endif
 	int iwindup = 0;
-	if ((pidoutput[x] == outlimit[x]) && (error[x] > 0))
+	if ((pidoutput[x] >= outlimit[x]) && (error[x] > 0))
 	  {
 		  iwindup = 1;
 	  }
-	if ((pidoutput[x] == -outlimit[x]) && (error[x] < 0))
+	if ((pidoutput[x] <= -outlimit[x]) && (error[x] < 0))
 	  {
 		  iwindup = 1;
 	  }
@@ -356,7 +356,7 @@ float pid(int x)
 
 #ifdef RX_SMOOTHING
 		static float lastSetpoint[2];
-		float ff = ( setpoint[x] - lastSetpoint[x] ) * timefactor * FEED_FORWARD_STRENGTH * pidkd[x];
+		float ff = ( setpoint[x] - lastSetpoint[x] ) * timefactor * FEED_FORWARD_STRENGTH * pidkd[pidindex];
 		lastSetpoint[x] = setpoint[x];
 #else
 		static float lastSetpoint[2];
@@ -371,7 +371,7 @@ float pid(int x)
 		float ff = 0.0f;
 		if ( ffCount[x] > 0 ) {
 			--ffCount[x];
-			ff = setpointDiff[x] * timefactor * FEED_FORWARD_STRENGTH * pidkd[x];
+			ff = setpointDiff[x] * timefactor * FEED_FORWARD_STRENGTH * pidkd[pidindex];
 		}
 #endif
 
@@ -420,7 +420,7 @@ float pid(int x)
 
     #ifdef MAX_FLAT_LPF_DIFF_DTERM
     pidoutput[x] = pidoutput[x] - ( + 0.125f *gyro[x] + 0.250f * lastratexx[x][0]
-                - 0.250f * lastratexx[x][2] - ( 0.125f) * lastratexx[x][3]) * pidkd[x] * timefactor 						;
+                - 0.250f * lastratexx[x][2] - ( 0.125f) * lastratexx[x][3]) * pidkd[pidindex] * timefactor 						;
 
     lastratexx[x][3] = lastratexx[x][2];
     lastratexx[x][2] = lastratexx[x][1];
@@ -434,7 +434,7 @@ float pid(int x)
 	static float lastrate[3];
 	static float dlpf[3] = {0};
 
-	dterm = - (gyro[x] - lastrate[x]) * pidkd[x] * timefactor;
+	dterm = - (gyro[x] - lastrate[x]) * pidkd[pidindex] * timefactor;
 	lastrate[x] = gyro[x];
 
 	lpf( &dlpf[x], dterm, FILTERCALC( 0.001 , 1.0f/DTERM_LPF_1ST_HZ ) );
@@ -446,9 +446,9 @@ float pid(int x)
 	float dterm;
 	static float lastrate[3];
 	float lpf2( float in, int num);
-	if ( pidkd[x] > 0)
+	if ( pidkd[pidindex] > 0)
 	{
-	    dterm = - (gyro[x] - lastrate[x]) * pidkd[x] * timefactor;
+	    dterm = - (gyro[x] - lastrate[x]) * pidkd[pidindex] * timefactor;
 	    lastrate[x] = gyro[x];
 	    dterm = lpf2(  dterm, x );
 	    pidoutput[x] += dterm;
