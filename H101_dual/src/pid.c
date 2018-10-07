@@ -295,6 +295,8 @@ float pid(int x)
 	}
 #endif
 
+	const float out_limit = outlimit[x] * v_compensation;
+
 	if (onground)
 	  {
 		  ierror[x] *= 0.98f; // 50 ms time-constant
@@ -308,11 +310,11 @@ float pid(int x)
 	}
 #endif
 	int iwindup = 0;
-	if ((pidoutput[x] >= outlimit[x]) && (error[x] > 0))
+	if ((pidoutput[x] >= out_limit) && (error[x] > 0))
 	  {
 		  iwindup = 1;
 	  }
-	if ((pidoutput[x] <= -outlimit[x]) && (error[x] < 0))
+	if ((pidoutput[x] <= -out_limit) && (error[x] < 0))
 	  {
 		  iwindup = 1;
 	  }
@@ -459,7 +461,7 @@ float pid(int x)
 	pidoutput[x] *= v_compensation;
 #endif
 
-	limitf(&pidoutput[x], outlimit[x] * v_compensation);
+	limitf(&pidoutput[x], out_limit);
 
 	return pidoutput[x];
 }
