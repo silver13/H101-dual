@@ -341,6 +341,9 @@ if (currentdir == REVERSE)
 
 		error[2] = yawerror[2]  - gyro[2];
 
+		// Set ierror to zero, otherwise it builds up and causes bounce back.
+		extern float ierror[3];
+		ierror[0] = 0.0; ierror[1] = 0.0;
 	  }
 	else
 	  {			// rate mode
