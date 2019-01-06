@@ -302,6 +302,10 @@
 // Add linear interpolation between the otherwise 5 ms staircase steps of the RX signal
 //#define RX_SMOOTHING
 
+// Use a square root motor curve to counteract thrust ~ RPM^2
+// 0.0f .. no compensation, 1.0f .. full square root curve
+#define THRUST_LINEARIZATION 0.5f
+
 // ########################################
 // things that are experimental / old / etc
 // do not change things below

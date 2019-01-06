@@ -411,6 +411,11 @@ limitf(&throttle, 1.0);
 	if ( failsafe ) throttle = 0;
 #endif	// end 3d throttle remap
 
+#ifdef THRUST_LINEARIZATION
+	const float aa = THRUST_LINEARIZATION; // 0 .. linear, 1 .. quadratic
+	throttle = throttle * ( throttle * aa + 1 - aa ); // invert the motor curve correction applied further below
+#endif
+
 #ifdef AIRMODE_HOLD_SWITCH
 	if (failsafe || aux[AIRMODE_HOLD_SWITCH] || throttle < 0.001f && !onground_long)
 	{
@@ -851,7 +856,23 @@ if ( underthrottle < -0.01f) ledcommand = 1;
 
 		  for (int i = 0; i < 4; i++)
 		    {
+#ifdef THRUST_LINEARIZATION
+				// Computationally quite expensive:
+				static float a, a_reci, b, b_sq;
+				if ( a != THRUST_LINEARIZATION ) {
+					a = THRUST_LINEARIZATION;
+					a_reci = 1 / a;
+					b = ( 1 - a ) / ( 2 * a );
+					b_sq = b * b;
+				}
+				float test = mix[i];
+				if ( test > 0.0f && a > 0.0f ) {
+					extern float Q_rsqrt( float number );
+					test = 1 / Q_rsqrt( mix[i] * a_reci + b_sq ) - b;
+				}
+#else
 			    float test = motormap(mix[i]);
+#endif
 					#ifdef MOTORS_TO_THROTTLE
 					test = throttle;
 					// flash leds in valid throttle range
