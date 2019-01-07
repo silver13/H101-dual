@@ -861,9 +861,11 @@ if ( underthrottle < -0.01f) ledcommand = 1;
 				static float a, a_reci, b, b_sq;
 				if ( a != THRUST_LINEARIZATION ) {
 					a = THRUST_LINEARIZATION;
-					a_reci = 1 / a;
-					b = ( 1 - a ) / ( 2 * a );
-					b_sq = b * b;
+					if ( a > 0.0f ) {
+						a_reci = 1 / a;
+						b = ( 1 - a ) / ( 2 * a );
+						b_sq = b * b;
+					}
 				}
 				float test = mix[i];
 				if ( test > 0.0f && a > 0.0f ) {
